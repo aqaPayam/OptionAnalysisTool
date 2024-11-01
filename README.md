@@ -61,11 +61,11 @@ where:
 
 #### Signal Generation
 
-Based on the Z-score, signals are generated as follows:
+BaBased on the Z-score, signals are generated as follows:
 
-- **Sell**: If $Z > \text{z_threshold}$, the option is overvalued.
-- **Buy**: If $Z < -\text{z_threshold}$, the option is undervalued.
-- **Hold**: If $|Z| \leq \text{z_threshold}$, the option is fairly priced.
+- **Sell**: If $Z > \operatorname{z\_threshold}$, the option is overvalued.
+- **Buy**: If $Z < -\operatorname{z\_threshold}$, the option is undervalued.
+- **Hold**: If $|Z| \leq \operatorname{z\_threshold}$, the option is fairly priced.
 
 ## Prerequisites
 
