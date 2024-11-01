@@ -14,31 +14,31 @@ This project provides a Python tool for analyzing options and generating trading
 
 ### 1. Black-Scholes Model
 
-The **Black-Scholes formula** is a widely used model for calculating the theoretical price of options. For a European call option, the Black-Scholes price \( C \) is given by:
+The **Black-Scholes formula** is a widely used model for calculating the theoretical price of options. For a European call option, the Black-Scholes price $C$ is given by:
 
-\(
+$$
 C = S_0 \cdot N(d_1) - K \cdot e^{-r \cdot T} \cdot N(d_2)
-\)
+$$
 
 where:
 
-- \( S_0 \): Current price of the underlying asset
-- \( K \): Strike price of the option
-- \( r \): Risk-free interest rate
-- \( T \): Time to expiration in years
-- \( N(d) \): Cumulative distribution function of the standard normal distribution
+- $S_0$: Current price of the underlying asset
+- $K$: Strike price of the option
+- $r$: Risk-free interest rate
+- $T$: Time to expiration in years
+- $N(d)$: Cumulative distribution function of the standard normal distribution
 
 and
 
-\(
-d_1 = rac{\ln(S_0 / K) + (r + \sigma^2 / 2) \cdot T}{\sigma \sqrt{T}}, \quad d_2 = d_1 - \sigma \sqrt{T}
-\)
+$$
+d_1 = \frac{\ln(S_0 / K) + (r + \sigma^2 / 2) \cdot T}{\sigma \sqrt{T}}, \quad d_2 = d_1 - \sigma \sqrt{T}
+$$
 
-In the formula, \( \sigma \) is the volatility of the underlying asset, which we estimate using implied and historical volatilities.
+In the formula, $\sigma$ is the volatility of the underlying asset, which we estimate using implied and historical volatilities.
 
 ### 2. Implied Volatility
 
-**Implied volatility** is the market’s forecast of a likely movement in the underlying asset’s price. It is derived from the market price of an option and is obtained by iteratively adjusting \( \sigma \) in the Black-Scholes formula until the theoretical price matches the market price.
+**Implied volatility** is the market’s forecast of a likely movement in the underlying asset’s price. It is derived from the market price of an option and is obtained by iteratively adjusting $\sigma$ in the Black-Scholes formula until the theoretical price matches the market price.
 
 ### 3. Estimated Volatility
 
@@ -48,24 +48,24 @@ Estimated volatility is calculated using a rolling average of implied volatiliti
 
 To determine trading signals, the tool uses the **Z-score**. The Z-score measures the deviation of the option price from its mean relative to its standard deviation, calculated as:
 
-\(
-Z = rac{(P_{	ext{BS}} - P_{	ext{Option}}) - \mu_{	ext{diff}}}{\sigma_{	ext{diff}}}
-\)
+$$
+Z = \frac{(P_{\text{BS}} - P_{\text{Option}}) - \mu_{\text{diff}}}{\sigma_{\text{diff}}}
+$$
 
 where:
 
-- \( P_{	ext{BS}} \): Black-Scholes calculated price
-- \( P_{	ext{Option}} \): Observed option price in the market
-- \( \mu_{	ext{diff}} \): Rolling mean of the price difference between \( P_{	ext{BS}} \) and \( P_{	ext{Option}} \)
-- \( \sigma_{	ext{diff}} \): Rolling standard deviation of the price difference
+- $P_{\text{BS}}$: Black-Scholes calculated price
+- $P_{\text{Option}}$: Observed option price in the market
+- $\mu_{\text{diff}}$: Rolling mean of the price difference between $P_{\text{BS}}$ and $P_{\text{Option}}$
+- $\sigma_{\text{diff}}$: Rolling standard deviation of the price difference
 
 #### Signal Generation
 
 Based on the Z-score, signals are generated as follows:
 
-- **Sell**: If \( Z > 	ext{z_threshold} \), the option is overvalued.
-- **Buy**: If \( Z < -	ext{z_threshold} \), the option is undervalued.
-- **Hold**: If \( |Z| \leq 	ext{z_threshold} \), the option is fairly priced.
+- **Sell**: If $Z > \text{z_threshold}$, the option is overvalued.
+- **Buy**: If $Z < -\text{z_threshold}$, the option is undervalued.
+- **Hold**: If $|Z| \leq \text{z_threshold}$, the option is fairly priced.
 
 ## Prerequisites
 
