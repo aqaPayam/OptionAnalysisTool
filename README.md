@@ -60,12 +60,11 @@ where:
 - $\sigma_{\text{diff}}$: Rolling standard deviation of the price difference
 
 #### Signal Generation
+Based on the Z-score, signals are generated as follows:
 
-BaBased on the Z-score, signals are generated as follows:
-
-- **Sell**: If $Z > \operatorname{z\_threshold}$, the option is overvalued.
-- **Buy**: If $Z < -\operatorname{z\_threshold}$, the option is undervalued.
-- **Hold**: If $|Z| \leq \operatorname{z\_threshold}$, the option is fairly priced.
+- **Sell**: If $Z > z_{threshold}$, the option is overvalued.
+- **Buy**: If $Z < -z_{threshold}$, the option is undervalued.
+- **Hold**: If $|Z| \leq z_{threshold}$, the option is fairly priced.
 
 ## Prerequisites
 
