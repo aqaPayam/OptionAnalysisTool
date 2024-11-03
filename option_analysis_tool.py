@@ -479,10 +479,12 @@ def run_option_analysis(underlying_stock_name="", option_stock_name="", call_put
 
     return result
 
-import warnings
-
 def run_selected_analysis(option_number):
-    if option_number == 1:
+    if option_number == 0:
+        for i in range(1, 10):
+            print(f"Running analysis for option {i}...")
+            run_selected_analysis(i)
+    elif option_number == 1:
         run_option_analysis(
             underlying_stock_name="خودرو",
             option_stock_name="ضخود8034",
@@ -609,11 +611,13 @@ def run_selected_analysis(option_number):
             z_threshold_normal=1
         )
     else:
-        print("Invalid option number. Please enter a number from 1 to 9.")
+        print("Invalid option number. Please enter a number from 0 to 9.")
 
 if __name__ == '__main__':
     warnings.filterwarnings("ignore")
     
     # Example usage:
-    option_number = int(input("Enter the option number to run (1-9): "))
+    option_number = int(input("Enter the option number to run (0-9): "))
     run_selected_analysis(option_number)
+
+
