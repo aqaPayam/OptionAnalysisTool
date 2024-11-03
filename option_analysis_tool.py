@@ -19,11 +19,28 @@ def process_and_save_underlying_and_option_data(underlying_stock, option_stock, 
     def editing_data(df):
         df_edt = df.reset_index()
         df_edt = df_edt[df_edt["Depth"] == 1]
-        df_edt = df_edt.reset_index()
+        df_edt = df_edt.reset_index(drop=True)
         df_edt = df_edt[["J-Date", "Time", "Sell_Vol", "Sell_Price", "Buy_Price", "Buy_Vol"]]
         df_edt["J-Date"] = df_edt["J-Date"].astype(str)
         df_edt["Time"] = df_edt["Time"].astype(str)
+        
+        # Get the number of rows before dropping duplicates
+        initial_row_count = df_edt.shape[0]
+        
+        # Make rows unique by "J-Date" and "Time"
+        df_edt = df_edt.drop_duplicates(subset=["J-Date", "Time"])
+        
+        # Get the number of rows after dropping duplicates
+        final_row_count = df_edt.shape[0]
+        
+        # Check if any drops occurred
+        if initial_row_count != final_row_count:
+            print(f"Dropped {initial_row_count - final_row_count} duplicate rows.")
+        else:
+            print("No duplicates were found.")
+        
         return df_edt
+
 
     def generate_daily_data(date, data, time_list):
         day_detail = pd.Series([np.array([np.nan] * 4)] * len(time_list), index=time_list)
