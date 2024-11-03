@@ -491,146 +491,141 @@ def run_option_analysis(underlying_stock_name="", option_stock_name="", call_put
 
     return result
 
+import warnings
+
+def run_selected_analysis(option_number):
+    if option_number == 1:
+        run_option_analysis(
+            underlying_stock_name="خودرو",
+            option_stock_name="ضخود8034",
+            call_put="c",
+            start_date="1403-05-15",
+            end_date="1403-07-25",
+            strike_price=2400,
+            risk_free_rate=0.3,
+            expiration_jalali_date='1403-08-02',
+            window_size_volatility=int(10 * 3.5 * 3600),
+            window_size_normal=int(10 * 3.5 * 3600),
+            z_threshold_normal=1
+        )
+    elif option_number == 2:
+        run_option_analysis(
+            underlying_stock_name="اهرم",
+            option_stock_name="ضهرم7025",
+            call_put="c",
+            start_date="1403-05-13",
+            end_date="1403-07-23",
+            strike_price=16000,
+            risk_free_rate=0.3,
+            expiration_jalali_date='1403-07-25',
+            window_size_volatility=int(10 * 3.5 * 3600),
+            window_size_normal=int(10 * 3.5 * 3600),
+            z_threshold_normal=1
+        )
+    elif option_number == 3:
+        run_option_analysis(
+            underlying_stock_name="اهرم",
+            option_stock_name="ضهرم3006",
+            call_put="c",
+            start_date="1402-11-10",
+            end_date="1403-03-21",
+            strike_price=20000,
+            risk_free_rate=0.3,
+            expiration_jalali_date='1403-03-23',
+            window_size_volatility=int(10 * 3.5 * 3600),
+            window_size_normal=int(10 * 3.5 * 3600),
+            z_threshold_normal=1
+        )
+    elif option_number == 4:
+        run_option_analysis(
+            underlying_stock_name="خودرو",
+            option_stock_name="ضخود3084",
+            call_put="c",
+            start_date="1403-01-28",
+            end_date="1403-02-30",
+            strike_price=3000,
+            risk_free_rate=0.3,
+            expiration_jalali_date='1403-03-09',
+            window_size_volatility=int(10 * 3.5 * 3600),
+            window_size_normal=int(10 * 3.5 * 3600),
+            z_threshold_normal=1
+        )
+    elif option_number == 5:
+        run_option_analysis(
+            underlying_stock_name="اهرم",
+            option_stock_name="ضهرم1224",
+            call_put="c",
+            start_date="1402-07-24",
+            end_date="1402-12-23",
+            strike_price=20000,
+            risk_free_rate=0.3,
+            expiration_jalali_date='1402-12-23',
+            window_size_volatility=int(10 * 3.5 * 3600),
+            window_size_normal=int(10 * 3.5 * 3600),
+            z_threshold_normal=1
+        )
+    elif option_number == 6:
+        run_option_analysis(
+            underlying_stock_name="خودرو",
+            option_stock_name="ضخود1218",
+            call_put="c",
+            start_date="1402-09-22",
+            end_date="1402-11-15",
+            strike_price=2600,
+            risk_free_rate=0.3,
+            expiration_jalali_date='1402-12-02',
+            window_size_volatility=int(10 * 3.5 * 3600),
+            window_size_normal=int(10 * 3.5 * 3600),
+            z_threshold_normal=1
+        )
+    elif option_number == 7:
+        run_option_analysis(
+            underlying_stock_name="شستا",
+            option_stock_name="ضستا2026",
+            call_put="c",
+            start_date="1402-10-30",
+            end_date="1403-02-02",
+            strike_price=1200,
+            risk_free_rate=0.3,
+            expiration_jalali_date='1403-02-12',
+            window_size_volatility=int(10 * 3.5 * 3600),
+            window_size_normal=int(10 * 3.5 * 3600),
+            z_threshold_normal=1
+        )
+    elif option_number == 8:
+        run_option_analysis(
+            underlying_stock_name="خساپا",
+            option_stock_name="ضسپا2006",
+            call_put="c",
+            start_date="1402-12-05",
+            end_date="1403-02-19",
+            strike_price=2600,
+            risk_free_rate=0.3,
+            expiration_jalali_date='1403-02-26',
+            window_size_volatility=int(10 * 3.5 * 3600),
+            window_size_normal=int(10 * 3.5 * 3600),
+            z_threshold_normal=1
+        )
+    elif option_number == 9:
+        run_option_analysis(
+            underlying_stock_name="اهرم",
+            option_stock_name="ضهرم1219",
+            call_put="c",
+            start_date='1402-06-01',
+            end_date='1402-09-15',
+            strike_price=13000,
+            risk_free_rate=0.3,
+            expiration_jalali_date='1402-12-23',
+            window_size_volatility=int(10 * 3.5 * 3600),
+            window_size_normal=int(10 * 3.5 * 3600),
+            z_threshold_normal=1
+        )
+    else:
+        print("Invalid option number. Please enter a number from 1 to 9.")
 
 if __name__ == '__main__':
     warnings.filterwarnings("ignore")
-
-
-        # Call 1
-    run_option_analysis(
-        underlying_stock_name="خودرو",
-        option_stock_name="ضخود8034",
-        call_put="c",  # Assuming "call" for now, adjust if needed
-        start_date="1403-05-15",
-        end_date="1403-07-25",
-        strike_price=2400,  # Updated strike price
-        risk_free_rate=0.3,  # Updated risk-free rate
-        expiration_jalali_date='1403-08-02',
-        window_size_volatility=int(10 * 3.5 * 3600),
-        window_size_normal=int(10 * 3.5 * 3600),
-        z_threshold_normal=1
-    )
-
-    # Call 2
-    run_option_analysis(
-        underlying_stock_name="اهرم",
-        option_stock_name="ضهرم7025",
-        call_put="c",  # Assuming "call" for now, adjust if needed
-        start_date="1403-05-13",
-        end_date="1403-07-23",
-        strike_price=16000,  # Updated strike price
-        risk_free_rate=0.3,  # Updated risk-free rate
-        expiration_jalali_date='1403-07-25',
-        window_size_volatility=int(10 * 3.5 * 3600),
-        window_size_normal=int(10 * 3.5 * 3600),
-        z_threshold_normal=1
-    )
-
-        # Call 3
-    run_option_analysis(
-        underlying_stock_name="اهرم",
-        option_stock_name="ضهرم3006",
-        call_put="c",  # Assuming "call" for now, adjust if needed
-        start_date="1402-11-10",
-        end_date="1403-03-21",
-        strike_price=20000,  # Updated strike price
-        risk_free_rate=0.3,  # Updated risk-free rate
-        expiration_jalali_date='1403-03-23',
-        window_size_volatility=int(10 * 3.5 * 3600),
-        window_size_normal=int(10 * 3.5 * 3600),
-        z_threshold_normal=1
-    )
     
-    
-    
-
-    # Call 4
-    run_option_analysis(
-        underlying_stock_name="خودرو",
-        option_stock_name="ضخود3084",
-        call_put="c",  # Assuming "call" for now, adjust if needed
-        start_date="1403-01-28",
-        end_date="1403-02-30",
-        strike_price=3000,  # Updated strike price
-        risk_free_rate=0.3,  # Updated risk-free rate
-        expiration_jalali_date='1403-03-09',
-        window_size_volatility=int(10 * 3.5 * 3600),
-        window_size_normal=int(10 * 3.5 * 3600),
-        z_threshold_normal=1
-    )
-
-    # Call 5
-    run_option_analysis(
-        underlying_stock_name="اهرم",
-        option_stock_name="ضهرم1224",
-        call_put="c",  # Assuming "call" for now, adjust if needed
-        start_date="1402-07-24",
-        end_date="1402-12-23",
-        strike_price=20000,  # Updated strike price
-        risk_free_rate=0.3,  # Updated risk-free rate
-        expiration_jalali_date='1402-12-23',
-        window_size_volatility=int(10 * 3.5 * 3600),
-        window_size_normal=int(10 * 3.5 * 3600),
-        z_threshold_normal=1
-    )
-
-    # Call 6
-    run_option_analysis(
-        underlying_stock_name="خودرو",
-        option_stock_name="ضخود1218",
-        call_put="c",  # Assuming "call" for now, adjust if needed
-        start_date="1402-09-22",
-        end_date="1402-11-15",
-        strike_price=2600,  # Updated strike price
-        risk_free_rate=0.3,  # Updated risk-free rate
-        expiration_jalali_date='1402-12-02',
-        window_size_volatility=int(10 * 3.5 * 3600),
-        window_size_normal=int(10 * 3.5 * 3600),
-        z_threshold_normal=1
-    )
-
-    # Call 7
-    run_option_analysis(
-        underlying_stock_name="شستا",
-        option_stock_name="ضستا2026",
-        call_put="c",  # Assuming "call" for now, adjust if needed
-        start_date="1402-10-30",
-        end_date="1403-02-02",
-        strike_price=1200,  # Provided strike price
-        risk_free_rate=0.3,  # Updated risk-free rate
-        expiration_jalali_date='1403-02-12',
-        window_size_volatility=int(10 * 3.5 * 3600),
-        window_size_normal=int(10 * 3.5 * 3600),
-        z_threshold_normal=1
-    )
-
-    # Call 8
-    run_option_analysis(
-        underlying_stock_name="خساپا",
-        option_stock_name="ضسپا2006",
-        call_put="c",  # Assuming "call" for now, adjust if needed
-        start_date="1402-12-05",
-        end_date="1403-02-19",
-        strike_price=2600,  # Provided strike price
-        risk_free_rate=0.3,  # Updated risk-free rate
-        expiration_jalali_date='1403-02-26',
-        window_size_volatility=int(10 * 3.5 * 3600),
-        window_size_normal=int(10 * 3.5 * 3600),
-        z_threshold_normal=1
-    )
-
-    # Call 9
-    run_option_analysis(
-        underlying_stock_name="اهرم",
-        option_stock_name="ضهرم1219",
-        call_put="c",
-        start_date='1402-06-01',
-        end_date='1402-09-15',
-        strike_price=13000,
-        risk_free_rate=0.3,
-        expiration_jalali_date='1402-12-23',
-        window_size_volatility=int(10 * 3.5 * 3600), # 10 rooz har rooz 3.5 saAt har saAt 3600 second
-        window_size_normal=int(10 * 3.5 * 3600), # 10 rooz har rooz 3.5 saAt har saAt 3600 second
-        z_threshold_normal=1
-)
-    
+    # Example usage:
+    option_number = int(input("Enter the option number to run (1-9): "))
+    run_selected_analysis(option_number)
