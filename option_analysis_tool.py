@@ -15,9 +15,7 @@ import persiantools
 import finpy_tse as tse
 import warnings
 
-
 def process_and_save_underlying_and_option_data(underlying_stock, option_stock, start_date, end_date):
-    # Helper function for editing data
     def editing_data(df):
         df_edt = df.reset_index()
         df_edt = df_edt[df_edt["Depth"] == 1]
@@ -27,31 +25,30 @@ def process_and_save_underlying_and_option_data(underlying_stock, option_stock, 
         df_edt["Time"] = df_edt["Time"].astype(str)
         return df_edt
 
-    # Helper function to generate daily data
     def generate_daily_data(date, data, time_list):
         day_detail = pd.Series([np.array([np.nan] * 4)] * len(time_list), index=time_list)
         row = [np.nan] * 4
         today_data = data[data["J-Date"] == date]
         today_data.index = list(today_data["Time"])
-        changed_row = list(data[data["J-Date"] == date]["Time"])
-        changed_row_index = 0
-        if len(changed_row) != 0:
-            j = datetime.datetime.strptime(changed_row[0], "%H:%M:%S").time()
-            for i in time_list:
-                if i == j:
-                    while (changed_row_index < len(changed_row) - 1) and \
-                            (datetime.datetime.strptime(changed_row[changed_row_index + 1], "%H:%M:%S").time() == j):
-                        changed_row_index += 1
-                    row = np.array(today_data.iloc[changed_row_index])[-4:]
-                    if changed_row_index < len(changed_row) - 1:
-                        changed_row_index += 1
-                        j = datetime.datetime.strptime(changed_row[changed_row_index], "%H:%M:%S").time()
-                    day_detail.loc[i] = row
-                else:
-                    day_detail.loc[i] = row
+        changed_times = list(today_data.index)
+        temp_row = row
+        changed_times_iter = iter(changed_times)
+        next_match = next(changed_times_iter, None)
+        first_time_list_time = time_list[0] if isinstance(time_list[0], datetime.time) else datetime.datetime.strptime(time_list[0], "%H:%M:%S").time()
+        while next_match:
+            next_match_time = datetime.datetime.strptime(next_match, "%H:%M:%S").time() if isinstance(next_match, str) else next_match
+            if next_match_time >= first_time_list_time:
+                break
+            next_match = next(changed_times_iter, None)
+            
+        for i in time_list:
+            if next_match and str(i) == next_match:
+                if str(i) in today_data.index:
+                    temp_row = np.array(today_data.loc[str(i)])[-4:]
+                next_match = next(changed_times_iter, None)
+            day_detail.loc[i] = temp_row
         return day_detail
 
-    # Helper function to prepare structure
     def preparing_structure(data, dates, time_list):
         data["J-Date"] = data["J-Date"].astype(str)
         data["Time"] = data["Time"].astype(str)
@@ -62,7 +59,6 @@ def process_and_save_underlying_and_option_data(underlying_stock, option_stock, 
         df.columns = dates
         return df
 
-    # Generate the time list for the daily data
     start_time = datetime.time(9, 15, 0)
     end_time = datetime.time(12, 30, 0)
     delta = datetime.timedelta(seconds=1)
@@ -72,14 +68,11 @@ def process_and_save_underlying_and_option_data(underlying_stock, option_stock, 
         time_list.append(current)
         current = (datetime.datetime.combine(datetime.date.min, current) + delta).time()
 
-    # Helper function to process data for a single stock
     def process_single_stock(stock_name, market_type):
-        from tqdm import tqdm  # Import tqdm for progress bar
-
+        from tqdm import tqdm
 
         while True:
-            print("start downloading data:")
-            # Get intraday data from TSE (assuming tse is properly initialized and configured)
+            print("Start downloading data:")
             data = tse.Get_IntradayOB_History(
                 stock=stock_name,
                 start_date=start_date,
@@ -88,53 +81,31 @@ def process_and_save_underlying_and_option_data(underlying_stock, option_stock, 
                 combined_datatime=False,
                 show_progress=True
             )
-            print("downloading data finished.")
-
-            # Process the data
+            print("Downloading data finished.")
             data = editing_data(data)
-
-            # Prepare the structure with processed data
             datapirim = preparing_structure(data, list(data["J-Date"].unique()), time_list)
-
-            # Initialize flag to track if all data is null
             all_null_data = True
-
-            # Iterate through dates and times to check for valid data
             for date in tqdm(datapirim.columns, desc=f"Processing {market_type} Data", total=datapirim.shape[1]):
                 for time, underlying_data in datapirim[date].items():
-                    # underlying_data is an array of 4 values, check if all are NaN
                     if not (np.isnan(underlying_data[1]) and np.isnan(underlying_data[2])):
-                        # If at least one entry has valid data, set the flag to False
                         all_null_data = False
-                        break  # Break inner loop since we found valid data
+                        break
                 if not all_null_data:
-                    break  # Break outer loop if valid data is found
-
-            # If all data was null, retry by printing message, otherwise break the loop
+                    break
             if all_null_data:
                 print(f"Everything null for {market_type} ({stock_name}). Retrying data retrieval...")
             else:
-                # If valid data is found, break the while loop and proceed
                 break
-
-        # Save the result as a pickle file
         file_name = f"{market_type}_{stock_name}_{start_date}_{end_date}.pkl"
         datapirim.to_pickle(file_name)
-
-        # Print confirmation with the file name
         print(f"Data saved as {file_name}!")
-
         return datapirim
 
-
-    # Process data for the underlying stock
     underlying_data = process_single_stock(underlying_stock, "Underlying Market")
-
-    # Process data for the call/put stock (options market)
     option_data = process_single_stock(option_stock, "Options Market")
-
-    # Return both DataFrames
     return underlying_data, option_data
+
+
 
 
 def calculate_time_to_expiration(current_date, expiration_jalali_date):
