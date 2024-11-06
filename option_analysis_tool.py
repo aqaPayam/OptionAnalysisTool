@@ -82,8 +82,15 @@ def process_and_save_underlying_and_option_data(underlying_stock, option_stock, 
         current = (datetime.datetime.combine(datetime.date.min, current) + delta).time()
 
     def process_single_stock(stock_name, market_type):
-        from tqdm import tqdm
-
+        file_name = os.path.join(save_folder, f"{market_type}_{stock_name}_{start_date}_{end_date}.pkl")
+        
+        # Check if file already exists
+        if os.path.exists(file_name):
+            print(f"File {file_name} already exists. Loading data from file.")
+            datapirim = pd.read_pickle(file_name)
+            return datapirim
+        
+        # If file doesn't exist, proceed with downloading and processing
         while True:
             print("Start downloading data:")
             data = tse.Get_IntradayOB_History(
@@ -95,8 +102,12 @@ def process_and_save_underlying_and_option_data(underlying_stock, option_stock, 
                 show_progress=True
             )
             print("Downloading data finished.")
+            
+            # Process the data
             data = editing_data(data)
             datapirim = preparing_structure(data, list(data["J-Date"].unique()), time_list)
+            
+            # Check if all data is null
             all_null_data = True
             for date in tqdm(datapirim.columns, desc=f"Processing {market_type} Data", total=datapirim.shape[1]):
                 for time, underlying_data in datapirim[date].items():
@@ -105,14 +116,19 @@ def process_and_save_underlying_and_option_data(underlying_stock, option_stock, 
                         break
                 if not all_null_data:
                     break
+            
+            # Retry if data is all null
             if all_null_data:
                 print(f"Everything null for {market_type} ({stock_name}). Retrying data retrieval...")
             else:
                 break
-        file_name = os.path.join(save_folder, f"{market_type}_{stock_name}_{start_date}_{end_date}.pkl")
+        
+        # Save processed data to file
         datapirim.to_pickle(file_name)
         print(f"Data saved as {file_name}!")
+        
         return datapirim
+
 
     underlying_data = process_single_stock(underlying_stock, "Underlying Market")
     option_data = process_single_stock(option_stock, "Options Market")
