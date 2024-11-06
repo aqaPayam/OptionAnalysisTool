@@ -431,15 +431,21 @@ def perform_trade_analysis(data, z_values, save_path="results/", option_stock_na
     
     os.makedirs(save_path, exist_ok=True)  # Ensure the save path exists
 
-    def generate_buy_sell_pairs(data, z_threshold):
+
+    def generate_buy_sell_pairs(data, z_threshold, window_size):
         buy_sell_pairs_list = []
         current_buy = None
+
+        # Define the columns for the DataFrame in case of an empty return
+        columns = ['buy_date', 'buy_time', 'buy_price', 'sell_date', 'sell_time', 'sell_price', 'profit_loss']
 
         # Loop through each row in the data with tqdm progress bar
         for idx, row in tqdm(data.iterrows(), total=len(data), desc=f"Processing Buy-Sell Pairs for Z={z_threshold}, Window Size={window_size}"):
             date, time = idx
+
             if row['z_score'] < -z_threshold and current_buy is None:
                 current_buy = {'buy_date': date, 'buy_time': time, 'buy_price': row['avg_price_option']}
+                
             elif row['z_score'] > z_threshold and current_buy is not None:
                 sell_info = {'sell_date': date, 'sell_time': time, 'sell_price': row['avg_price_option']}
                 profit_loss = sell_info['sell_price'] - current_buy['buy_price']
@@ -451,14 +457,21 @@ def perform_trade_analysis(data, z_values, save_path="results/", option_stock_na
                 })
                 current_buy = None
 
-        return pd.DataFrame(buy_sell_pairs_list)
+        # Return DataFrame, whether populated or empty
+        return pd.DataFrame(buy_sell_pairs_list, columns=columns)
+
     
     # Analyze trades for each z threshold in z_values
     for z_threshold in z_values:
         print(f"\nAnalyzing for Z-Threshold: {z_threshold}, Window Size: {window_size}")
         
         # Generate buy-sell pairs for the current z_threshold
-        buy_sell_pairs = generate_buy_sell_pairs(data, z_threshold)
+        buy_sell_pairs = generate_buy_sell_pairs(data, z_threshold, window_size)
+        
+        # Check if buy_sell_pairs DataFrame is empty
+        if buy_sell_pairs.empty:
+            print(f"No trades generated for Z-Threshold: {z_threshold}, Window Size: {window_size}. Skipping analysis and saving.")
+            continue  # Skip to the next z_threshold if there are no trades
         
         # Calculate trade statistics
         total_trades = len(buy_sell_pairs)
@@ -467,14 +480,14 @@ def perform_trade_analysis(data, z_values, save_path="results/", option_stock_na
         percentage_profitable = (num_profitable_trades / total_trades) * 100 if total_trades > 0 else 0
         
         # Print analysis results
-        print(f"Total Trades: {total_trades}")
-        print(f"Profitable Trades: {num_profitable_trades}")
-        print(f"Percentage of Profitable Trades: {percentage_profitable:.2f}%")
+        print(f"Total Trades for Z-Threshold: {z_threshold}, Window Size: {window_size}: {total_trades}")
+        print(f"Profitable Trades for Z-Threshold: {z_threshold}, Window Size: {window_size}: {num_profitable_trades}")
+        print(f"Percentage of Profitable Trades for Z-Threshold: {z_threshold}, Window Size: {window_size}: {percentage_profitable:.2f}%")
         
         # Save the buy-sell pairs DataFrame as a pickle file
         df_filename = f"{save_path}buy_sell_pairs_window_{window_size}_z_{z_threshold}.pkl"
         buy_sell_pairs.to_pickle(df_filename)
-        print(f"Data saved to {df_filename}")
+        print(f"Data saved to {df_filename} for Z-Threshold: {z_threshold}, Window Size: {window_size}")
         
         # Plot and save the distribution of profit/loss
         plt.figure(figsize=(12, 7))
@@ -488,8 +501,10 @@ def perform_trade_analysis(data, z_values, save_path="results/", option_stock_na
         # Save the plot
         plot_filename = f"{save_path}profit_loss_distribution_window_{window_size}_z_{z_threshold}.png"
         plt.savefig(plot_filename)
-        print(f"Plot saved to {plot_filename}")
+        print(f"Plot saved to {plot_filename} for Z-Threshold: {z_threshold}, Window Size: {window_size}")
         plt.close()  # Close the plot to free up memory
+
+
 
 
 def run_option_analysis(underlying_stock_name = "", option_stock_name= "", call_put="c", start_date= "", end_date= "",
