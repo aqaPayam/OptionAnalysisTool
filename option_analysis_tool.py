@@ -1,8 +1,3 @@
-#!pip install persiantools
-# !pip install finpy_tse
-# !pip install py_vollib
-# !pip install jdatetime
-
 import numpy as np
 import pandas as pd
 import datetime
@@ -14,8 +9,15 @@ from py_vollib.black_scholes.implied_volatility import implied_volatility
 import persiantools
 import finpy_tse as tse
 import warnings
+import os
+import sys
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 def process_and_save_underlying_and_option_data(underlying_stock, option_stock, start_date, end_date):
+    save_folder="data_files"
+    os.makedirs(save_folder, exist_ok=True)
+    
     def editing_data(df):
         df_edt = df.reset_index()
         df_edt = df_edt[df_edt["Depth"] == 1]
@@ -24,23 +26,16 @@ def process_and_save_underlying_and_option_data(underlying_stock, option_stock, 
         df_edt["J-Date"] = df_edt["J-Date"].astype(str)
         df_edt["Time"] = df_edt["Time"].astype(str)
         
-        # Get the number of rows before dropping duplicates
         initial_row_count = df_edt.shape[0]
-        
-        # Make rows unique by "J-Date" and "Time"
         df_edt = df_edt.drop_duplicates(subset=["J-Date", "Time"])
-        
-        # Get the number of rows after dropping duplicates
         final_row_count = df_edt.shape[0]
         
-        # Check if any drops occurred
         if initial_row_count != final_row_count:
             print(f"Dropped {initial_row_count - final_row_count} duplicate rows.")
         else:
             print("No duplicates were found.")
         
         return df_edt
-
 
     def generate_daily_data(date, data, time_list):
         day_detail = pd.Series([np.array([np.nan] * 4)] * len(time_list), index=time_list)
@@ -113,7 +108,7 @@ def process_and_save_underlying_and_option_data(underlying_stock, option_stock, 
                 print(f"Everything null for {market_type} ({stock_name}). Retrying data retrieval...")
             else:
                 break
-        file_name = f"{market_type}_{stock_name}_{start_date}_{end_date}.pkl"
+        file_name = os.path.join(save_folder, f"{market_type}_{stock_name}_{start_date}_{end_date}.pkl")
         datapirim.to_pickle(file_name)
         print(f"Data saved as {file_name}!")
         return datapirim
@@ -121,8 +116,6 @@ def process_and_save_underlying_and_option_data(underlying_stock, option_stock, 
     underlying_data = process_single_stock(underlying_stock, "Underlying Market")
     option_data = process_single_stock(option_stock, "Options Market")
     return underlying_data, option_data
-
-
 
 
 def calculate_time_to_expiration(current_date, expiration_jalali_date):
@@ -217,7 +210,7 @@ def flatten_market_data_with_volatility(underlying_market_df, options_market_df,
     # Print the counters
     print(f"Rows with null values: {null_counter}")
     print(f"Rows skipped by time: {skip_by_time_counter}")
-    print(f"Errors caught in try-except: {try_except_counter}")
+    print(f"Errors caught in try-except of implied volatility calculator: {try_except_counter}")
     if len(flattened_data) == 0:
         raise ValueError(
                 f"The processed data contains only null values. Please check the input data.   TSMSE = GOH")
@@ -329,7 +322,7 @@ def calculate_black_scholes_price(call_series, strike_price, risk_free_rate, exp
     return extended_series
 
 
-def generate_option_signals(option_series, window_size, z_threshold):
+def generate_option_signals(option_series, window_size):
     """
     Generate buy/sell/hold signals along with statistics such as price difference, rolling mean,
     standard deviation, and Z-score from the given option data series.
@@ -338,7 +331,6 @@ def generate_option_signals(option_series, window_size, z_threshold):
     option_series (pd.Series): A Series where each entry contains a list of option data.
                                [avg_price_underlying, avg_price_option, black_scholes_price, implied_vol, estimated_vol]
     window_size (int): Number of previous data points to consider for calculating rolling mean and std dev.
-    z_threshold (float): Number of standard deviations from the mean to trigger buy/sell signals.
 
 
     Returns:
@@ -372,17 +364,9 @@ def generate_option_signals(option_series, window_size, z_threshold):
 
         if pd.isna(mean_diff) or pd.isna(std_diff) or std_diff == 0:
             z_score = np.nan
-            signal = 'Hold'
         else:
             # Calculate Z-score (how many standard deviations current_diff is from the mean)
             z_score = (current_diff - mean_diff) / std_diff
-
-            if z_score > z_threshold:
-                signal = 'Sell'  # Option is overvalued for Call
-            elif z_score < -z_threshold:
-                signal = 'Buy'  # Option is undervalued for Call
-            else:
-                signal = 'Hold'
 
         # Store each row as a dictionary (to be converted to DataFrame later)
         results.append({
@@ -394,7 +378,6 @@ def generate_option_signals(option_series, window_size, z_threshold):
             'price_difference': current_diff,
             'rolling_mean_diff': mean_diff,
             'rolling_std_diff': std_diff,
-            'signal': signal,
             'z_score': z_score  # Statistic showing how far the price difference is from the mean
         })
 
@@ -405,24 +388,116 @@ def generate_option_signals(option_series, window_size, z_threshold):
     # Convert the list of results to a DataFrame
     result_df = pd.DataFrame(results, index=option_series.index)
 
-    # Count and print the number of 'Buy' and 'Sell' signals
-    sell_count = result_df['signal'].value_counts().get('Sell', 0)
-    buy_count = result_df['signal'].value_counts().get('Buy', 0)
+    # Count the occurrences where z_score is under -1 and over +1
+    under_negative_one_count = (result_df['z_score'] < -1).sum()
+    over_positive_one_count = (result_df['z_score'] > 1).sum()
 
-    print(f"Number of 'Sell' signals: {sell_count}")
-    print(f"Number of 'Buy' signals: {buy_count}")
+    print(f"Number of 'z_score' values under -1: {under_negative_one_count}")
+    print(f"Number of 'z_score' values over +1: {over_positive_one_count}")
+
 
     return result_df
 
 
-def run_option_analysis(underlying_stock_name="", option_stock_name="", call_put="c", start_date="", end_date="",
-                        strike_price=13000,
-                        risk_free_rate=0.30, expiration_jalali_date='1402-12-23',
-                        window_size_volatility=int(10 * 3.5 * 3600), window_size_normal=int(10 * 3.5 * 3600),
-                        z_threshold_normal=1.5):
+
+def perform_trade_analysis(data, z_values, save_path="results/", option_stock_name="", start_date="", end_date="", window_size=0):
+    """
+    Perform trade analysis with buy-sell pairs based on multiple z-score thresholds,
+    saving plots and DataFrames for each z-score threshold.
+    
+    Parameters:
+    - data: pd.DataFrame with MultiIndex (Date, Time) and columns including 'avg_price_option' and 'z_score'.
+    - z_values: list of float values for different z-score thresholds to test.
+    - save_path: str, directory path to save the plots and DataFrames.
+    - option_stock_name: str, the name of the option stock for file naming.
+    - start_date: str, the analysis start date for file naming.
+    - end_date: str, the analysis end date for file naming.
+    - window_size: int, the window size used in the analysis for file naming.
+    
+    Returns:
+    - None (prints analysis results, saves distribution plots and DataFrames)
+    """
+    
+    os.makedirs(save_path, exist_ok=True)  # Ensure the save path exists
+
+    def generate_buy_sell_pairs(data, z_threshold):
+        buy_sell_pairs_list = []
+        current_buy = None
+
+        # Loop through each row in the data with tqdm progress bar
+        for idx, row in tqdm(data.iterrows(), total=len(data), desc=f"Processing Buy-Sell Pairs for Z={z_threshold}, Window Size={window_size}"):
+            date, time = idx
+            if row['z_score'] < -z_threshold and current_buy is None:
+                current_buy = {'buy_date': date, 'buy_time': time, 'buy_price': row['avg_price_option']}
+            elif row['z_score'] > z_threshold and current_buy is not None:
+                sell_info = {'sell_date': date, 'sell_time': time, 'sell_price': row['avg_price_option']}
+                profit_loss = sell_info['sell_price'] - current_buy['buy_price']
+                buy_sell_pairs_list.append({
+                    'buy_date': current_buy['buy_date'], 'buy_time': current_buy['buy_time'], 
+                    'buy_price': current_buy['buy_price'], 'sell_date': sell_info['sell_date'], 
+                    'sell_time': sell_info['sell_time'], 'sell_price': sell_info['sell_price'], 
+                    'profit_loss': profit_loss
+                })
+                current_buy = None
+
+        return pd.DataFrame(buy_sell_pairs_list)
+    
+    # Analyze trades for each z threshold in z_values
+    for z_threshold in z_values:
+        print(f"\nAnalyzing for Z-Threshold: {z_threshold}, Window Size: {window_size}")
+        
+        # Generate buy-sell pairs for the current z_threshold
+        buy_sell_pairs = generate_buy_sell_pairs(data, z_threshold)
+        
+        # Calculate trade statistics
+        total_trades = len(buy_sell_pairs)
+        profitable_trades = buy_sell_pairs[buy_sell_pairs['profit_loss'] > 0]
+        num_profitable_trades = len(profitable_trades)
+        percentage_profitable = (num_profitable_trades / total_trades) * 100 if total_trades > 0 else 0
+        
+        # Print analysis results
+        print(f"Total Trades: {total_trades}")
+        print(f"Profitable Trades: {num_profitable_trades}")
+        print(f"Percentage of Profitable Trades: {percentage_profitable:.2f}%")
+        
+        # Save the buy-sell pairs DataFrame as a pickle file
+        df_filename = f"{save_path}buy_sell_pairs_window_{window_size}_z_{z_threshold}.pkl"
+        buy_sell_pairs.to_pickle(df_filename)
+        print(f"Data saved to {df_filename}")
+        
+        # Plot and save the distribution of profit/loss
+        plt.figure(figsize=(12, 7))
+        sns.histplot(buy_sell_pairs['profit_loss'], bins=30, kde=True, edgecolor='black')
+        plt.title(f"Distribution of Profit/Loss for {option_stock_name} (Window Size = {window_size}, Z-Threshold = {z_threshold})")
+        plt.xlabel("Profit/Loss")
+        plt.ylabel("Frequency")
+        plt.axvline(0, color='red', linestyle='dashed', linewidth=1, label="Break-Even")
+        plt.legend()
+        
+        # Save the plot
+        plot_filename = f"{save_path}profit_loss_distribution_window_{window_size}_z_{z_threshold}.png"
+        plt.savefig(plot_filename)
+        print(f"Plot saved to {plot_filename}")
+        plt.close()  # Close the plot to free up memory
+
+
+def run_option_analysis(underlying_stock_name, option_stock_name, call_put="c", start_date, end_date,
+                        strike_price, risk_free_rate=0.30, expiration_jalali_date,
+                        window_sizes=[
+                            int(10 * 3.5 * 3600),
+                            int(5 * 3.5 * 3600),
+                            int(2 * 3.5 * 3600),
+                            int(1 * 3.5 * 3600),
+                            int(2 * 3600),
+                            int(1 * 3600),
+                            600,
+                            60
+                        ],
+                        z_values=[0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5]):
     """
     This function encapsulates the process of analyzing option market data and generating trading signals
-    based on Black-Scholes price and estimated volatility.
+    based on Black-Scholes price and estimated volatility for different window sizes. It also performs
+    trade analysis based on z-score thresholds as Step 6.
 
     Parameters:
         - underlying_stock (str): The ticker or symbol for the underlying stock
@@ -432,21 +507,23 @@ def run_option_analysis(underlying_stock_name="", option_stock_name="", call_put
         - strike_price (float): The option strike price
         - risk_free_rate (float): The risk-free interest rate
         - expiration_jalali_date (str): The expiration date in Jalali calendar format ('YYYY-MM-DD')
-        - window_size_volatility (int): The window size for calculating volatility
-        - window_size_normal (int): The window size for calculating option signals
-        - z_threshold_normal (float): The Z-threshold for generating signals
+        - window_sizes (list of int): A list of window sizes for calculating volatility and option signals
+        - z_values (list of float): List of z-score thresholds for performing trade analysis.
 
     Returns:
-        - result (DataFrame): A DataFrame containing the final option signals
+        - results (dict): A dictionary where each key is a window size and each value is a DataFrame of option signals
     """
     
+    results = {}
+
+    # Define the main save path based on option stock name, start date, and end date
+    main_save_path = f"results/{option_stock_name}_{start_date}_to_{end_date}/"
+    os.makedirs(main_save_path, exist_ok=True)
+
     # Step 1: Process and save underlying and option data
     underlying_stock, option_stock = process_and_save_underlying_and_option_data(
         underlying_stock=underlying_stock_name, option_stock=option_stock_name, start_date=start_date, end_date=end_date
     )
-
-    #underlying_stock = pd.read_pickle("ahrom1.pickle")
-    #option_stock = pd.read_pickle("zahrom1.pickle")
 
     # Step 2: Flatten market data with calculated implied volatility
     call_series = flatten_market_data_with_volatility(
@@ -455,29 +532,38 @@ def run_option_analysis(underlying_stock_name="", option_stock_name="", call_put
         call_put=call_put
     )
 
+    for window_size in window_sizes:
+        print(f"Running analysis for window size: {window_size}")
+
+        # Step 3: Calculate estimated volatility over the specified window size
+        series_with_volatility = calculate_estimated_volatility(call_series, total_points_in_window=window_size)
+
+        # Step 4: Calculate Black-Scholes prices for the option
+        final_series = calculate_black_scholes_price(
+            call_series=series_with_volatility, strike_price=strike_price,
+            risk_free_rate=risk_free_rate, expiration_jalali_date=expiration_jalali_date, call_put=call_put
+        )
+
+        # Step 5: Generate option signals based on calculated Black-Scholes prices
+        result = generate_option_signals(option_series=final_series, window_size=window_size)
+
+        # Save the result with a unique filename for each window size in the "signals" folder
+        filename = f"{main_save_path}option_signals_window_{window_size}.pkl"
+        result.to_pickle(filename)
+        print(f"Results saved to {filename}")
+
+        # Store the result in the dictionary
+        results[window_size] = result
+        print(f"Finished analysis for {option_stock_name} with window size {window_size}")
+
+        # Step 6: Perform trade analysis for each window size using perform_trade_analysis function
+        perform_trade_analysis(result, z_values, save_path=main_save_path,
+                               option_stock_name=option_stock_name, start_date=start_date, end_date=end_date, window_size=window_size)
 
 
-    # Step 3: Calculate estimated volatility over the specified window size
-    series_with_volatility = calculate_estimated_volatility(call_series, total_points_in_window=window_size_volatility)
-
-    # Step 4: Calculate Black-Scholes prices for the option
-    final_series = calculate_black_scholes_price(
-        call_series=series_with_volatility, strike_price=strike_price,
-        risk_free_rate=risk_free_rate, expiration_jalali_date=expiration_jalali_date, call_put=call_put
-    )
-
-    # Step 5: Generate option signals based on calculated Black-Scholes prices
-    result = generate_option_signals(option_series=final_series, window_size=window_size_normal,
-                                     z_threshold=z_threshold_normal)
+    return results
 
 
-    filename = f"option_signals_{option_stock_name}_{start_date}_to_{end_date}.pkl"
-    result.to_pickle(filename)
-    print(f"Results saved to {filename}")
-
-    print(f"finished analys {option_stock_name}")
-
-    return result
 
 def run_selected_analysis(option_number):
     if option_number == 0:
@@ -488,136 +574,97 @@ def run_selected_analysis(option_number):
         run_option_analysis(
             underlying_stock_name="خودرو",
             option_stock_name="ضخود8034",
-            call_put="c",
             start_date="1403-05-15",
             end_date="1403-07-25",
             strike_price=2400,
-            risk_free_rate=0.3,
-            expiration_jalali_date='1403-08-02',
-            window_size_volatility=int(10 * 3.5 * 3600),
-            window_size_normal=int(10 * 3.5 * 3600),
-            z_threshold_normal=1
+            expiration_jalali_date='1403-08-02'
         )
     elif option_number == 2:
         run_option_analysis(
             underlying_stock_name="اهرم",
             option_stock_name="ضهرم7025",
-            call_put="c",
             start_date="1403-05-13",
             end_date="1403-07-23",
             strike_price=16000,
-            risk_free_rate=0.3,
-            expiration_jalali_date='1403-07-25',
-            window_size_volatility=int(10 * 3.5 * 3600),
-            window_size_normal=int(10 * 3.5 * 3600),
-            z_threshold_normal=1
+            expiration_jalali_date='1403-07-25'
         )
     elif option_number == 3:
         run_option_analysis(
             underlying_stock_name="اهرم",
             option_stock_name="ضهرم3006",
-            call_put="c",
             start_date="1402-11-10",
             end_date="1403-03-21",
             strike_price=20000,
-            risk_free_rate=0.3,
-            expiration_jalali_date='1403-03-23',
-            window_size_volatility=int(10 * 3.5 * 3600),
-            window_size_normal=int(10 * 3.5 * 3600),
-            z_threshold_normal=1
+            expiration_jalali_date='1403-03-23'
         )
     elif option_number == 4:
         run_option_analysis(
             underlying_stock_name="خودرو",
             option_stock_name="ضخود3084",
-            call_put="c",
             start_date="1403-01-28",
             end_date="1403-02-30",
             strike_price=3000,
-            risk_free_rate=0.3,
-            expiration_jalali_date='1403-03-09',
-            window_size_volatility=int(10 * 3.5 * 3600),
-            window_size_normal=int(10 * 3.5 * 3600),
-            z_threshold_normal=1
+            expiration_jalali_date='1403-03-09'
         )
     elif option_number == 5:
         run_option_analysis(
             underlying_stock_name="اهرم",
             option_stock_name="ضهرم1224",
-            call_put="c",
             start_date="1402-07-24",
             end_date="1402-12-23",
             strike_price=20000,
-            risk_free_rate=0.3,
-            expiration_jalali_date='1402-12-23',
-            window_size_volatility=int(10 * 3.5 * 3600),
-            window_size_normal=int(10 * 3.5 * 3600),
-            z_threshold_normal=1
+            expiration_jalali_date='1402-12-23'
         )
     elif option_number == 6:
         run_option_analysis(
             underlying_stock_name="خودرو",
             option_stock_name="ضخود1218",
-            call_put="c",
             start_date="1402-09-22",
             end_date="1402-11-15",
             strike_price=2600,
-            risk_free_rate=0.3,
-            expiration_jalali_date='1402-12-02',
-            window_size_volatility=int(10 * 3.5 * 3600),
-            window_size_normal=int(10 * 3.5 * 3600),
-            z_threshold_normal=1
+            expiration_jalali_date='1402-12-02'
         )
     elif option_number == 7:
         run_option_analysis(
             underlying_stock_name="شستا",
             option_stock_name="ضستا2026",
-            call_put="c",
             start_date="1402-10-30",
             end_date="1403-02-02",
             strike_price=1200,
-            risk_free_rate=0.3,
-            expiration_jalali_date='1403-02-12',
-            window_size_volatility=int(10 * 3.5 * 3600),
-            window_size_normal=int(10 * 3.5 * 3600),
-            z_threshold_normal=1
+            expiration_jalali_date='1403-02-12'
         )
     elif option_number == 8:
         run_option_analysis(
             underlying_stock_name="خساپا",
             option_stock_name="ضسپا2006",
-            call_put="c",
             start_date="1402-12-05",
             end_date="1403-02-19",
             strike_price=2600,
-            risk_free_rate=0.3,
-            expiration_jalali_date='1403-02-26',
-            window_size_volatility=int(10 * 3.5 * 3600),
-            window_size_normal=int(10 * 3.5 * 3600),
-            z_threshold_normal=1
+            expiration_jalali_date='1403-02-26'
         )
     elif option_number == 9:
         run_option_analysis(
             underlying_stock_name="اهرم",
             option_stock_name="ضهرم1219",
-            call_put="c",
             start_date='1402-06-01',
             end_date='1402-09-15',
             strike_price=13000,
-            risk_free_rate=0.3,
-            expiration_jalali_date='1402-12-23',
-            window_size_volatility=int(10 * 3.5 * 3600),
-            window_size_normal=int(10 * 3.5 * 3600),
-            z_threshold_normal=1
+            expiration_jalali_date='1402-12-23'
         )
     else:
         print("Invalid option number. Please enter a number from 0 to 9.")
 
+
+
+
 if __name__ == '__main__':
     warnings.filterwarnings("ignore")
     
-    # Example usage:
-    option_number = int(input("Enter the option number to run (0-9): "))
-    run_selected_analysis(option_number)
+    parser = argparse.ArgumentParser(description="Run selected analysis based on option number.")
+    parser.add_argument("-n", type=int, choices=range(0, 10), help="Option number to run (0-9)")
+    args = parser.parse_args()
 
-
+    if args.number is not None:
+        run_selected_analysis(args.number)
+    else:
+        print("Please provide an option number using -n flag (0-9).")
