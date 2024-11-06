@@ -125,7 +125,10 @@ def process_and_save_underlying_and_option_data(underlying_stock, option_stock, 
         
         # Save processed data to file
         datapirim.to_pickle(file_name)
-        print(f"Data saved as {file_name}!")
+
+        csv_file_name = os.path.join(save_folder, f"{market_type}_{stock_name}_{start_date}_{end_date}.csv")
+        datapirim.to_csv(csv_file_name, index=False)
+        print(f"Data saved as {file_name} and CSV saved as {csv_file_name}!")
         
         return datapirim
 
@@ -503,7 +506,14 @@ def perform_trade_analysis(data, z_values, save_path="results/", option_stock_na
         # Save the buy-sell pairs DataFrame as a pickle file
         df_filename = f"{save_path}buy_sell_pairs_window_{window_size}_z_{z_threshold}.pkl"
         buy_sell_pairs.to_pickle(df_filename)
-        print(f"Data saved to {df_filename} for Z-Threshold: {z_threshold}, Window Size: {window_size}")
+
+
+        csv_filename = f"{save_path}buy_sell_pairs_window_{window_size}_z_{z_threshold}.csv"
+        buy_sell_pairs.to_csv(csv_filename, index=False)
+
+        print(f"Data saved to {df_filename} (pickle) and {csv_filename} (CSV) for Z-Threshold: {z_threshold}, Window Size: {window_size}")
+
+
         
         # Plot and save the distribution of profit/loss
         plt.figure(figsize=(12, 7))
@@ -592,7 +602,14 @@ def run_option_analysis(underlying_stock_name = "", option_stock_name= "", call_
         # Save the result with a unique filename for each window size in the "signals" folder
         filename = f"{main_save_path}option_signals_window_{window_size}.pkl"
         result.to_pickle(filename)
-        print(f"Results saved to {filename}")
+
+
+
+        csv_filename = f"{main_save_path}option_signals_window_{window_size}.csv"
+        result.to_csv(csv_filename, index=False)
+        print(f"Results saved to {filename} (pickle) and {csv_filename} (CSV)")
+
+
 
         # Store the result in the dictionary
         results[window_size] = result
