@@ -13,6 +13,7 @@ import os
 import sys
 import seaborn as sns
 import matplotlib.pyplot as plt
+import argparse
 
 def process_and_save_underlying_and_option_data(underlying_stock, option_stock, start_date, end_date):
     save_folder="data_files"
@@ -166,51 +167,59 @@ def flatten_market_data_with_volatility(underlying_market_df, options_market_df,
     null_counter = 0
     skip_by_time_counter = 0
     try_except_counter = 0
+    key_error_counter = 0
 
     # Define the valid time range between 9:00 and 12:30
     valid_time_start = pd.to_datetime("09:15:00").time()
     valid_time_end = pd.to_datetime("12:30:00").time()
 
     for date in tqdm(underlying_market_df.columns, desc="Processing Market Data", total=underlying_market_df.shape[1]):
-        for time, underlying_data in underlying_market_df[date].items():
-            time_str = time.strftime("%H:%M:%S")
-            current_time = pd.to_datetime(time_str, format="%H:%M:%S").time()
+        try:
+            for time, underlying_data in underlying_market_df[date].items():
+                time_str = time.strftime("%H:%M:%S")
+                current_time = pd.to_datetime(time_str, format="%H:%M:%S").time()
 
-            # Skip rows where the time is outside the range 9:00 - 12:30
-            if not (valid_time_start <= current_time <= valid_time_end):
-                skip_by_time_counter += 1
-                continue  # Skip to the next iteration if time is not valid
+                # Skip rows where the time is outside the range 9:00 - 12:30
+                if not (valid_time_start <= current_time <= valid_time_end):
+                    skip_by_time_counter += 1
+                    continue  # Skip to the next iteration if time is not valid
 
-            option_data = options_market_df.loc[time, date]
+                option_data = options_market_df.loc[time, date]
 
-            # Ensure valid rows in both the underlying and options market data
-            if isinstance(underlying_data, (list, np.ndarray)) and isinstance(option_data, (list, np.ndarray)):
-                avg_price_underlying = (underlying_data[1] + underlying_data[2]) / 2  # (Sell_Price + Buy_Price) / 2
-                avg_price_option = (option_data[1] + option_data[2]) / 2  # (Sell_Price + Buy_Price) / 2
+                # Ensure valid rows in both the underlying and options market data
+                if isinstance(underlying_data, (list, np.ndarray)) and isinstance(option_data, (list, np.ndarray)):
+                    avg_price_underlying = (underlying_data[1] + underlying_data[2]) / 2  # (Sell_Price + Buy_Price) / 2
+                    avg_price_option = (option_data[1] + option_data[2]) / 2  # (Sell_Price + Buy_Price) / 2
 
-                # Check for null values in avg_price_underlying and avg_price_option
-                if pd.isnull(avg_price_underlying) or pd.isnull(avg_price_option):
-                    null_counter += 1  # Increment null counter if either average price is null or NaN
-                    continue  # Skip if either average price is null or NaN
+                    # Check for null values in avg_price_underlying and avg_price_option
+                    if pd.isnull(avg_price_underlying) or pd.isnull(avg_price_option):
+                        null_counter += 1  # Increment null counter if either average price is null or NaN
+                        continue  # Skip if either average price is null or NaN
 
-                # Calculate time to expiration dynamically for each date
-                T = calculate_time_to_expiration(date, expiration_jalali_date)
+                    # Calculate time to expiration dynamically for each date
+                    T = calculate_time_to_expiration(date, expiration_jalali_date)
 
-                try:
-                    implied_vol = implied_volatility(avg_price_option, avg_price_underlying, strike_price, T,
-                                                     risk_free_rate, call_put)
-                except:
-                    implied_vol = np.nan
-                    try_except_counter += 1  # Increment try-except counter when an error occurs
+                    try:
+                        implied_vol = implied_volatility(avg_price_option, avg_price_underlying, strike_price, T,
+                                                         risk_free_rate, call_put)
+                    except:
+                        implied_vol = np.nan
+                        try_except_counter += 1  # Increment try-except counter when an error occurs
 
-                # Append the average prices and implied volatility to the flattened data
-                flattened_data.append([avg_price_underlying, avg_price_option, implied_vol])
-                index_tuples.append((date, time_str))
+                    # Append the average prices and implied volatility to the flattened data
+                    flattened_data.append([avg_price_underlying, avg_price_option, implied_vol])
+                    index_tuples.append((date, time_str))
+        except KeyError:
+            key_error_counter += 1
+            print(f"Day {date} skipped due to KeyError in option data.")
+            continue  # Skip the entire date if KeyError occurs
 
     # Print the counters
     print(f"Rows with null values: {null_counter}")
     print(f"Rows skipped by time: {skip_by_time_counter}")
     print(f"Errors caught in try-except of implied volatility calculator: {try_except_counter}")
+    print(f"KeyErrors caught when accessing option data: {key_error_counter}")
+
     if len(flattened_data) == 0:
         raise ValueError(
                 f"The processed data contains only null values. Please check the input data.   TSMSE = GOH")
@@ -218,6 +227,8 @@ def flatten_market_data_with_volatility(underlying_market_df, options_market_df,
     flattened_series = pd.Series(flattened_data, index=pd.MultiIndex.from_tuples(index_tuples, names=["Date", "Time"]))
 
     return flattened_series
+
+
 
 
 def calculate_estimated_volatility(call_series, total_points_in_window):
@@ -481,8 +492,8 @@ def perform_trade_analysis(data, z_values, save_path="results/", option_stock_na
         plt.close()  # Close the plot to free up memory
 
 
-def run_option_analysis(underlying_stock_name, option_stock_name, call_put="c", start_date, end_date,
-                        strike_price, risk_free_rate=0.30, expiration_jalali_date,
+def run_option_analysis(underlying_stock_name = "", option_stock_name= "", call_put="c", start_date= "", end_date= "",
+                        strike_price= "", risk_free_rate=0.30, expiration_jalali_date= "",
                         window_sizes=[
                             int(10 * 3.5 * 3600),
                             int(5 * 3.5 * 3600),
@@ -661,7 +672,7 @@ if __name__ == '__main__':
     warnings.filterwarnings("ignore")
     
     parser = argparse.ArgumentParser(description="Run selected analysis based on option number.")
-    parser.add_argument("-n", type=int, choices=range(0, 10), help="Option number to run (0-9)")
+    parser.add_argument("-number", type=int, choices=range(0, 10), help="Option number to run (0-9)")
     args = parser.parse_args()
 
     if args.number is not None:
