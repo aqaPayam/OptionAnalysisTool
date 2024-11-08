@@ -605,7 +605,7 @@ def perform_trade_analysis(data, z_values, save_path="results/", option_stock_na
 
 def run_option_analysis(underlying_stock_name = "", option_stock_name= "", call_put="c", start_date= "", end_date= "",
                         strike_price= "", risk_free_rate=0.30, expiration_jalali_date= "",
-                        window_sizes_for_normal_disat=[
+                        window_sizes_for_normal=[
                             int(2 * 3.5 * 3600),
                             int(1 * 3.5 * 3600),
                             int(2 * 3600),
@@ -653,13 +653,14 @@ def run_option_analysis(underlying_stock_name = "", option_stock_name= "", call_
         call_put=call_put
     )
 
-    for normal_window_size in window_sizes_for_normal_disat:
+    for normal_window_size in window_sizes_for_normal:
         for alpha_or_vol_window_size in alphas_or_window_size_for_volatility_estimation:
-            print(f"Running analysis for normal window size: {normal_window_size} and volatility parameter: {alpha_or_vol_window_size}")
+
+            print(f"Running analysis for normal window size: {normal_window_size} and volatility parameter: {alphas_or_window_size_for_volatility_estimation}")
 
             # Step 3: Calculate estimated volatility over the specified window size or alpha value
             series_with_volatility = calculate_estimated_volatility(
-                call_series, total_points_in_window=normal_window_size, smoothing_param=alpha_or_vol_window_size
+                call_series, smoothing_param=alpha_or_vol_window_size
             )
 
             # Step 4: Calculate Black-Scholes prices for the option
