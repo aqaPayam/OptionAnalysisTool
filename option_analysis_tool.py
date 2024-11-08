@@ -597,8 +597,14 @@ def run_option_analysis(underlying_stock_name = "", option_stock_name= "", call_
                             int(1 * 3600),
                             600
                         ],
-                        alphas_or_window_size_for_volatility_estimation=[0.9, 0.7, 0.5, 0.2, 0.1, 0.05],
-                        z_values=[1.0, 1.5, 2.0, 2.5, 3.0, 3.5]):
+                        alphas_or_window_size_for_volatility_estimation=[0.9, 0.7, 0.5, 0.2, 0.1, 0.05 , int(2 * 3.5 * 3600),
+                            int(1 * 3.5 * 3600),
+                            int(2 * 3600),
+                            int(1 * 3600),
+                            600 ]
+                            ,
+                        z_values=[1.0, 1.5, 2.0, 2.5, 3.0, 3.5] ,
+                        just_download = False):
     """
     This function encapsulates the process of analyzing option market data and generating trading signals
     based on Black-Scholes price and estimated volatility for different window sizes and alpha values.
@@ -630,6 +636,10 @@ def run_option_analysis(underlying_stock_name = "", option_stock_name= "", call_
     underlying_stock, option_stock = process_and_save_underlying_and_option_data(
         underlying_stock=underlying_stock_name, option_stock=option_stock_name, start_date=start_date, end_date=end_date
     )
+
+    # Return after Step 1 if just_download is True
+    if just_download:
+        return {"underlying_stock": underlying_stock, "option_stock": option_stock}
 
     # Step 2: Flatten market data with calculated implied volatility
     call_series = flatten_market_data_with_volatility(
@@ -675,11 +685,12 @@ def run_option_analysis(underlying_stock_name = "", option_stock_name= "", call_
 
     return results
 
-def run_selected_analysis(option_number):
+
+def run_selected_analysis(option_number, just_download=False):
     if option_number == 0:
         for i in range(1, 10):
             print(f"Running analysis for option {i}...")
-            run_selected_analysis(i)
+            run_selected_analysis(i, just_download=just_download)
     elif option_number == 1:
         run_option_analysis(
             underlying_stock_name="خودرو",
@@ -687,7 +698,8 @@ def run_selected_analysis(option_number):
             start_date="1403-05-15",
             end_date="1403-07-25",
             strike_price=2400,
-            expiration_jalali_date='1403-08-02'
+            expiration_jalali_date='1403-08-02',
+            just_download=just_download
         )
     elif option_number == 2:
         run_option_analysis(
@@ -696,7 +708,8 @@ def run_selected_analysis(option_number):
             start_date="1403-05-13",
             end_date="1403-07-23",
             strike_price=16000,
-            expiration_jalali_date='1403-07-25'
+            expiration_jalali_date='1403-07-25',
+            just_download=just_download
         )
     elif option_number == 3:
         run_option_analysis(
@@ -705,7 +718,8 @@ def run_selected_analysis(option_number):
             start_date="1402-11-10",
             end_date="1403-03-21",
             strike_price=20000,
-            expiration_jalali_date='1403-03-23'
+            expiration_jalali_date='1403-03-23',
+            just_download=just_download
         )
     elif option_number == 4:
         run_option_analysis(
@@ -714,7 +728,8 @@ def run_selected_analysis(option_number):
             start_date="1403-01-28",
             end_date="1403-02-30",
             strike_price=3000,
-            expiration_jalali_date='1403-03-09'
+            expiration_jalali_date='1403-03-09',
+            just_download=just_download
         )
     elif option_number == 5:
         run_option_analysis(
@@ -723,7 +738,8 @@ def run_selected_analysis(option_number):
             start_date="1402-07-24",
             end_date="1402-12-23",
             strike_price=20000,
-            expiration_jalali_date='1402-12-23'
+            expiration_jalali_date='1402-12-23',
+            just_download=just_download
         )
     elif option_number == 6:
         run_option_analysis(
@@ -732,7 +748,8 @@ def run_selected_analysis(option_number):
             start_date="1402-09-22",
             end_date="1402-11-15",
             strike_price=2600,
-            expiration_jalali_date='1402-12-02'
+            expiration_jalali_date='1402-12-02',
+            just_download=just_download
         )
     elif option_number == 7:
         run_option_analysis(
@@ -741,7 +758,8 @@ def run_selected_analysis(option_number):
             start_date="1402-10-30",
             end_date="1403-02-02",
             strike_price=1200,
-            expiration_jalali_date='1403-02-12'
+            expiration_jalali_date='1403-02-12',
+            just_download=just_download
         )
     elif option_number == 8:
         run_option_analysis(
@@ -750,7 +768,8 @@ def run_selected_analysis(option_number):
             start_date="1402-12-05",
             end_date="1403-02-19",
             strike_price=2600,
-            expiration_jalali_date='1403-02-26'
+            expiration_jalali_date='1403-02-26',
+            just_download=just_download
         )
     elif option_number == 9:
         run_option_analysis(
@@ -759,19 +778,23 @@ def run_selected_analysis(option_number):
             start_date='1402-06-01',
             end_date='1402-09-15',
             strike_price=13000,
-            expiration_jalali_date='1402-12-23'
+            expiration_jalali_date='1402-12-23',
+            just_download=just_download
         )
     else:
         print("Invalid option number. Please enter a number from 0 to 9.")
+
 
 if __name__ == '__main__':
     warnings.filterwarnings("ignore")
     
     parser = argparse.ArgumentParser(description="Run selected analysis based on option number.")
-    parser.add_argument("-number", type=int, choices=range(0, 10), help="Option number to run (0-9)")
+    parser.add_argument("-n", type=int, choices=range(0, 10), help="Option number to run (0-9)")
+    parser.add_argument("--just_download", action="store_true", help="If set, only downloads data and exits after Step 1")
     args = parser.parse_args()
 
-    if args.number is not None:
-        run_selected_analysis(args.number)
+    # Pass just_download to the function, with a default of False if not specified
+    if args.n is not None:
+        run_selected_analysis(args.n, just_download=args.just_download)
     else:
         print("Please provide an option number using -n flag (0-9).")
