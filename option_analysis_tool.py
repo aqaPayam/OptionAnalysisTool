@@ -641,7 +641,7 @@ def run_option_analysis(underlying_stock_name = "", option_stock_name= "", call_
     for normal_window_size in window_sizes_for_normal:
         for alpha_or_vol_window_size in alphas_or_window_size_for_volatility_estimation:
 
-            print(f"Running analysis for normal window size: {normal_window_size} and volatility parameter: {alphas_or_window_size_for_volatility_estimation}")
+            print(f"Running analysis for normal window size: {normal_window_size} and volatility parameter: {alpha_or_vol_window_size}")
 
             # Step 3: Calculate estimated volatility over the specified window size or alpha value
             series_with_volatility = calculate_estimated_volatility(
