@@ -209,10 +209,10 @@ def flatten_market_data_with_volatility(underlying_market_df, options_market_df,
                     avg_price_option = (option_data[1] + option_data[2]) / 2  # (Sell_Price + Buy_Price) / 2
 
                     if avg_price_option == 0 :
-                        avg_price_option = null
+                        avg_price_option = None
 
                     if avg_price_underlying == 0 :
-                        avg_price_underlying = null
+                        avg_price_underlying = None
 
                     # Check for null values in avg_price_underlying and avg_price_option
                     if pd.isnull(avg_price_underlying) or pd.isnull(avg_price_option):
