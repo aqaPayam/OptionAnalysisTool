@@ -137,7 +137,6 @@ def process_and_save_underlying_and_option_data(underlying_stock, option_stock, 
     option_data = process_single_stock(option_stock, "Options Market")
     return underlying_data, option_data
 
-
 def calculate_time_to_expiration(current_date, expiration_jalali_date):
     """
     Calculate the time to expiration (T) in years based on the current date and the expiration date.
@@ -161,7 +160,6 @@ def calculate_time_to_expiration(current_date, expiration_jalali_date):
     days_to_expiration = (expiration_gregorian - current_gregorian_date).days
     T = days_to_expiration / 365  # Convert days to years
     return T
-
 
 def flatten_market_data_with_volatility(underlying_market_df, options_market_df, strike_price, risk_free_rate,
                                         expiration_jalali_date, call_put):
@@ -210,6 +208,12 @@ def flatten_market_data_with_volatility(underlying_market_df, options_market_df,
                     avg_price_underlying = (underlying_data[1] + underlying_data[2]) / 2  # (Sell_Price + Buy_Price) / 2
                     avg_price_option = (option_data[1] + option_data[2]) / 2  # (Sell_Price + Buy_Price) / 2
 
+                    if avg_price_option == 0 :
+                        avg_price_option = null
+
+                    if avg_price_underlying == 0 :
+                        avg_price_underlying = null
+
                     # Check for null values in avg_price_underlying and avg_price_option
                     if pd.isnull(avg_price_underlying) or pd.isnull(avg_price_option):
                         null_counter += 1  # Increment null counter if either average price is null or NaN
@@ -247,15 +251,6 @@ def flatten_market_data_with_volatility(underlying_market_df, options_market_df,
 
     return flattened_series
 
-
-
-
-
-
-import numpy as np
-import pandas as pd
-from tqdm import tqdm
-
 def calculate_simple_moving_average(rolling_vols, total_points_in_window):
     """
     Calculate the simple moving average (SMA) of implied volatility using only past values in the rolling window.
@@ -273,7 +268,6 @@ def calculate_simple_moving_average(rolling_vols, total_points_in_window):
         sma_estimated_vol = np.nan  # No past data available
 
     return sma_estimated_vol
-
 
 def calculate_exponential_moving_average(previous_ema, implied_vol, alpha):
     """
@@ -298,7 +292,6 @@ def calculate_exponential_moving_average(previous_ema, implied_vol, alpha):
         ema_estimated_vol = previous_ema
 
     return ema_estimated_vol
-
 
 def calculate_estimated_volatility(call_series, smoothing_param):
     """
@@ -360,8 +353,6 @@ def calculate_estimated_volatility(call_series, smoothing_param):
 
     return extended_series
 
-
-
 def calculate_black_scholes_price(call_series, strike_price, risk_free_rate, expiration_jalali_date, call_put):
     """
     Calculate Black-Scholes price based on estimated volatility for each row in the call_series.
@@ -396,8 +387,13 @@ def calculate_black_scholes_price(call_series, strike_price, risk_free_rate, exp
             # Ensure T is positive and estimated_vol is valid
             if T > 0 and estimated_vol > 0:
                 # Calculate Black-Scholes price using the estimated volatility
-                black_scholes_price = black_scholes(call_put, avg_price_underlying, strike_price, T, risk_free_rate,
-                                                    estimated_vol)
+                try :
+                    black_scholes_price = black_scholes(call_put, avg_price_underlying, strike_price, T, risk_free_rate,
+                                                        estimated_vol)
+                except :
+                    print("error in calculating black schole price with this (skipped) : ",call_put, avg_price_underlying, strike_price, T, risk_free_rate, estimated_vol )
+                    black_scholes_price = np.nan
+
             else:
                 black_scholes_price = np.nan
 
@@ -408,7 +404,6 @@ def calculate_black_scholes_price(call_series, strike_price, risk_free_rate, exp
     extended_series = pd.Series(extended_data, index=call_series.index)
 
     return extended_series
-
 
 def generate_option_signals(option_series, window_size):
     """
@@ -485,13 +480,6 @@ def generate_option_signals(option_series, window_size):
 
 
     return result_df
-
-
-import os
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-from tqdm import tqdm
 
 def perform_trade_analysis(data, z_values, save_path="results/", option_stock_name="", start_date="", end_date="", window_size=0):
     """
@@ -600,9 +588,6 @@ def perform_trade_analysis(data, z_values, save_path="results/", option_stock_na
         print(f"Plot saved to {plot_filename} for Z-Threshold: {z_threshold}, Window Size: {window_size}") 
         plt.close()  # Close the plot to free up memory 
 
-
-
-
 def run_option_analysis(underlying_stock_name = "", option_stock_name= "", call_put="c", start_date= "", end_date= "",
                         strike_price= "", risk_free_rate=0.30, expiration_jalali_date= "",
                         window_sizes_for_normal=[
@@ -689,9 +674,6 @@ def run_option_analysis(underlying_stock_name = "", option_stock_name= "", call_
                                    option_stock_name=option_stock_name, start_date=start_date, end_date=end_date, window_size=normal_window_size)
 
     return results
-
-
-
 
 def run_selected_analysis(option_number):
     if option_number == 0:
@@ -781,9 +763,6 @@ def run_selected_analysis(option_number):
         )
     else:
         print("Invalid option number. Please enter a number from 0 to 9.")
-
-
-
 
 if __name__ == '__main__':
     warnings.filterwarnings("ignore")
