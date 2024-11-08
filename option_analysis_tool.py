@@ -250,50 +250,107 @@ def flatten_market_data_with_volatility(underlying_market_df, options_market_df,
 
 
 
-def calculate_estimated_volatility(call_series, total_points_in_window):
+
+
+import numpy as np
+import pandas as pd
+from tqdm import tqdm
+
+def calculate_simple_moving_average(rolling_vols, total_points_in_window):
     """
-    Calculate the estimated volatility for each row in call_series, based on the average of implied volatility
-    for the previous 10 days (3.5 hours/day, 3600 seconds/hour = 126,000 seconds).
+    Calculate the simple moving average (SMA) of implied volatility using only past values in the rolling window.
+
+    Parameters:
+    - rolling_vols: List of recent implied_vol values within the window.
+
+    Returns:
+    - sma_estimated_vol: The calculated simple moving average based on the rolling window.
+    """
+    # Calculate SMA only if there are past values
+    if len(rolling_vols) > 0:
+        sma_estimated_vol = sum(rolling_vols) / len(rolling_vols)
+    else:
+        sma_estimated_vol = np.nan  # No past data available
+
+    return sma_estimated_vol
+
+
+def calculate_exponential_moving_average(previous_ema, implied_vol, alpha):
+    """
+    Update the exponential moving average (EMA) using only past values (previous EMA) for implied volatility.
+
+    Parameters:
+    - previous_ema: The last EMA value calculated, based on past values only.
+    - implied_vol: The current implied_vol to incorporate.
+    - alpha: Smoothing factor for EMA calculation.
+
+    Returns:
+    - ema_estimated_vol: Updated EMA value.
+    """
+    if np.isnan(previous_ema) and not pd.isnull(implied_vol):
+        # Initialize EMA with the first observed value in the series if no prior EMA exists
+        ema_estimated_vol = implied_vol
+    elif not pd.isnull(implied_vol):
+        # Calculate EMA using only the previous EMA (no use of current `vol_t` for estimation)
+        ema_estimated_vol = alpha * implied_vol + (1 - alpha) * previous_ema
+    else:
+        # If `implied_vol` is NaN, the previous EMA remains unchanged
+        ema_estimated_vol = previous_ema
+
+    return ema_estimated_vol
+
+
+def calculate_estimated_volatility(call_series, smoothing_param):
+    """
+    Calculate the estimated volatility for each row in call_series, using either SMA or EMA based on the parameters.
+    Only past data is used to estimate the volatility at each point.
 
     Parameters:
     - call_series: A pandas Series containing [avg_price_underlying, avg_price_option, implied_vol] with MultiIndex (date, time).
+    - smoothing_param: A single parameter used to determine either the EMA alpha or SMA window size.
+      - If smoothing_param is a float between 0 and 1 (0 < smoothing_param <= 1), it is interpreted as EMA alpha.
+      - If smoothing_param is an integer greater than 1, it is interpreted as the total_points_in_window for SMA.
 
     Returns:
     - extended_series: A pandas Series containing [avg_price_underlying, avg_price_option, implied_vol, estimated_vol]
       for each row, aligned with the input Series.
     """
+    # Determine the parameters based on the smoothing_param input
+    if  0 < smoothing_param <= 1:
+        alpha = smoothing_param
+        total_points_in_window = None  # Not used when EMA is chosen
+        
+    elif smoothing_param > 1:
+        alpha = None
+        total_points_in_window = smoothing_param
+    else:
+        raise ValueError("smoothing_param must be a float (0 < smoothing_param <= 1) for EMA or an integer > 1 for SMA.")
 
     # Initialize an empty list to store extended data (with estimated volatility)
     extended_data = []
 
-    # Maintain a rolling window for implied_vol
-    rolling_implied_vols = []
-    rolling_sum = 0  # To efficiently calculate the average
+    # Initialize parameters for the two methods
+    rolling_vols = []
+    ema_estimated_vol = np.nan  # Used only if alpha is provided
 
-    # Total number of points to look back (126,000 seconds / time step interval)
-
-    # Loop through each row in the call_series with tqdm for progress tracking
-    for (index, row_data) in tqdm(call_series.items(), total=len(call_series), desc="Calculating Estimated Volatility"):
-        # Extract avg_price_underlying, avg_price_option, and implied_vol from row_data
+    # Loop through each row in the call_series
+    for index, row_data in tqdm(call_series.items(), total=len(call_series), desc="Calculating Estimated Volatility"):
         avg_price_underlying = row_data[0]
         avg_price_option = row_data[1]
         implied_vol = row_data[2]
 
-        # If we have a valid implied volatility (not NaN)
-        if not pd.isnull(implied_vol):
-            # Add the implied volatility to the rolling list
-            rolling_implied_vols.append(implied_vol)
-            rolling_sum += implied_vol
-
-            # If rolling window exceeds the required window size, remove the oldest element
-            if len(rolling_implied_vols) > total_points_in_window:
-                rolling_sum -= rolling_implied_vols.pop(0)  # Remove the oldest implied_vol from the rolling window
-
-            # Calculate the estimated volatility as the average of the rolling implied vols
-            estimated_vol = rolling_sum / len(rolling_implied_vols)
+        # Determine the method based on whether alpha is provided
+        if alpha is not None:
+            # Use EMA if alpha is specified, based on past EMA value and past implied_vols only
+            estimated_vol = ema_estimated_vol
+            ema_estimated_vol = calculate_exponential_moving_average(ema_estimated_vol, implied_vol, alpha)
         else:
-            # If implied_vol is NaN, set estimated volatility as NaN
-            estimated_vol = np.nan
+            # Use SMA otherwise, calculated based on past rolling values only
+            estimated_vol = calculate_simple_moving_average(rolling_vols, total_points_in_window)
+            if not pd.isnull(implied_vol):
+                rolling_vols.append(implied_vol)
+                if len(rolling_vols) > total_points_in_window:
+                    rolling_vols.pop(0)  # Maintain the window size
 
         # Append the original data along with the calculated estimated volatility
         extended_data.append([avg_price_underlying, avg_price_option, implied_vol, estimated_vol])
@@ -302,6 +359,7 @@ def calculate_estimated_volatility(call_series, total_points_in_window):
     extended_series = pd.Series(extended_data, index=call_series.index)
 
     return extended_series
+
 
 
 def calculate_black_scholes_price(call_series, strike_price, risk_free_rate, expiration_jalali_date, call_put):
@@ -377,7 +435,7 @@ def generate_option_signals(option_series, window_size):
     estimated_volatility = option_series.apply(lambda x: x[4])
 
     # Calculate the price difference between Black-Scholes price and the actual option price
-    price_difference = black_scholes_price - option_price
+    price_difference =  option_price - black_scholes_price
 
     # Compute rolling mean and standard deviation of the price difference
     rolling_mean_diff = price_difference.rolling(window=window_size).mean()
@@ -429,6 +487,11 @@ def generate_option_signals(option_series, window_size):
     return result_df
 
 
+import os
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from tqdm import tqdm
 
 def perform_trade_analysis(data, z_values, save_path="results/", option_stock_name="", start_date="", end_date="", window_size=0):
     """
@@ -450,13 +513,12 @@ def perform_trade_analysis(data, z_values, save_path="results/", option_stock_na
     
     os.makedirs(save_path, exist_ok=True)  # Ensure the save path exists
 
-
     def generate_buy_sell_pairs(data, z_threshold, window_size):
         buy_sell_pairs_list = []
         current_buy = None
 
         # Define the columns for the DataFrame in case of an empty return
-        columns = ['buy_date', 'buy_time', 'buy_price', 'sell_date', 'sell_time', 'sell_price', 'profit_loss']
+        columns = ['buy_date', 'buy_time', 'buy_price', 'sell_date', 'sell_time', 'sell_price', 'profit_loss', 'profitability_percentage']
 
         # Loop through each row in the data with tqdm progress bar
         for idx, row in tqdm(data.iterrows(), total=len(data), desc=f"Processing Buy-Sell Pairs for Z={z_threshold}, Window Size={window_size}"):
@@ -468,11 +530,15 @@ def perform_trade_analysis(data, z_values, save_path="results/", option_stock_na
             elif row['z_score'] > z_threshold and current_buy is not None:
                 sell_info = {'sell_date': date, 'sell_time': time, 'sell_price': row['avg_price_option']}
                 profit_loss = sell_info['sell_price'] - current_buy['buy_price']
+                
+                # Calculate profitability percentage
+                profitability_percentage = ((sell_info['sell_price'] - current_buy['buy_price']) / current_buy['buy_price']) * 100
+                
                 buy_sell_pairs_list.append({
                     'buy_date': current_buy['buy_date'], 'buy_time': current_buy['buy_time'], 
                     'buy_price': current_buy['buy_price'], 'sell_date': sell_info['sell_date'], 
                     'sell_time': sell_info['sell_time'], 'sell_price': sell_info['sell_price'], 
-                    'profit_loss': profit_loss
+                    'profit_loss': profit_loss, 'profitability_percentage': profitability_percentage
                 })
                 current_buy = None
 
@@ -515,41 +581,42 @@ def perform_trade_analysis(data, z_values, save_path="results/", option_stock_na
 
 
         
-        # Plot and save the distribution of profit/loss
+        # Plot and save the distribution of profit/loss percentage
         plt.figure(figsize=(12, 7))
-        sns.histplot(buy_sell_pairs['profit_loss'], bins=30, kde=True, edgecolor='black')
-        plt.title(f"Distribution of Profit/Loss for {option_stock_name} (Window Size = {window_size}, Z-Threshold = {z_threshold})")
-        plt.xlabel("Profit/Loss")
+        sns.histplot(buy_sell_pairs['profitability_percentage'], bins=50, kde=True, edgecolor='black')  # Smaller bins, in percentage
+        plt.title(f"Profitability Distribution (as %) for {option_stock_name}\nWindow Size = {window_size}, Z-Threshold = {z_threshold}")
+        plt.xlabel("Profit/Loss (%)")
         plt.ylabel("Frequency")
         plt.axvline(0, color='red', linestyle='dashed', linewidth=1, label="Break-Even")
         plt.legend()
-        
+
+        # Annotate the total number of trades on the plot
+        plt.annotate(f'Total Trades: {total_trades}', xy=(0.05, 0.95), xycoords='axes fraction', fontsize=12, 
+                     bbox=dict(boxstyle="round,pad=0.3", edgecolor="black", facecolor="white"))
+
         # Save the plot
         plot_filename = f"{save_path}profit_loss_distribution_window_{window_size}_z_{z_threshold}.png"
         plt.savefig(plot_filename)
-        print(f"Plot saved to {plot_filename} for Z-Threshold: {z_threshold}, Window Size: {window_size}")
-        plt.close()  # Close the plot to free up memory
+        print(f"Plot saved to {plot_filename} for Z-Threshold: {z_threshold}, Window Size: {window_size}") 
+        plt.close()  # Close the plot to free up memory 
 
 
 
 
 def run_option_analysis(underlying_stock_name = "", option_stock_name= "", call_put="c", start_date= "", end_date= "",
                         strike_price= "", risk_free_rate=0.30, expiration_jalali_date= "",
-                        window_sizes=[
-                            int(10 * 3.5 * 3600),
-                            int(5 * 3.5 * 3600),
+                        window_sizes_for_normal_disat=[
                             int(2 * 3.5 * 3600),
                             int(1 * 3.5 * 3600),
                             int(2 * 3600),
                             int(1 * 3600),
-                            600,
-                            60
+                            600
                         ],
-                        z_values=[0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5]):
+                        alphas_or_window_size_for_volatility_estimation=[0.9, 0.7, 0.5, 0.2, 0.1, 0.05],
+                        z_values=[1.0, 1.5, 2.0, 2.5, 3.0, 3.5]):
     """
     This function encapsulates the process of analyzing option market data and generating trading signals
-    based on Black-Scholes price and estimated volatility for different window sizes. It also performs
-    trade analysis based on z-score thresholds as Step 6.
+    based on Black-Scholes price and estimated volatility for different window sizes and alpha values.
 
     Parameters:
         - underlying_stock (str): The ticker or symbol for the underlying stock
@@ -559,11 +626,13 @@ def run_option_analysis(underlying_stock_name = "", option_stock_name= "", call_
         - strike_price (float): The option strike price
         - risk_free_rate (float): The risk-free interest rate
         - expiration_jalali_date (str): The expiration date in Jalali calendar format ('YYYY-MM-DD')
-        - window_sizes (list of int): A list of window sizes for calculating volatility and option signals
+        - window_sizes_for_normal_disat (list of int): A list of window sizes for calculating normal distribution parameters
+        - alphas_or_window_size_for_volatility_estimation (list of float or int): List of alpha values or window sizes for volatility estimation
         - z_values (list of float): List of z-score thresholds for performing trade analysis.
 
     Returns:
-        - results (dict): A dictionary where each key is a window size and each value is a DataFrame of option signals
+        - results (dict): A dictionary where each key is a tuple (normal_window_size, alpha/window_size for volatility) 
+                          and each value is a DataFrame of option signals.
     """
     
     results = {}
@@ -584,43 +653,42 @@ def run_option_analysis(underlying_stock_name = "", option_stock_name= "", call_
         call_put=call_put
     )
 
-    for window_size in window_sizes:
-        print(f"Running analysis for window size: {window_size}")
+    for normal_window_size in window_sizes_for_normal_disat:
+        for alpha_or_vol_window_size in alphas_or_window_size_for_volatility_estimation:
+            print(f"Running analysis for normal window size: {normal_window_size} and volatility parameter: {alpha_or_vol_window_size}")
 
-        # Step 3: Calculate estimated volatility over the specified window size
-        series_with_volatility = calculate_estimated_volatility(call_series, total_points_in_window=window_size)
+            # Step 3: Calculate estimated volatility over the specified window size or alpha value
+            series_with_volatility = calculate_estimated_volatility(
+                call_series, total_points_in_window=normal_window_size, smoothing_param=alpha_or_vol_window_size
+            )
 
-        # Step 4: Calculate Black-Scholes prices for the option
-        final_series = calculate_black_scholes_price(
-            call_series=series_with_volatility, strike_price=strike_price,
-            risk_free_rate=risk_free_rate, expiration_jalali_date=expiration_jalali_date, call_put=call_put
-        )
+            # Step 4: Calculate Black-Scholes prices for the option
+            final_series = calculate_black_scholes_price(
+                call_series=series_with_volatility, strike_price=strike_price,
+                risk_free_rate=risk_free_rate, expiration_jalali_date=expiration_jalali_date, call_put=call_put
+            )
 
-        # Step 5: Generate option signals based on calculated Black-Scholes prices
-        result = generate_option_signals(option_series=final_series, window_size=window_size)
+            # Step 5: Generate option signals based on calculated Black-Scholes prices
+            result = generate_option_signals(option_series=final_series, window_size=normal_window_size)
 
-        # Save the result with a unique filename for each window size in the "signals" folder
-        filename = f"{main_save_path}option_signals_window_{window_size}.pkl"
-        result.to_pickle(filename)
+            # Save the result with a unique filename for each normal_window_size and alpha_or_vol_window_size in the "signals" folder
+            filename = f"{main_save_path}option_signals_normal_window_{normal_window_size}_volatility_param_{alpha_or_vol_window_size}.pkl"
+            result.to_pickle(filename)
 
+            csv_filename = f"{main_save_path}option_signals_normal_window_{normal_window_size}_volatility_param_{alpha_or_vol_window_size}.csv"
+            result.to_csv(csv_filename)
+            print(f"Results saved to {filename} (pickle) and {csv_filename} (CSV)")
 
+            # Store the result in the dictionary with a tuple key (normal_window_size, alpha_or_vol_window_size)
+            results[(normal_window_size, alpha_or_vol_window_size)] = result
+            print(f"Finished analysis for {option_stock_name} with normal window size {normal_window_size} and volatility parameter {alpha_or_vol_window_size}")
 
-        csv_filename = f"{main_save_path}option_signals_window_{window_size}.csv"
-        result.to_csv(csv_filename)
-        print(f"Results saved to {filename} (pickle) and {csv_filename} (CSV)")
-
-
-
-        # Store the result in the dictionary
-        results[window_size] = result
-        print(f"Finished analysis for {option_stock_name} with window size {window_size}")
-
-        # Step 6: Perform trade analysis for each window size using perform_trade_analysis function
-        perform_trade_analysis(result, z_values, save_path=main_save_path,
-                               option_stock_name=option_stock_name, start_date=start_date, end_date=end_date, window_size=window_size)
-
+            # Step 6: Perform trade analysis for each combination using perform_trade_analysis function
+            perform_trade_analysis(result, z_values, save_path=main_save_path,
+                                   option_stock_name=option_stock_name, start_date=start_date, end_date=end_date, window_size=normal_window_size)
 
     return results
+
 
 
 
