@@ -205,14 +205,19 @@ def flatten_market_data_with_volatility(underlying_market_df, options_market_df,
 
                 # Ensure valid rows in both the underlying and options market data
                 if isinstance(underlying_data, (list, np.ndarray)) and isinstance(option_data, (list, np.ndarray)):
-                    avg_price_underlying = (underlying_data[1] + underlying_data[2]) / 2  # (Sell_Price + Buy_Price) / 2
-                    avg_price_option = (option_data[1] + option_data[2]) / 2  # (Sell_Price + Buy_Price) / 2
 
-                    if avg_price_option == 0 :
-                        avg_price_option = None
+                    # Check for None or zero in the required elements of underlying_data and option_data
+                    if (underlying_data[1] is None or underlying_data[2] is None or 
+                        option_data[1] is None or option_data[2] is None or
+                        underlying_data[1] == 0 or underlying_data[2] == 0 or 
+                        option_data[1] == 0 or option_data[2] == 0):
 
-                    if avg_price_underlying == 0 :
                         avg_price_underlying = None
+                        avg_price_option = None
+                    else:
+                        avg_price_underlying = (underlying_data[1] + underlying_data[2]) / 2  # (Sell_Price + Buy_Price) / 2
+                        avg_price_option = (option_data[1] + option_data[2]) / 2  # (Sell_Price + Buy_Price) / 2
+
 
                     # Check for null values in avg_price_underlying and avg_price_option
                     if pd.isnull(avg_price_underlying) or pd.isnull(avg_price_option):
@@ -481,7 +486,7 @@ def generate_option_signals(option_series, window_size):
 
     return result_df
 
-def perform_trade_analysis(data, z_values, save_path="results/", option_stock_name="", start_date="", end_date="", window_size=0):
+def perform_trade_analysis(data, z_values, save_path="results/", option_stock_name="", start_date="", end_date="", window_size=0, alpha=0):
     """
     Perform trade analysis with buy-sell pairs based on multiple z-score thresholds,
     saving plots and DataFrames for each z-score threshold.
@@ -494,14 +499,15 @@ def perform_trade_analysis(data, z_values, save_path="results/", option_stock_na
     - start_date: str, the analysis start date for file naming.
     - end_date: str, the analysis end date for file naming.
     - window_size: int, the window size used in the analysis for file naming.
-    
+    - alpha: float, an additional hyperparameter for analysis and file naming.
+
     Returns:
     - None (prints analysis results, saves distribution plots and DataFrames)
     """
     
     os.makedirs(save_path, exist_ok=True)  # Ensure the save path exists
 
-    def generate_buy_sell_pairs(data, z_threshold, window_size):
+    def generate_buy_sell_pairs(data, z_threshold, window_size, alpha):
         buy_sell_pairs_list = []
         current_buy = None
 
@@ -509,7 +515,7 @@ def perform_trade_analysis(data, z_values, save_path="results/", option_stock_na
         columns = ['buy_date', 'buy_time', 'buy_price', 'sell_date', 'sell_time', 'sell_price', 'profit_loss', 'profitability_percentage']
 
         # Loop through each row in the data with tqdm progress bar
-        for idx, row in tqdm(data.iterrows(), total=len(data), desc=f"Processing Buy-Sell Pairs for Z={z_threshold}, Window Size={window_size}"):
+        for idx, row in tqdm(data.iterrows(), total=len(data), desc=f"Processing Buy-Sell Pairs for Z={z_threshold}, Window Size={window_size}, Alpha={alpha}"):
             date, time = idx
 
             if row['z_score'] < -z_threshold and current_buy is None:
@@ -536,14 +542,14 @@ def perform_trade_analysis(data, z_values, save_path="results/", option_stock_na
     
     # Analyze trades for each z threshold in z_values
     for z_threshold in z_values:
-        print(f"\nAnalyzing for Z-Threshold: {z_threshold}, Window Size: {window_size}")
+        print(f"\nAnalyzing for Z-Threshold: {z_threshold}, Window Size: {window_size}, Alpha: {alpha}")
         
         # Generate buy-sell pairs for the current z_threshold
-        buy_sell_pairs = generate_buy_sell_pairs(data, z_threshold, window_size)
+        buy_sell_pairs = generate_buy_sell_pairs(data, z_threshold, window_size, alpha)
         
         # Check if buy_sell_pairs DataFrame is empty
         if buy_sell_pairs.empty:
-            print(f"No trades generated for Z-Threshold: {z_threshold}, Window Size: {window_size}. Skipping analysis and saving.")
+            print(f"No trades generated for Z-Threshold: {z_threshold}, Window Size: {window_size}, Alpha: {alpha}. Skipping analysis and saving.")
             continue  # Skip to the next z_threshold if there are no trades
         
         # Calculate trade statistics
@@ -553,40 +559,41 @@ def perform_trade_analysis(data, z_values, save_path="results/", option_stock_na
         percentage_profitable = (num_profitable_trades / total_trades) * 100 if total_trades > 0 else 0
         
         # Print analysis results
-        print(f"Total Trades for Z-Threshold: {z_threshold}, Window Size: {window_size}: {total_trades}")
-        print(f"Profitable Trades for Z-Threshold: {z_threshold}, Window Size: {window_size}: {num_profitable_trades}")
-        print(f"Percentage of Profitable Trades for Z-Threshold: {z_threshold}, Window Size: {window_size}: {percentage_profitable:.2f}%")
+        print(f"Total Trades for Z-Threshold: {z_threshold}, Window Size: {window_size}, Alpha: {alpha}: {total_trades}")
+        print(f"Profitable Trades for Z-Threshold: {z_threshold}, Window Size: {window_size}, Alpha: {alpha}: {num_profitable_trades}")
+        print(f"Percentage of Profitable Trades for Z-Threshold: {z_threshold}, Window Size: {window_size}, Alpha: {alpha}: {percentage_profitable:.2f}%")
         
         # Save the buy-sell pairs DataFrame as a pickle file
-        df_filename = f"{save_path}buy_sell_pairs_window_{window_size}_z_{z_threshold}.pkl"
+        df_filename = f"{save_path}buy_sell_pairs_window_{window_size}_alpha_{alpha}_z_{z_threshold}.pkl"
         buy_sell_pairs.to_pickle(df_filename)
 
-
-        csv_filename = f"{save_path}buy_sell_pairs_window_{window_size}_z_{z_threshold}.csv"
+        csv_filename = f"{save_path}buy_sell_pairs_window_{window_size}_alpha_{alpha}_z_{z_threshold}.csv"
         buy_sell_pairs.to_csv(csv_filename)
 
-        print(f"Data saved to {df_filename} (pickle) and {csv_filename} (CSV) for Z-Threshold: {z_threshold}, Window Size: {window_size}")
+        print(f"Data saved to {df_filename} (pickle) and {csv_filename} (CSV) for Z-Threshold: {z_threshold}, Window Size: {window_size}, Alpha: {alpha}")
 
+        # Filter to only include profitability percentages between -100% and 100% for plotting
+        filtered_pairs = buy_sell_pairs[(buy_sell_pairs['profitability_percentage'] >= -100) & 
+                                        (buy_sell_pairs['profitability_percentage'] <= 100)]
 
-        
-        # Plot and save the distribution of profit/loss percentage
+        # Plot and save the distribution of profit/loss percentage (filtered between -100% and 100%)
         plt.figure(figsize=(12, 7))
-        sns.histplot(buy_sell_pairs['profitability_percentage'], bins=50, kde=True, edgecolor='black')  # Smaller bins, in percentage
-        plt.title(f"Profitability Distribution (as %) for {option_stock_name}\nWindow Size = {window_size}, Z-Threshold = {z_threshold}")
+        sns.histplot(filtered_pairs['profitability_percentage'], bins=50, kde=True, edgecolor='black')  # Smaller bins, in percentage
+        plt.title(f"Profitability Distribution (as %) for {option_stock_name}\nWindow Size = {window_size}, Alpha = {alpha}, Z-Threshold = {z_threshold}")
         plt.xlabel("Profit/Loss (%)")
         plt.ylabel("Frequency")
         plt.axvline(0, color='red', linestyle='dashed', linewidth=1, label="Break-Even")
         plt.legend()
 
-        # Annotate the total number of trades on the plot
-        plt.annotate(f'Total Trades: {total_trades}', xy=(0.05, 0.95), xycoords='axes fraction', fontsize=12, 
+        # Annotate the total number of trades on the plot (filtered count)
+        plt.annotate(f'Total Trades: {len(filtered_pairs)}', xy=(0.05, 0.95), xycoords='axes fraction', fontsize=12, 
                      bbox=dict(boxstyle="round,pad=0.3", edgecolor="black", facecolor="white"))
 
         # Save the plot
-        plot_filename = f"{save_path}profit_loss_distribution_window_{window_size}_z_{z_threshold}.png"
+        plot_filename = f"{save_path}profit_loss_distribution_window_{window_size}_alpha_{alpha}_z_{z_threshold}.png"
         plt.savefig(plot_filename)
-        print(f"Plot saved to {plot_filename} for Z-Threshold: {z_threshold}, Window Size: {window_size}") 
-        plt.close()  # Close the plot to free up memory 
+        print(f"Plot saved to {plot_filename} for Z-Threshold: {z_threshold}, Window Size: {window_size}, Alpha: {alpha}") 
+        plt.close()  # Close the plot to free up memory
 
 def run_option_analysis(underlying_stock_name = "", option_stock_name= "", call_put="c", start_date= "", end_date= "",
                         strike_price= "", risk_free_rate=0.30, expiration_jalali_date= "",
@@ -681,10 +688,9 @@ def run_option_analysis(underlying_stock_name = "", option_stock_name= "", call_
 
             # Step 6: Perform trade analysis for each combination using perform_trade_analysis function
             perform_trade_analysis(result, z_values, save_path=main_save_path,
-                                   option_stock_name=option_stock_name, start_date=start_date, end_date=end_date, window_size=normal_window_size)
+                                   option_stock_name=option_stock_name, start_date=start_date, end_date=end_date, window_size=normal_window_size , alpha = alpha_or_vol_window_size)
 
     return results
-
 
 def run_selected_analysis(option_number, just_download=False):
     if option_number == 0:
@@ -783,7 +789,6 @@ def run_selected_analysis(option_number, just_download=False):
         )
     else:
         print("Invalid option number. Please enter a number from 0 to 9.")
-
 
 if __name__ == '__main__':
     warnings.filterwarnings("ignore")
