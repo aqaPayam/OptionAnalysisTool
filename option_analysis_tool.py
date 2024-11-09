@@ -598,17 +598,14 @@ def perform_trade_analysis(data, z_values, save_path="results/", option_stock_na
 def run_option_analysis(underlying_stock_name = "", option_stock_name= "", call_put="c", start_date= "", end_date= "",
                         strike_price= "", risk_free_rate=0.30, expiration_jalali_date= "",
                         window_sizes_for_normal=[
-                            int(2 * 3.5 * 3600),
                             int(1 * 3.5 * 3600),
-                            int(2 * 3600),
                             int(1 * 3600),
-                            600
+                            int(900)
                         ],
-                        alphas_or_window_size_for_volatility_estimation=[0.9, 0.7, 0.5, 0.2, 0.1, 0.05 , int(2 * 3.5 * 3600),
+                        alphas_or_window_size_for_volatility_estimation=[0.9, 0.5, 0.1 ,
                             int(1 * 3.5 * 3600),
-                            int(2 * 3600),
                             int(1 * 3600),
-                            600 ]
+                            900 ]
                             ,
                         z_values=[1.0, 1.5, 2.0, 2.5, 3.0, 3.5] ,
                         just_download = False):
