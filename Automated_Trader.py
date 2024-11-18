@@ -1,8 +1,6 @@
 import json
 import time
-import logging
 from typing import Optional, Tuple, List
-
 import requests
 import numpy as np
 import pandas as pd
@@ -10,21 +8,11 @@ import jdatetime
 from py_vollib.black_scholes import black_scholes
 from py_vollib.black_scholes.implied_volatility import implied_volatility
 from collections import deque
-import os  # For environment variables
+import traceback
 
 # ============================
 # Configuration and Constants
 # ============================
-
-# Configure Logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s [%(levelname)s] %(message)s',
-    handlers=[
-        logging.StreamHandler()
-    ]
-)
-logger = logging.getLogger(__name__)
 
 # API Endpoints
 BASE_URL = 'https://api-bbi.ephoenix.ir/api/v2'
@@ -35,16 +23,22 @@ MDAPI_URL = 'https://mdapi1.ephoenix.ir/api/v2'
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0',
     'Accept': 'application/json, text/plain, */*',
-    'Cookie': os.getenv('API_COOKIE'),  # Set this environment variable securely
-    'x-sessionId': os.getenv('API_SESSION_ID'),  # Set this environment variable securely
+    'Cookie':
+        'cookiesession1=678B28DD6FE6ED96910C335752DBC495; otauth-178-OMSc305934e-436b-4743-8a65-acf6a80c3174=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJTZXNzaW9uSWQiOiJjMzA1OTM0ZS00MzZiLTQ3NDMtOGE2NS1hY2Y2YTgwYzMxNzQiLCJVc2VySWQiOiIxMDA3OTUiLCJBcHBOYW1lIjoiT01TIiwiQnJva2VyQ29kZSI6IjE3OCIsIm5iZiI6MTczMTkxNTYyOCwiZXhwIjoxNzMxOTQ0NDI4LCJpc3MiOiJPTVMiLCJhdWQiOiJPTVMifQ.QjB0o069550rYV7fvZ6BeR8Vd0e8FM282V6w-YTST4dokaZG2LG2NgEYly8Df8ALmOn8xY1LJbOC8wOLhQ07zA',
+    # Set this environment variable securely
+    'x-sessionId': 'OMSc305934e-436b-4743-8a65-acf6a80c3174',  # Set this environment variable securely
     'Content-Type': 'application/json'
 }
 
+# Define your tickers (Replace with actual ISIN tickers)
+UNDERLYING_TICKER = "IRT1AHRM0001"  # Replace with actual ticker
+OPTION_TICKER = "IRO9AHRM8891"  # Replace with actual ticker
+
 # Trading Parameters
-EXPIRATION_DATE = "1402-09-30"  # Example expiration date in Jalali (YYYY-MM-DD)
-RISK_FREE_RATE = 0.05  # Example risk-free rate
-STRIKE_PRICE = 100000  # Example strike price
-CALL_PUT = 'call'  # Option type ('call' or 'put')
+EXPIRATION_DATE = "1403-08-30"  # Example expiration date in Jalali (YYYY-MM-DD)
+RISK_FREE_RATE = 0.3  # Example risk-free rate
+STRIKE_PRICE = 18000  # Example strike price
+CALL_PUT = 'c'  # Option type ('call' or 'put')
 
 # Trading Session Time (Jalali Time)
 VALID_TIME_START = pd.to_datetime("09:15:00").time()
@@ -57,13 +51,13 @@ SLEEP_INTERVAL = 1  # seconds
 # Volatility Smoothing Parameter
 # - If float between 0 and 1: EMA with alpha = smoothing_param
 # - If integer > 1: SMA with window size = smoothing_param
-SMOOTHING_PARAM = 5  # Example: 5 for SMA, 0.3 for EMA
+SMOOTHING_PARAM = 900  # Example: 5 for SMA, 0.3 for EMA
 
 # Rolling Window Size for Signal Generation
-WINDOW_SIZE = 20  # Number of past price differences to consider
+WINDOW_SIZE = 900  # Number of past price differences to consider
 
 # Z-score Threshold for Generating Signals
-Z_THRESHOLD = 1.0  # Configurable threshold for generating buy/sell signals
+Z_THRESHOLD = 1.5  # Configurable threshold for generating buy/sell signals
 
 
 # ====================
@@ -83,11 +77,11 @@ class ErrorCounters:
         self.condition_error_counter = 0  # For condition-related errors
 
     def report(self):
-        logger.info(f"Null data rows: {self.null_counter}")
-        logger.info(f"Skipped rows by time: {self.skip_by_time_counter}")
-        logger.info(f"Errors in implied volatility calculation: {self.try_except_counter}")
-        logger.info(f"KeyErrors encountered: {self.key_error_counter}")
-        logger.info(f"Condition-related errors: {self.condition_error_counter}")
+        print(f"INFO: Null data rows: {self.null_counter}")
+        print(f"INFO: Skipped rows by time: {self.skip_by_time_counter}")
+        print(f"INFO: Errors in implied volatility calculation: {self.try_except_counter}")
+        print(f"INFO: KeyErrors encountered: {self.key_error_counter}")
+        print(f"INFO: Condition-related errors: {self.condition_error_counter}")
 
 
 # =====================
@@ -125,15 +119,15 @@ class TradingAPI:
                 elif method.upper() == 'GET':
                     response = requests.get(url, headers=self.headers)
                 else:
-                    logger.error(f"Unsupported HTTP method: {method}")
+                    print(f"ERROR: Unsupported HTTP method: {method}")
                     return None
 
                 response.raise_for_status()
                 return response.json()
             except requests.RequestException as e:
-                logger.warning(f"Attempt {attempt} failed for {url}: {e}")
+                print(f"WARNING: Attempt {attempt} failed for {url}: {e}")
                 time.sleep(SLEEP_INTERVAL)
-        logger.error(f"Max retries reached for {url}.")
+        print(f"ERROR: Max retries reached for {url}.")
         return None
 
     def fetch_order_book(self, ticker: str) -> Optional[List[float]]:
@@ -150,11 +144,24 @@ class TradingAPI:
         response = self._make_request('GET', url)
         if response:
             try:
-                buy = response['buy'][0]
-                sell = response['sell'][0]
-                return [sell['v'], sell['p'], buy['p'], buy['v']]
+                buy = response.get('buy', [])
+                sell = response.get('sell', [])
+
+                # Handle cases where either buy or sell is empty
+                if buy and sell:
+                    buy_data = buy[0]
+                    sell_data = sell[0]
+                    return [sell_data['v'], sell_data['p'], buy_data['p'], buy_data['v']]
+                elif sell:
+                    sell_data = sell[0]
+                    return [sell_data['v'], sell_data['p'], sell_data['p'], sell_data['v']]
+                elif buy:
+                    buy_data = buy[0]
+                    return [buy_data['v'], buy_data['p'], buy_data['p'], buy_data['v']]
+                else:
+                    print(f"WARNING: No buy or sell data available for ticker {ticker}.")
             except (KeyError, IndexError) as e:
-                logger.error(f"Error extracting order book data for {ticker}: {e}")
+                print(f"ERROR: Error extracting order book data for {ticker}: {e}")
         return None
 
     def place_order(self, ticker: str, price: float, quantity: int, side: str) -> Optional[dict]:
@@ -302,7 +309,7 @@ def buy():
     """
     Implement your buy logic here.
     """
-    logger.info("Executing Buy Order")
+    print("INFO: Executing Buy Order")
     # TODO: Add actual buy order execution code here
 
 
@@ -310,7 +317,7 @@ def sell():
     """
     Implement your sell logic here.
     """
-    logger.info("Executing Sell Order")
+    print("INFO: Executing Sell Order")
     # TODO: Add actual sell order execution code here
 
 
@@ -357,7 +364,7 @@ def calculate_estimated_volatility(
         rolling_vols: deque,
         ema_estimated_vol: float,
         smoothing_param: float
-) -> Tuple[float, float]:
+) -> tuple[float, deque, float]:
     """
     Calculate the estimated volatility using SMA or EMA based on the smoothing_param.
 
@@ -382,7 +389,7 @@ def calculate_estimated_volatility(
     else:
         raise ValueError(
             "smoothing_param must be a float (0 < smoothing_param <= 1) for EMA or an integer > 1 for SMA.")
-    return estimated_vol, ema_estimated_vol
+    return estimated_vol, rolling_vols, ema_estimated_vol
 
 
 def calculate_black_scholes_price(
@@ -414,7 +421,7 @@ def calculate_black_scholes_price(
         if T > 0 and estimated_vol > 0:
             return black_scholes(call_put, avg_price_underlying, strike_price, T, risk_free_rate, estimated_vol)
     except Exception as e:
-        logger.error(f"Error calculating Black-Scholes price: {e}")
+        print(f"ERROR: Error calculating Black-Scholes price: {e}")
     return np.nan
 
 
@@ -439,7 +446,7 @@ def calculate_time_to_expiration(current_date: str, expiration_jalali_date: str)
         days_to_expiration = (expiration_gregorian - current_gregorian_date).days
         return days_to_expiration / 365  # Convert days to years
     except Exception as e:
-        logger.error(f"Error calculating time to expiration: {e}")
+        print(f"ERROR: Error calculating time to expiration: {e}")
     return 0.0
 
 
@@ -530,7 +537,7 @@ def calculate_implied_volatility(
                                 risk_free_rate, call_put)
         return iv
     except Exception as e:
-        logger.error(f"Error calculating implied volatility: {e}")
+        print(f"ERROR: Error calculating implied volatility: {e}")
         counters.try_except_counter += 1
         return np.nan
 
@@ -583,10 +590,13 @@ def process_price_difference(
     """
     try:
         # Calculate rolling statistics based on existing window (excluding current price_difference)
-        if len(price_diff_window) >= window_size and not any(pd.isnull(price_diff_window)):
+        if len(price_diff_window) >= window_size:
             rolling_mean_diff = np.mean(price_diff_window)
             rolling_std_diff = np.std(price_diff_window, ddof=1)
-            z_score = (price_difference - rolling_mean_diff) / rolling_std_diff
+            if rolling_std_diff == 0:
+                z_score = 0.0  # or some default value
+            else:
+                z_score = (price_difference - rolling_mean_diff) / rolling_std_diff
 
             # Generate signal based on z-score
             signal, under_count, over_count = generate_signals(z_score, z_threshold)
@@ -616,7 +626,8 @@ def process_price_difference(
         return signal, under_count, over_count, rolling_mean_diff, rolling_std_diff, z_score
 
     except Exception as e:
-        logger.exception(f"Error in processing price difference: {e}")
+        print(f"ERROR: Error in processing price difference: {e}")
+        traceback.print_exc()
         counters.try_except_counter += 1
         return 'hold', 0, 0, np.nan, np.nan, np.nan
 
@@ -641,10 +652,6 @@ def main():
     ]
     data = pd.DataFrame(columns=columns)
 
-    # Define your tickers (Replace with actual ISIN tickers)
-    UNDERLYING_TICKER = "UNDERLYING_ISIN"  # Replace with actual ticker
-    OPTION_TICKER = "OPTION_ISIN"  # Replace with actual ticker
-
     # Initialize variables for volatility calculation
     rolling_vols = deque(maxlen=SMOOTHING_PARAM if SMOOTHING_PARAM > 1 else None)
     ema_estimated_vol = np.nan  # Initial EMA value
@@ -659,7 +666,6 @@ def main():
     try:
         while True:
             try:
-                # Get current Jalali date and time
                 now = jdatetime.datetime.now()
                 current_date_jalali = now.strftime('%Y-%m-%d')
                 current_time = now.time()
@@ -673,14 +679,14 @@ def main():
                 )
 
                 if not is_valid:
-                    logger.info("Skipping due to invalid time or data.")
+                    print("INFO: Skipping due to invalid time or data.")
                     time.sleep(SLEEP_INTERVAL)
                     continue
 
                 # Calculate time to expiration
                 time_to_expiration = calculate_time_to_expiration(current_date_jalali, EXPIRATION_DATE)
                 if time_to_expiration <= 0:
-                    logger.warning("Expiration date reached or passed.")
+                    print("WARNING: Expiration date reached or passed.")
                     break
 
                 # Calculate implied volatility
@@ -731,39 +737,43 @@ def main():
                     "rolling_std_diff": rolling_std_diff,
                     "z_score": z_score
                 }
+
                 data = pd.concat([data, pd.DataFrame([new_row])], ignore_index=True)
+                data.to_excel("output_data.xlsx", index=False)
 
                 # Log the results
-                logger.info(f"Underlying Avg Price: {avg_price_underlying}")
-                logger.info(f"Option Avg Price: {avg_price_option}")
-                logger.info(f"Implied Volatility: {implied_vol}")
-                logger.info(f"Estimated Volatility: {estimated_vol}")
-                logger.info(f"Black-Scholes Price: {black_scholes_price}")
-                logger.info(f"Price Difference: {price_difference}")
-                logger.info(f"Rolling Mean Difference: {rolling_mean_diff}")
-                logger.info(f"Rolling Std Dev Difference: {rolling_std_diff}")
-                logger.info(f"Z-Score: {z_score}")
-                logger.info(f"Z-Score < -{Z_THRESHOLD} Count: {under_negative_one_count}")
-                logger.info(f"Z-Score > +{Z_THRESHOLD} Count: {over_positive_one_count}")
+                print(f"INFO: Underlying Avg Price: {avg_price_underlying}")
+                print(f"INFO: Option Avg Price: {avg_price_option}")
+                print(f"INFO: Implied Volatility: {implied_vol}")
+                print(f"INFO: Estimated Volatility: {estimated_vol}")
+                print(f"INFO: Black-Scholes Price: {black_scholes_price}")
+                print(f"INFO: Price Difference: {price_difference}")
+                print(f"INFO: Rolling Mean Difference: {rolling_mean_diff}")
+                print(f"INFO: Rolling Std Dev Difference: {rolling_std_diff}")
+                print(f"INFO: Z-Score: {z_score}")
+                print(f"INFO: Z-Score < -{Z_THRESHOLD} Count: {under_negative_one_count}")
+                print(f"INFO: Z-Score > +{Z_THRESHOLD} Count: {over_positive_one_count}")
+                print("\n")
 
                 time.sleep(SLEEP_INTERVAL)
             except KeyError as e:
                 counters.key_error_counter += 1
-                logger.error(f"KeyError encountered: {e}")
+                print(f"ERROR: KeyError encountered: {e}")
             except ValueError as e:
                 counters.condition_error_counter += 1
-                logger.error(f"Condition error: {e}")
+                print(f"ERROR: Condition error: {e}")
             except Exception as e:
                 counters.try_except_counter += 1
-                logger.exception(f"Unexpected error: {e}")
+                print(f"ERROR: Unexpected error: {e}")
+                traceback.print_exc()
     except KeyboardInterrupt:
-        logger.info("Processing stopped by user.")
+        print("INFO: Processing stopped by user.")
     finally:
         # Report error counters
         counters.report()
         # Optionally, save DataFrame to a file upon termination
         # data.to_csv("trading_data.csv", index=False)
-        logger.info("Program terminated.")
+        print("INFO: Program terminated.")
 
 
 # ===================
