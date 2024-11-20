@@ -49,4 +49,10 @@ SELL_PRICE_OFFSET = 1   # Adjust as needed
 ORDER_QUANTITY = 1     # Adjust as per your requirements
 TICKER = OPTION_TICKER  
 
+# Inputs for process_and_flatten_market_data
+HISTORICAL_DATA_START_DATE = 'YYYY-MM-DD'  # Replace with actual start date
+HISTORICAL_DATA_END_DATE = 'YYYY-MM-DD'    # Replace with actual end date
+SAVE_FOLDER = 'data_files'                 # Folder to save data files
+JUST_DOWNLOAD = False                      # Set to True if you only want to download data
+
 
