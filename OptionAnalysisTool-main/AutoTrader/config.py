@@ -17,7 +17,7 @@ HEADERS = {
 }
 
 
-
+USE_HISTORICAL = False
 # Tickers
 UNDERLYING_NAME = "اهرم"
 UNDERLYING_TICKER = "IRT1AHRM0001"  # Replace with actual ticker
