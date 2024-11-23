@@ -16,6 +16,7 @@ HEADERS = {
     'Content-Type': 'application/json'
 }
 
+USE_HISTORICAL = False
 # Tickers
 UNDERLYING_TICKER = "IRT1AHRM0001"  # Replace with actual ticker
 OPTION_TICKER = "IRO9AHRM8891"      # Replace with actual ticker
