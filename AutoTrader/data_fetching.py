@@ -3,6 +3,7 @@
 import time
 import jdatetime
 from helpers import fetch_data
+from config import SLEEP_INTERVAL
 
 def data_fetching_thread(api, data_queue, counters):
     """

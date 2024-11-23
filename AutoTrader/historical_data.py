@@ -4,7 +4,7 @@ import traceback
 
 from data_preprocessing import process_and_flatten_market_data  # Updated import
 from config import (
-    UNDERLYING_TICKER, OPTION_TICKER, HISTORICAL_DATA_START_DATE,
+    UNDERLYING_NAME, OPTION_NAME, HISTORICAL_DATA_START_DATE,
     HISTORICAL_DATA_END_DATE, STRIKE_PRICE, RISK_FREE_RATE,
     EXPIRATION_DATE, CALL_PUT, SAVE_FOLDER, JUST_DOWNLOAD
 )
@@ -17,8 +17,8 @@ def historical_data_thread(historical_data_ready_event, historical_data_containe
     try:
         # Run the data processing function to get historical data
         historical_data = process_and_flatten_market_data(
-            underlying_stock=UNDERLYING_TICKER,
-            option_stock=OPTION_TICKER,
+            underlying_stock=UNDERLYING_NAME,
+            option_stock=OPTION_NAME,
             start_date=HISTORICAL_DATA_START_DATE,
             end_date=HISTORICAL_DATA_END_DATE,
             strike_price=STRIKE_PRICE,

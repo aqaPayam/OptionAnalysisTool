@@ -59,6 +59,7 @@ class TradingAPI:
         """
         url = f"{self.market_url}/Queue/BestLimitWithSize?isin={ticker}"
         response = self._make_request('GET', url)
+        
         if response:
             try:
                 buy = response.get('buy', [])
