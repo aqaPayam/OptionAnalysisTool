@@ -4,6 +4,8 @@ import time
 import jdatetime
 from helpers import fetch_data
 from config import SLEEP_INTERVAL
+from config import UNDERLYING_TICKER
+from config import OPTION_TICKER
 
 def data_fetching_thread(api, data_queue, counters):
     """
@@ -15,10 +17,13 @@ def data_fetching_thread(api, data_queue, counters):
             current_time = now.time()
 
             # Fetch data
-            underlying_data, option_data = fetch_data(api, api, counters)
-
+            underlying_data, option_data = fetch_data(api, UNDERLYING_TICKER, OPTION_TICKER)
+            if underlying_data is None and  option_data is None:
+                print("fetched data is null")
+            else:
             # Put data into the queue
-            data_queue.append((now, current_time, underlying_data, option_data))
+                data_queue.append((now, current_time, underlying_data, option_data))
+                
             time.sleep(SLEEP_INTERVAL)
         except Exception as e:
             counters.try_except_counter += 1

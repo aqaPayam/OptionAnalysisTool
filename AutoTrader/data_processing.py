@@ -11,7 +11,7 @@ from helpers import (
 from signals import process_price_difference, buy, sell, cancel_all_orders
 from config import (
     EXPIRATION_DATE, STRIKE_PRICE, RISK_FREE_RATE, CALL_PUT,
-    SLEEP_INTERVAL, Z_THRESHOLD
+    SLEEP_INTERVAL, Z_THRESHOLD ,SMOOTHING_PARAM ,WINDOW_SIZE
 )
 
 def processing_thread(data_queue, result_queue, counters, processing_ready_event, rolling_vols, price_diff_window):

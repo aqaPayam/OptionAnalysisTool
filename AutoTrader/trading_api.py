@@ -58,6 +58,7 @@ class TradingAPI:
             Optional[List[float]]: A list containing [sell_volume, sell_price, buy_price, buy_volume].
         """
         url = f"{self.market_url}/Queue/BestLimitWithSize?isin={ticker}"
+        
         response = self._make_request('GET', url)
         
         if response:
