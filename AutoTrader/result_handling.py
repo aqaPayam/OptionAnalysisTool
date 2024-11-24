@@ -1,20 +1,33 @@
-# result_handling.py
-
 import time
 import pandas as pd
+import jdatetime  # Importing jdatetime for Jalali date handling
+import os  # Importing os for directory handling
 from config import SLEEP_INTERVAL, Z_THRESHOLD
 
 def result_handling_thread(result_queue, data):
     """
     Thread function for handling results and logging.
     """
+    # Define the folder to save Excel files
+    folder_name = "exels"
+    
+    # Ensure the folder exists
+    if not os.path.exists(folder_name):
+        os.makedirs(folder_name)
+
     while True:
         if result_queue:
             result = result_queue.popleft()
 
             # Append data to DataFrame
             data = pd.concat([data, pd.DataFrame([result])], ignore_index=True)
-            data.to_excel("output_data.xlsx", index=False)
+
+            # Get today's Jalali date
+            jalali_date = jdatetime.datetime.now().strftime("%Y-%m-%d")
+            excel_filename = os.path.join(folder_name, f"output_data_{jalali_date}.xlsx")
+
+            # Save DataFrame to Excel with Jalali date in the filename
+            data.to_excel(excel_filename, index=False)
 
             # Log the results
             print(f"INFO: Underlying Avg Price: {result['avg_price_underlying']}")

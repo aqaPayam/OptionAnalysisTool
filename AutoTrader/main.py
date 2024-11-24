@@ -1,6 +1,9 @@
 # main.py
 
 import time
+import jdatetime
+import datetime
+import sys  # Add this import
 from threading import Thread, Event
 from collections import deque
 import pandas as pd
@@ -56,19 +59,23 @@ def main():
         # Start historical data thread
         historical_thread = Thread(target=historical_data_thread, args=(
             historical_data_ready_event, historical_data_container))
+        historical_thread.daemon = True  # Set thread as daemon
         historical_thread.start()
 
     # Start data fetching thread
     data_thread = Thread(target=data_fetching_thread, args=(api, data_queue, counters))
+    data_thread.daemon = True  # Set thread as daemon
     data_thread.start()
 
     # Start processing thread
     processing_thread_instance = Thread(target=processing_thread, args=(
         data_queue, result_queue, counters, processing_ready_event, rolling_vols, price_diff_window))
+    processing_thread_instance.daemon = True  # Set thread as daemon
     processing_thread_instance.start()
 
     # Start result handling thread
     result_thread = Thread(target=result_handling_thread, args=(result_queue, data))
+    result_thread.daemon = True  # Set thread as daemon
     result_thread.start()
 
     try:
@@ -88,9 +95,18 @@ def main():
                 # Signal that processing can start when not using historical data
                 if not processing_ready_event.is_set():
                     processing_ready_event.set()
+            
+            # Check the current time against VALID_TIME_END
+            current_time = jdatetime.datetime.now().time()
+            # Convert VALID_TIME_END to jdatetime.time
+            valid_time_end = jdatetime.time.fromisoformat(VALID_TIME_END)
+            if current_time > valid_time_end:
+                print("INFO: Current time has passed VALID_TIME_END, exiting program.")
+                sys.exit()  # Exit the main thread
             time.sleep(1)
     except KeyboardInterrupt:
         print("INFO: Processing stopped by user.")
+        sys.exit()  # Exit the main thread
     finally:
         # Report error counters
         counters.report()
