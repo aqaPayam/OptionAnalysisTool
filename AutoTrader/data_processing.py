@@ -30,7 +30,7 @@ def processing_thread(data_queue, result_queue, counters, processing_ready_event
 
     while True:
         if data_queue:
-            now, current_time, underlying_data, option_data = data_queue.popleft()
+            current_date_jalali, current_time, underlying_data, option_data = data_queue.popleft()
 
             # Validate data and time
             avg_price_underlying, avg_price_option, is_valid = validate_time_and_data(
@@ -42,7 +42,6 @@ def processing_thread(data_queue, result_queue, counters, processing_ready_event
                 continue
 
             # Calculate time to expiration
-            current_date_jalali = now.strftime('%Y-%m-%d')
             time_to_expiration = calculate_time_to_expiration(current_date_jalali, EXPIRATION_DATE)
             if time_to_expiration <= 0:
                 print("WARNING: Expiration date reached or passed.")
@@ -80,7 +79,7 @@ def processing_thread(data_queue, result_queue, counters, processing_ready_event
             # Prepare result data
             result = {
                 "Date": current_date_jalali,
-                "Time": now.strftime('%H:%M:%S'),
+                "Time": current_time,
                 "avg_price_underlying": avg_price_underlying,
                 "avg_price_option": avg_price_option,
                 "black_scholes_price": black_scholes_price,

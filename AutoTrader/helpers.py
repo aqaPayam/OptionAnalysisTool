@@ -3,6 +3,7 @@
 import numpy as np
 import pandas as pd
 import jdatetime
+import datetime
 from collections import deque
 from py_vollib.black_scholes import black_scholes
 from py_vollib.black_scholes.implied_volatility import implied_volatility
@@ -176,6 +177,17 @@ def validate_time_and_data(current_time, underlying_data, option_data, counters)
         Tuple[Optional[float], Optional[float], bool]: Tuple containing average underlying price, average option price, and validation status.
     """
     # Check current time
+
+    time = current_time
+    if isinstance(time, str):
+        current_time = datetime.datetime.strptime(time, "%H:%M:%S").time()
+    elif isinstance(time, datetime.time):
+        current_time = time
+    else:
+        print(type,time)
+        print("ERROR IN HELPERS VALIDATE DATE TIME")
+
+
     if not (VALID_TIME_START <= current_time <= VALID_TIME_END):
         counters.skip_by_time_counter += 1
         return None, None, False

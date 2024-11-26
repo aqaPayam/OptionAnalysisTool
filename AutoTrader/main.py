@@ -24,6 +24,10 @@ from result_handling import result_handling_thread
 if USE_HISTORICAL:
     from historical_data import historical_data_thread
 
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning)
+
+
 def main():
     # Initialize API and error counters
     api = TradingAPI()
@@ -36,15 +40,15 @@ def main():
         "price_difference", "rolling_mean_diff", "rolling_std_diff", "z_score",
         "signal", "under_negative_one_count", "over_positive_one_count"
     ]
-    data = pd.DataFrame(columns=columns)
+    data = pd.DataFrame(columns=columns)  # Collection for trading data
 
     # Initialize rolling_vols and price_diff_window
     rolling_vols = deque(maxlen=SMOOTHING_PARAM if SMOOTHING_PARAM > 1 else None)
     price_diff_window = deque(maxlen=WINDOW_SIZE)
 
     # Queues for inter-thread communication
-    data_queue = deque()
-    result_queue = deque()
+    data_queue = deque()  # Queue for fetched data
+    result_queue = deque()  # Queue for processed results
 
     # Events to signal when historical data and processing are ready
     processing_ready_event = Event()
@@ -73,10 +77,7 @@ def main():
     processing_thread_instance.daemon = True  # Set thread as daemon
     processing_thread_instance.start()
 
-    # Start result handling thread
-    result_thread = Thread(target=result_handling_thread, args=(result_queue, data))
-    result_thread.daemon = True  # Set thread as daemon
-    result_thread.start()
+    result_thread = None  # Placeholder for result handling thread
 
     try:
         # Main thread loop
@@ -86,21 +87,43 @@ def main():
                 # Check if historical data is ready and merge data
                 if historical_data_ready_event.is_set() and not historical_data_merged:
                     from data_merging import merge_historical_and_live_data
-                    merge_historical_and_live_data(
-                        data_queue, historical_data_container, data, columns,
+
+                    # Merge historical and live data, and update `data`
+                    merged_data = merge_historical_and_live_data(
+                        data_queue, historical_data_container, columns,
                         rolling_vols, price_diff_window, processing_ready_event
                     )
+                    data = merged_data  # Update data with merged result
                     historical_data_merged = True
+
+                    # Start result handling thread after merging data
+                    result_thread = Thread(target=result_handling_thread, args=(result_queue, data))
+                    result_thread.daemon = True  # Set thread as daemon
+                    result_thread.start()
+
+
+                    data_queue.clear()
+                    print("INFO: Cleared data_queue to start fresh after historical data is ready.")
+
+                    # Signal the processing thread to start
+                    processing_ready_event.set()
+
+
             else:
                 # Signal that processing can start when not using historical data
                 if not processing_ready_event.is_set():
                     processing_ready_event.set()
-            
+
+                # Start result handling thread when not using historical data
+                if result_thread is None:
+                    result_thread = Thread(target=result_handling_thread, args=(result_queue, data))
+                    result_thread.daemon = True  # Set thread as daemon
+                    result_thread.start()
+
             # Check the current time against VALID_TIME_END
             current_time = jdatetime.datetime.now().time()
-            # Convert VALID_TIME_END to jdatetime.time
-            valid_time_end = jdatetime.time.fromisoformat(VALID_TIME_END)
-            if current_time > valid_time_end:
+
+            if current_time > VALID_TIME_END:
                 print("INFO: Current time has passed VALID_TIME_END, exiting program.")
                 sys.exit()  # Exit the main thread
             time.sleep(1)
@@ -111,6 +134,8 @@ def main():
         # Report error counters
         counters.report()
         print("INFO: Program terminated.")
+
+
 
 if __name__ == "__main__":
     main()
