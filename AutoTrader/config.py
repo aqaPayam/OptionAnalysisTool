@@ -10,8 +10,8 @@ MDAPI_URL = 'https://mdapi1.ephoenix.ir/api/v2'
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
     'Accept': 'application/json, text/plain, */*',
-    'Cookie': 'cookiesession1=678B28DDA714470676C478BF5BE1C9E6; otauth-178-OMSee09f8e1-cb44-4c38-b9ab-690491cf948e=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJTZXNzaW9uSWQiOiJlZTA5ZjhlMS1jYjQ0LTRjMzgtYjlhYi02OTA0OTFjZjk0OGUiLCJVc2VySWQiOiIxMDA3OTUiLCJBcHBOYW1lIjoiT01TIiwiQnJva2VyQ29kZSI6IjE3OCIsIm5iZiI6MTczMjUxNDAxMSwiZXhwIjoxNzMyNTQyODExLCJpc3MiOiJPTVMiLCJhdWQiOiJPTVMifQ.asE87D6xD4B28LzP0e-9IWYD2sIevP1G79Cw4lqrtFHEMLczJT9dEOzntsTPXIfpAuw4vSP_k5ZdkJRRzB0cWA',  # Set securely
-    'x-sessionId': 'OMSee09f8e1-cb44-4c38-b9ab-690491cf948e',  # Set securely
+    'Cookie': 'cookiesession1=678B28DD6FE6ED96910C335752DBC495; otauth-178-OMS9b33c4e7-eab6-4088-bcbf-b0c0ecdf054f=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJTZXNzaW9uSWQiOiI5YjMzYzRlNy1lYWI2LTQwODgtYmNiZi1iMGMwZWNkZjA1NGYiLCJVc2VySWQiOiIxMDA3OTUiLCJBcHBOYW1lIjoiT01TIiwiQnJva2VyQ29kZSI6IjE3OCIsIm5iZiI6MTczMjU3OTI2MCwiZXhwIjoxNzMyNjA4MDYwLCJpc3MiOiJPTVMiLCJhdWQiOiJPTVMifQ.LJ7Hm7wYMa7ia6vRXgfMtyFnRmdgGPohtx0PpLFK4sdPqxWiqYnSkfNhPecPg4C_z46zjfCJ9Iv1jJ8QpbjyMg',  # Set securely
+    'x-sessionId': 'OMS9b33c4e7-eab6-4088-bcbf-b0c0ecdf054f',  # Set securely
     'Content-Type': 'application/json'
 }
 
@@ -40,10 +40,10 @@ SLEEP_INTERVAL = 1  # seconds
 SMOOTHING_PARAM = 900  # e.g., 5 for SMA, 0.3 for EMA
 
 # Rolling Window Size for Signal Generation
-WINDOW_SIZE = 1800  # Number of past price differences
+WINDOW_SIZE = 3600  # Number of past price differences
 
 # Z-score Threshold for Generating Signals
-Z_THRESHOLD = 2  # Threshold for buy/sell signals
+Z_THRESHOLD = 1.75  # Threshold for buy/sell signals
 
 # Trading Parameters for Buy/Sell Functions
 BUY_PRICE_OFFSET = -1  # Adjust as needed
