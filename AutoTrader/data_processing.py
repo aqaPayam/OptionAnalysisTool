@@ -15,7 +15,8 @@ from config import (
 )
 
 
-def processing_thread(data_queue, result_queue, counters, processing_ready_event, rolling_vols, price_diff_window):
+def processing_thread(data_queue, result_queue, signal_queue, counters, processing_ready_event, rolling_vols,
+                      price_diff_window):
     """
     Thread function for data processing and signal generation.
     """
@@ -95,11 +96,4 @@ def processing_thread(data_queue, result_queue, counters, processing_ready_event
 
             # Put result into the queue
             result_queue.append(result)
-
-            # Execute trading actions based on the signal
-            if signal == 'buy':
-                buy()
-            elif signal == 'sell':
-                sell()
-            elif signal == 'hold':
-                cancel_all_orders()
+            signal_queue.append({"Time": current_time, "signal": signal})

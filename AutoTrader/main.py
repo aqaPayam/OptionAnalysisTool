@@ -13,18 +13,21 @@ from config import (
     RISK_FREE_RATE, CALL_PUT, SLEEP_INTERVAL, SMOOTHING_PARAM,
     WINDOW_SIZE, Z_THRESHOLD, HISTORICAL_DATA_START_DATE, HISTORICAL_DATA_END_DATE,
     SAVE_FOLDER, JUST_DOWNLOAD, VALID_TIME_START, VALID_TIME_END,
-    USE_HISTORICAL
+    USE_HISTORICAL, MAX_SIZE
 )
+from signal_handling import signal_handling_thread
 from trading_api import TradingAPI
 from error_counters import ErrorCounters
 from data_fetching import data_fetching_thread
 from data_processing import processing_thread
 from result_handling import result_handling_thread
+
 # Only import historical_data_thread if USE_HISTORICAL is True
 if USE_HISTORICAL:
     from historical_data import historical_data_thread
 
 import warnings
+
 warnings.filterwarnings("ignore", category=FutureWarning)
 
 
@@ -43,12 +46,13 @@ def main():
     data = pd.DataFrame(columns=columns)  # Collection for trading data
 
     # Initialize rolling_vols and price_diff_window
-    rolling_vols = deque(maxlen=SMOOTHING_PARAM if SMOOTHING_PARAM > 1 else None)
+    rolling_vols = deque(maxlen=SMOOTHING_PARAM)
     price_diff_window = deque(maxlen=WINDOW_SIZE)
 
     # Queues for inter-thread communication
-    data_queue = deque()  # Queue for fetched data
+    data_queue = deque(maxlen=MAX_SIZE)  # Queue for fetched data
     result_queue = deque()  # Queue for processed results
+    signal_queue = deque(maxlen=MAX_SIZE)
 
     # Events to signal when historical data and processing are ready
     processing_ready_event = Event()
@@ -73,9 +77,13 @@ def main():
 
     # Start processing thread
     processing_thread_instance = Thread(target=processing_thread, args=(
-        data_queue, result_queue, counters, processing_ready_event, rolling_vols, price_diff_window))
+        data_queue, result_queue, signal_queue, counters, processing_ready_event, rolling_vols, price_diff_window))
     processing_thread_instance.daemon = True  # Set thread as daemon
     processing_thread_instance.start()
+
+    signal_thread = Thread(target=signal_handling_thread, args=(signal_queue,))
+    signal_thread.daemon = True  # Set thread as daemon so it exits with main
+    signal_thread.start()
 
     result_thread = None  # Placeholder for result handling thread
 
@@ -100,7 +108,6 @@ def main():
                     result_thread = Thread(target=result_handling_thread, args=(result_queue, data))
                     result_thread.daemon = True  # Set thread as daemon
                     result_thread.start()
-
 
                     data_queue.clear()
                     print("INFO: Cleared data_queue to start fresh after historical data is ready.")
@@ -134,7 +141,6 @@ def main():
         # Report error counters
         counters.report()
         print("INFO: Program terminated.")
-
 
 
 if __name__ == "__main__":

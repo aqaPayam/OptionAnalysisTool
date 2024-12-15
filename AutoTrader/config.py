@@ -20,7 +20,7 @@ USE_HISTORICAL = False
 UNDERLYING_NAME = "اهرم"
 UNDERLYING_TICKER = "IRT1AHRM0001"  # Replace with actual ticker
 OPTION_NAME = "ضهرم1007"
-OPTION_TICKER = "IRO9AHRM2401"      # Replace with actual ticker
+OPTION_TICKER = "IRO9AHRM2401"  # Replace with actual ticker
 
 # Trading Parameters
 EXPIRATION_DATE = "1403-10-26"  # Jalali date (YYYY-MM-DD)
@@ -35,6 +35,7 @@ VALID_TIME_END = pd.to_datetime("12:30:00").time()
 # Retry and Sleep Configuration
 MAX_RETRIES = 7
 SLEEP_INTERVAL = 1  # seconds
+MAX_SIZE = 10
 
 # Volatility Smoothing Parameter
 SMOOTHING_PARAM = 3600  # e.g., 5 for SMA, 0.3 for EMA
@@ -47,12 +48,12 @@ Z_THRESHOLD = 1.5  # Threshold for buy/sell signals
 
 # Trading Parameters for Buy/Sell Functions
 BUY_PRICE_OFFSET = -1  # Adjust as needed
-SELL_PRICE_OFFSET = 1   # Adjust as needed
-ORDER_QUANTITY = 1     # Adjust as per your requirements
-TICKER = OPTION_TICKER  
+SELL_PRICE_OFFSET = 1  # Adjust as needed
+ORDER_QUANTITY = 1  # Adjust as per your requirements
+TICKER = OPTION_TICKER
 
 # Inputs for process_and_flatten_market_data
 HISTORICAL_DATA_START_DATE = '1403-08-29'  # Replace with actual start date
 HISTORICAL_DATA_END_DATE = jdatetime.date.today().strftime('%Y-%m-%d')  # Set to today's date
-SAVE_FOLDER = 'data_files'                 # Folder to save data files
-JUST_DOWNLOAD = False                      # Set to True if you only want to download data
+SAVE_FOLDER = 'data_files'  # Folder to save data files
+JUST_DOWNLOAD = False  # Set to True if you only want to download data
