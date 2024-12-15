@@ -16,6 +16,7 @@ from config import (
 )
 from trading_api import TradingAPI
 
+
 def generate_signals(z_score: float, z_threshold: float) -> Tuple[str, float, float]:
     """
     Generate buy/sell/hold signals based on z-score thresholds.
@@ -36,6 +37,7 @@ def generate_signals(z_score: float, z_threshold: float) -> Tuple[str, float, fl
         return 'sell', 0, 1
     else:
         return 'hold', 0, 0
+
 
 def process_price_difference(price_difference, price_diff_window, window_size, z_threshold, counters):
     """
@@ -74,19 +76,9 @@ def process_price_difference(price_difference, price_diff_window, window_size, z
             # Count as condition-related error
             counters.condition_error_counter += 1
 
-        # Execute signals
-        if signal == 'buy':
-            buy()
-        elif signal == 'sell':
-            sell()
-        elif signal == 'hold':
-            cancel_all_orders()
-
         # Append the new price_difference to the window AFTER signal generation
         if not np.isnan(price_difference):
             price_diff_window.append(price_difference)
-        else:
-            price_diff_window.append(np.nan)
 
         return signal, under_count, over_count, rolling_mean_diff, rolling_std_diff, z_score
 
@@ -94,6 +86,7 @@ def process_price_difference(price_difference, price_diff_window, window_size, z
         print(f"ERROR: Error in processing price difference: {e}")
         counters.try_except_counter += 1
         return 'hold', 0, 0, np.nan, np.nan, np.nan
+
 
 def buy():
     """
@@ -115,6 +108,7 @@ def buy():
     # Place or modify buy order
     api.buy(ticker=TICKER, price=buy_price, quantity=ORDER_QUANTITY)
 
+
 def sell():
     """
     Implements the sell logic using the TradingAPI.
@@ -134,6 +128,7 @@ def sell():
 
     # Place or modify sell order
     api.sell(ticker=TICKER, price=sell_price, quantity=ORDER_QUANTITY)
+
 
 def cancel_all_orders():
     """

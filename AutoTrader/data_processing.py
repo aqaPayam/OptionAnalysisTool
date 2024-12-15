@@ -11,8 +11,9 @@ from helpers import (
 from signals import process_price_difference, buy, sell, cancel_all_orders
 from config import (
     EXPIRATION_DATE, STRIKE_PRICE, RISK_FREE_RATE, CALL_PUT,
-    SLEEP_INTERVAL, Z_THRESHOLD ,SMOOTHING_PARAM ,WINDOW_SIZE
+    SLEEP_INTERVAL, Z_THRESHOLD, SMOOTHING_PARAM, WINDOW_SIZE
 )
+
 
 def processing_thread(data_queue, result_queue, counters, processing_ready_event, rolling_vols, price_diff_window):
     """
@@ -23,8 +24,6 @@ def processing_thread(data_queue, result_queue, counters, processing_ready_event
     processing_ready_event.wait()
     print("INFO: Historical data is ready. Processing thread starting analysis.")
 
-    # Initialize variables
-    ema_estimated_vol = np.nan  # Initial EMA value
     under_negative_one_count = 0
     over_positive_one_count = 0
 
@@ -38,7 +37,7 @@ def processing_thread(data_queue, result_queue, counters, processing_ready_event
             )
 
             if not is_valid:
-                print("INFO: Skipping due to invalid time or data.")
+                print("INFO: Skipping due to invalid data or time :data has 0 :")
                 continue
 
             # Calculate time to expiration
@@ -54,8 +53,8 @@ def processing_thread(data_queue, result_queue, counters, processing_ready_event
             )
 
             # Calculate estimated volatility
-            estimated_vol, rolling_vols, ema_estimated_vol = calculate_estimated_volatility(
-                implied_vol, rolling_vols, ema_estimated_vol, SMOOTHING_PARAM
+            estimated_vol = calculate_estimated_volatility(
+                implied_vol, rolling_vols
             )
 
             # Calculate Black-Scholes price
@@ -104,6 +103,3 @@ def processing_thread(data_queue, result_queue, counters, processing_ready_event
                 sell()
             elif signal == 'hold':
                 cancel_all_orders()
-
-        else:
-            time.sleep(SLEEP_INTERVAL)

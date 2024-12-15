@@ -9,6 +9,7 @@ from py_vollib.black_scholes import black_scholes
 from py_vollib.black_scholes.implied_volatility import implied_volatility
 from config import SMOOTHING_PARAM, CALL_PUT, RISK_FREE_RATE, STRIKE_PRICE, VALID_TIME_START, VALID_TIME_END
 
+
 def calculate_simple_moving_average(rolling_vols: deque) -> float:
     """
     Calculate the simple moving average (SMA) of implied volatility.
@@ -23,52 +24,28 @@ def calculate_simple_moving_average(rolling_vols: deque) -> float:
         return sum(rolling_vols) / len(rolling_vols)
     return np.nan
 
-def calculate_exponential_moving_average(previous_ema: float, implied_vol: float, alpha: float) -> float:
-    """
-    Update the exponential moving average (EMA) of implied volatility.
 
-    Args:
-        previous_ema (float): The previous EMA value.
-        implied_vol (float): The current implied volatility.
-        alpha (float): The smoothing factor for EMA.
-
-    Returns:
-        float: The updated EMA value.
-    """
-    if np.isnan(previous_ema) and not pd.isnull(implied_vol):
-        return implied_vol
-    elif not pd.isnull(implied_vol):
-        return alpha * implied_vol + (1 - alpha) * previous_ema
-    return previous_ema
-
-def calculate_estimated_volatility(implied_vol, rolling_vols, ema_estimated_vol, smoothing_param):
+def calculate_estimated_volatility(implied_vol, rolling_vols):
     """
     Calculate the estimated volatility using SMA or EMA based on the smoothing_param.
 
     Args:
         implied_vol (float): The current implied volatility.
         rolling_vols (deque): A deque of past implied volatilities for SMA.
-        ema_estimated_vol (float): The current EMA value.
-        smoothing_param (float): The smoothing parameter (alpha for EMA or window size for SMA).
 
     Returns:
         Tuple[float, deque, float]: The estimated volatility, updated rolling_vols, and updated ema_estimated_vol.
     """
-    if 0 < smoothing_param <= 1:
-        # EMA Mode
-        estimated_vol = ema_estimated_vol
-        ema_estimated_vol = calculate_exponential_moving_average(ema_estimated_vol, implied_vol, smoothing_param)
-    elif smoothing_param > 1:
-        # SMA Mode
-        estimated_vol = calculate_simple_moving_average(rolling_vols)
-        if not pd.isnull(implied_vol):
-            rolling_vols.append(implied_vol)
-    else:
-        raise ValueError(
-            "smoothing_param must be a float (0 < smoothing_param <= 1) for EMA or an integer > 1 for SMA.")
-    return estimated_vol, rolling_vols, ema_estimated_vol
 
-def calculate_black_scholes_price(avg_price_underlying, strike_price, risk_free_rate, expiration_jalali_date, call_put, current_date_jalali, estimated_vol):
+    estimated_vol = calculate_simple_moving_average(rolling_vols)
+    if not pd.isnull(implied_vol):
+        rolling_vols.append(implied_vol)
+
+    return estimated_vol
+
+
+def calculate_black_scholes_price(avg_price_underlying, strike_price, risk_free_rate, expiration_jalali_date, call_put,
+                                  current_date_jalali, estimated_vol):
     """
     Calculate Black-Scholes price based on estimated volatility.
 
@@ -91,6 +68,7 @@ def calculate_black_scholes_price(avg_price_underlying, strike_price, risk_free_
     except Exception as e:
         print(f"ERROR: Error calculating Black-Scholes price: {e}")
     return np.nan
+
 
 def calculate_time_to_expiration(current_date: str, expiration_jalali_date: str) -> float:
     """
@@ -116,7 +94,9 @@ def calculate_time_to_expiration(current_date: str, expiration_jalali_date: str)
         print(f"ERROR: Error calculating time to expiration: {e}")
     return 0.0
 
-def calculate_implied_volatility(avg_price_option, avg_price_underlying, time_to_expiration, strike_price, risk_free_rate, call_put, counters):
+
+def calculate_implied_volatility(avg_price_option, avg_price_underlying, time_to_expiration, strike_price,
+                                 risk_free_rate, call_put, counters):
     """
     Calculate implied volatility for the option.
 
@@ -147,6 +127,7 @@ def calculate_implied_volatility(avg_price_option, avg_price_underlying, time_to
         counters.try_except_counter += 1
         return np.nan
 
+
 def fetch_data(api, underlying_ticker, option_ticker):
     """
     Fetch data for the underlying and options market.
@@ -162,6 +143,7 @@ def fetch_data(api, underlying_ticker, option_ticker):
     underlying_data = api.fetch_order_book(underlying_ticker)
     option_data = api.fetch_order_book(option_ticker)
     return underlying_data, option_data
+
 
 def validate_time_and_data(current_time, underlying_data, option_data, counters):
     """
@@ -184,9 +166,8 @@ def validate_time_and_data(current_time, underlying_data, option_data, counters)
     elif isinstance(time, datetime.time):
         current_time = time
     else:
-        print(type,time)
+        print(type, time)
         print("ERROR IN HELPERS VALIDATE DATE TIME")
-
 
     if not (VALID_TIME_START <= current_time <= VALID_TIME_END):
         counters.skip_by_time_counter += 1
