@@ -1,12 +1,14 @@
 # data_merging.py
+#TODO baraye use historical
 
 import time
 import pandas as pd
 import numpy as np  # Ensure numpy is imported
 
+
 def merge_historical_and_live_data(
-    data_queue, historical_data_container, columns,
-    rolling_vols, price_diff_window, processing_ready_event
+        data_queue, historical_data_container, columns,
+        rolling_vols, price_diff_window, processing_ready_event
 ):
     """
     Merges historical data with live data and initializes rolling variables.
@@ -86,18 +88,17 @@ def merge_historical_and_live_data(
     def update_rolling_metrics(data, rolling_vols, price_diff_window):
         data['price_difference'] = data['avg_price_option'] - data['black_scholes_price']
         data['price_difference'] = data['price_difference'].apply(
-            lambda x: (price_diff_window.append(x) or x) if not np.isnan(x) else (price_diff_window.append(np.nan) or np.nan)
+            lambda x: (price_diff_window.append(x) or x) if not np.isnan(x) else (
+                    price_diff_window.append(np.nan) or np.nan)
         )
         data['implied_vol'].apply(lambda x: rolling_vols.append(x))
 
     update_rolling_metrics(merged_data, rolling_vols, price_diff_window)
 
-    #TODO RIIIIDIII
-    #kole diference null hast va khob begaei 
-    #imp vol ama doroste kar mikone
+    # TODO RIIIIDIII
+    # kole diference null hast va khob begaei
+    # imp vol ama doroste kar mikone
 
-
-    
     print("INFO: Historical data merged and rolling variables initialized.")
 
     # Clear the data_queue after merging
