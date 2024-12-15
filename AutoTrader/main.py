@@ -96,7 +96,7 @@ def main():
                     # Merge historical and live data, and update `data`
                     data = merge_historical_and_live_data(
                         data_queue, historical_data_container, columns,
-                        rolling_vols, price_diff_window, processing_ready_event
+                        rolling_vols, price_diff_window, processing_ready_event, counters
                     )
                     historical_data_merged = True
 
