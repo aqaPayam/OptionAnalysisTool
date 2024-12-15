@@ -1,43 +1,43 @@
 # data_merging.py
-#TODO baraye use historical
-
 import time
 import pandas as pd
-import numpy as np  # Ensure numpy is imported
+import numpy as np
+
+from helpers import (
+    validate_time_and_data, calculate_time_to_expiration,
+    calculate_implied_volatility, calculate_estimated_volatility,
+    calculate_black_scholes_price
+)
+from signals import process_price_difference
+from config import (
+    EXPIRATION_DATE, STRIKE_PRICE, RISK_FREE_RATE, CALL_PUT,
+    Z_THRESHOLD, WINDOW_SIZE
+)
 
 
 def merge_historical_and_live_data(
         data_queue, historical_data_container, columns,
-        rolling_vols, price_diff_window, processing_ready_event
+        rolling_vols, price_diff_window, processing_ready_event,
+        counters
 ):
     """
     Merges historical data with live data and initializes rolling variables.
+    Then applies the same processing steps (implied_vol, estimated_vol,
+    black_scholes_price, signals) to both the historical data (after trimming)
+    and the live data until the data_queue is empty.
 
     Parameters:
-    - data_queue: List of tuples containing live data points.
-    - historical_data_container: Dictionary containing historical data under the 'data' key.
+    - data_queue: Deque or list of tuples (current_date_jalali, current_time, underlying_data, option_data).
+    - historical_data_container: Dictionary containing historical data under 'data' key.
     - columns: List of column names to ensure alignment.
     - rolling_vols: List to store rolling implied volatilities.
     - price_diff_window: List to store rolling price differences.
     - processing_ready_event: Event to signal that processing can start.
+    - counters: Dictionary or similar structure for tracking counts and other metrics.
 
-    Historical data columns:
-        - "Date"
-        - "Time"
-        - "avg_price_underlying"
-        - "avg_price_option"
-        - "implied_vol"
-
-    DATA_QUEUE contains tuples: (current_date, current_time, underlying_data, option_data)
+    Returns:
+    A pandas DataFrame containing fully processed historical and live data.
     """
-
-    # Define the columns expected in the merged data
-    # columns = [
-    #     "Date", "Time", "avg_price_underlying", "avg_price_option",
-    #     "black_scholes_price", "implied_vol", "estimated_vol",
-    #     "price_difference", "rolling_mean_diff", "rolling_std_diff", "z_score",
-    #     "signal", "under_negative_one_count", "over_positive_one_count"
-    # ]
 
     if 'data' not in historical_data_container:
         print("ERROR: No historical data found in the container.")
@@ -45,15 +45,15 @@ def merge_historical_and_live_data(
 
     historical_data = historical_data_container.pop('data')
 
-    # Align historical data columns with the required structure
+    # Ensure all required columns are present
     for col in columns:
         if col not in historical_data.columns:
-            historical_data[col] = np.nan  # Add missing columns with NaN values
+            historical_data[col] = np.nan
 
-    # Reorder historical data columns to match the expected structure
+    # Reorder columns
     historical_data = historical_data[columns]
 
-    # Wait for at least one live data point to synchronize timestamps
+    # Wait until we have at least one live data point
     while not data_queue:
         print("INFO: Waiting for first data point from data_queue to compare timestamps...")
         time.sleep(1)
@@ -66,42 +66,168 @@ def merge_historical_and_live_data(
         print(f"ERROR: Failed to create datetime string from data_queue: {e}")
         return
 
-    # Filter historical data to remove entries with timestamps >= first live data timestamp
+    # Function to determine if the last historical entry is too recent
     def should_remove_last_entry():
+        if historical_data.empty:
+            return False
         last_entry = historical_data.iloc[-1]
         historical_entry_datetime = f"{last_entry['Date']} {last_entry['Time']}"
         return historical_entry_datetime >= first_data_datetime
 
+    # Remove overlapping or too-recent historical entries
     while not historical_data.empty and should_remove_last_entry():
         print("INFO: Removing last entry from historical_data to ensure proper merging.")
         historical_data = historical_data.iloc[:-1]
 
     if historical_data.empty:
         print("WARNING: No historical data remaining after timestamp adjustment.")
-        return
+        # Even if no historical data remains, we can still process live data as is.
+        # But let's proceed with just the live data in that case.
+        pass
 
-    # Merge historical data with the live data queue
-    live_data_df = pd.DataFrame(data_queue, columns=columns)
-    merged_data = pd.concat([historical_data, live_data_df], ignore_index=True)
+    # Initialize counters for signals
+    under_negative_one_count = 0
+    over_positive_one_count = 0
 
-    # Calculate rolling metrics
-    def update_rolling_metrics(data, rolling_vols, price_diff_window):
-        data['price_difference'] = data['avg_price_option'] - data['black_scholes_price']
-        data['price_difference'] = data['price_difference'].apply(
-            lambda x: (price_diff_window.append(x) or x) if not np.isnan(x) else (
-                    price_diff_window.append(np.nan) or np.nan)
+    # Process historical data first
+    processed_rows = []
+    for idx, row in historical_data.iterrows():
+        current_date_jalali = row["Date"]
+        current_time = row["Time"]
+        avg_price_underlying = row["avg_price_underlying"]
+        avg_price_option = row["avg_price_option"]
+
+        # Validate data
+        _, _, is_valid = validate_time_and_data(
+            current_time, avg_price_underlying, avg_price_option, counters
         )
-        data['implied_vol'].apply(lambda x: rolling_vols.append(x))
+        if not is_valid:
+            # Skip invalid historical rows
+            continue
 
-    update_rolling_metrics(merged_data, rolling_vols, price_diff_window)
+        # Calculate time to expiration
+        time_to_expiration = calculate_time_to_expiration(current_date_jalali, EXPIRATION_DATE)
+        if time_to_expiration <= 0:
+            # Skip rows that are past expiration
+            continue
 
-    # TODO RIIIIDIII
-    # kole diference null hast va khob begaei
-    # imp vol ama doroste kar mikone
+        # Implied volatility
+        implied_vol = calculate_implied_volatility(
+            avg_price_option, avg_price_underlying, time_to_expiration, STRIKE_PRICE,
+            RISK_FREE_RATE, CALL_PUT, counters
+        )
 
-    print("INFO: Historical data merged and rolling variables initialized.")
+        # Estimated volatility
+        estimated_vol = calculate_estimated_volatility(implied_vol, rolling_vols)
 
-    # Clear the data_queue after merging
-    data_queue.clear()
+        # Black-Scholes price
+        black_scholes_price = calculate_black_scholes_price(
+            avg_price_underlying, STRIKE_PRICE, RISK_FREE_RATE,
+            EXPIRATION_DATE, CALL_PUT, current_date_jalali, estimated_vol
+        )
 
-    return merged_data
+        # Price difference
+        price_difference = avg_price_option - black_scholes_price
+
+        # Process price difference for signals
+        signal, under_count, over_count, rolling_mean_diff, rolling_std_diff, z_score = process_price_difference(
+            price_difference, price_diff_window, WINDOW_SIZE, Z_THRESHOLD, counters
+        )
+
+        # Update counts
+        under_negative_one_count += under_count
+        over_positive_one_count += over_count
+
+        # Update the row with computed values
+        row["black_scholes_price"] = black_scholes_price
+        row["implied_vol"] = implied_vol
+        row["estimated_vol"] = estimated_vol
+        row["price_difference"] = price_difference
+        row["rolling_mean_diff"] = rolling_mean_diff
+        row["rolling_std_diff"] = rolling_std_diff
+        row["z_score"] = z_score
+        row["signal"] = signal
+        row["under_negative_one_count"] = under_negative_one_count
+        row["over_positive_one_count"] = over_positive_one_count
+
+        processed_rows.append(row)
+
+    historical_data = pd.DataFrame(processed_rows, columns=columns)
+
+    # Now process live data until the data_queue is empty
+    live_processed_rows = []
+    while data_queue:
+        current_date_jalali, current_time, underlying_data, option_data = data_queue.popleft()
+
+        # Validate data and time
+        avg_price_underlying, avg_price_option, is_valid = validate_time_and_data(
+            current_time, underlying_data, option_data, counters
+        )
+        if not is_valid:
+            print("INFO: Skipping due to invalid data or time: data has 0 or invalid conditions.")
+            continue
+
+        # Calculate time to expiration
+        time_to_expiration = calculate_time_to_expiration(current_date_jalali, EXPIRATION_DATE)
+        if time_to_expiration <= 0:
+            print("WARNING: Expiration date reached or passed.")
+            # Stop processing since expiration is passed
+            break
+
+        # Calculate implied volatility
+        implied_vol = calculate_implied_volatility(
+            avg_price_option, avg_price_underlying, time_to_expiration, STRIKE_PRICE,
+            RISK_FREE_RATE, CALL_PUT, counters
+        )
+
+        # Calculate estimated volatility
+        estimated_vol = calculate_estimated_volatility(implied_vol, rolling_vols)
+
+        # Calculate Black-Scholes price
+        black_scholes_price = calculate_black_scholes_price(
+            avg_price_underlying, STRIKE_PRICE, RISK_FREE_RATE,
+            EXPIRATION_DATE, CALL_PUT, current_date_jalali, estimated_vol
+        )
+
+        # Calculate price difference
+        price_difference = avg_price_option - black_scholes_price
+
+        # Process price difference and generate signals
+        signal, under_count, over_count, rolling_mean_diff, rolling_std_diff, z_score = process_price_difference(
+            price_difference, price_diff_window, WINDOW_SIZE, Z_THRESHOLD, counters
+        )
+
+        # Update counts
+        under_negative_one_count += under_count
+        over_positive_one_count += over_count
+
+        # Prepare result data as a dictionary
+        live_result = {
+            "Date": current_date_jalali,
+            "Time": current_time,
+            "avg_price_underlying": avg_price_underlying,
+            "avg_price_option": avg_price_option,
+            "black_scholes_price": black_scholes_price,
+            "implied_vol": implied_vol,
+            "estimated_vol": estimated_vol,
+            "price_difference": price_difference,
+            "rolling_mean_diff": rolling_mean_diff,
+            "rolling_std_diff": rolling_std_diff,
+            "z_score": z_score,
+            "signal": signal,
+            "under_negative_one_count": under_negative_one_count,
+            "over_positive_one_count": over_positive_one_count
+        }
+
+        live_processed_rows.append(live_result)
+
+    live_data = pd.DataFrame(live_processed_rows, columns=columns)
+
+    # Combine processed historical and live data
+    # If historical_data is empty, it will just return live_data
+    combined_data = pd.concat([historical_data, live_data], ignore_index=True)
+
+    # Signal that processing is now fully ready since we have a combined dataset
+    processing_ready_event.set()
+
+    return combined_data

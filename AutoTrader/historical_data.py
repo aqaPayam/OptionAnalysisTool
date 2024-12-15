@@ -9,6 +9,7 @@ from config import (
     EXPIRATION_DATE, CALL_PUT, SAVE_FOLDER, JUST_DOWNLOAD
 )
 
+
 def historical_data_thread(historical_data_ready_event, historical_data_container):
     """
     Thread function for downloading and processing historical data.

@@ -22,9 +22,8 @@ from data_fetching import data_fetching_thread
 from data_processing import processing_thread
 from result_handling import result_handling_thread
 
-# Only import historical_data_thread if USE_HISTORICAL is True
-if USE_HISTORICAL:
-    from historical_data import historical_data_thread
+from data_merging import merge_historical_and_live_data
+from historical_data import historical_data_thread
 
 import warnings
 
@@ -94,14 +93,11 @@ def main():
             if USE_HISTORICAL:
                 # Check if historical data is ready and merge data
                 if historical_data_ready_event.is_set() and not historical_data_merged:
-                    from data_merging import merge_historical_and_live_data
-
                     # Merge historical and live data, and update `data`
-                    merged_data = merge_historical_and_live_data(
+                    data = merge_historical_and_live_data(
                         data_queue, historical_data_container, columns,
                         rolling_vols, price_diff_window, processing_ready_event
                     )
-                    data = merged_data  # Update data with merged result
                     historical_data_merged = True
 
                     # Start result handling thread after merging data
