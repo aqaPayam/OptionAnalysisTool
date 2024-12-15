@@ -29,6 +29,7 @@ def processing_thread(data_queue, result_queue, signal_queue, counters, processi
     over_positive_one_count = 0
 
     while True:
+        time.sleep(0.01)
         if data_queue:
             current_date_jalali, current_time, underlying_data, option_data = data_queue.popleft()
 

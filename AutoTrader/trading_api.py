@@ -6,6 +6,7 @@ import requests
 from typing import Optional, List
 from config import BASE_URL, MARKET_URL, HEADERS, MAX_RETRIES, SLEEP_INTERVAL
 
+
 class TradingAPI:
     """
     Class to interact with the trading API.
@@ -58,9 +59,9 @@ class TradingAPI:
             Optional[List[float]]: A list containing [sell_volume, sell_price, buy_price, buy_volume].
         """
         url = f"{self.market_url}/Queue/BestLimitWithSize?isin={ticker}"
-        
+
         response = self._make_request('GET', url)
-        
+
         if response:
             try:
                 buy = response.get('buy', [])
@@ -274,4 +275,3 @@ class TradingAPI:
         else:
             print(f"ERROR: Failed to cancel orders with serial numbers: {serial_numbers}")
         return response
-

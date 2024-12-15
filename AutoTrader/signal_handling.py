@@ -12,6 +12,7 @@ def signal_handling_thread(signal_queue):
     last_signal = None
 
     while True:
+        time.sleep(0.01)
         if signal_queue:
             signal_data = signal_queue.popleft()
             current_time = signal_data.get("Time")

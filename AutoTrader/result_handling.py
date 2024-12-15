@@ -1,4 +1,6 @@
 import sys
+import time
+
 import pandas as pd
 import jdatetime  # For Jalali date handling
 import os  # For directory handling
@@ -21,6 +23,7 @@ def result_handling_thread(result_queue, data):
 
     try:
         while True:
+            time.sleep(0.01)
             if result_queue:
                 result = result_queue.popleft()
 
@@ -41,6 +44,7 @@ def result_handling_thread(result_queue, data):
                 print(f"INFO: Z-Score < -{Z_THRESHOLD} Count: {result['under_negative_one_count']}")
                 print(f"INFO: Z-Score > +{Z_THRESHOLD} Count: {result['over_positive_one_count']}")
                 print("\n")
+
             # If no items in queue, just continue checking without sleeping.
     finally:
         # When the thread is about to exit (e.g., due to sys.exit in main or another exception),
