@@ -10,8 +10,8 @@ MDAPI_URL = 'https://mdapi1.ephoenix.ir/api/v2'
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
     'Accept': 'application/json, text/plain, */*',
-    'Cookie': 'cookiesession1=678B28DD6FE6ED96910C335752DBC495; otauth-178-OMS48888ac3-f97c-4e5e-9f16-47e51be37e8d=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJTZXNzaW9uSWQiOiI0ODg4OGFjMy1mOTdjLTRlNWUtOWYxNi00N2U1MWJlMzdlOGQiLCJVc2VySWQiOiIxMDA3OTUiLCJBcHBOYW1lIjoiT01TIiwiQnJva2VyQ29kZSI6IjE3OCIsIm5iZiI6MTczMzgxMDAyMCwiZXhwIjoxNzMzODM4ODIwLCJpc3MiOiJPTVMiLCJhdWQiOiJPTVMifQ.NKg6XsIUh6y-8bluoGi4iEoMeh-URFM8icxaYD2bstFlOn5Lkrq2yv2kBTDNrbgBWtBr0hn9tLssFl7YT8KlOA',  # Set securely
-    'x-sessionId': 'OMS48888ac3-f97c-4e5e-9f16-47e51be37e8d',  # Set securely
+    'Cookie': 'cookiesession1=678B28DD6FE6ED96910C335752DBC495; otauth-178-OMS670ec32e-baa8-40f2-8d2b-131d293d8d78=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJTZXNzaW9uSWQiOiI2NzBlYzMyZS1iYWE4LTQwZjItOGQyYi0xMzFkMjkzZDhkNzgiLCJVc2VySWQiOiIxMDA3OTUiLCJBcHBOYW1lIjoiT01TIiwiQnJva2VyQ29kZSI6IjE3OCIsIm5iZiI6MTczNDE1NTg5MiwiZXhwIjoxNzM0MTg0NjkyLCJpc3MiOiJPTVMiLCJhdWQiOiJPTVMifQ.XpyMISe3QvYZNc9GixxYL_bu5XQuj9kGwGuKQuI7J6OX-BEcaFnEXyfwAy0z6W5aAnQaP6FNZVbI-9o1hOSzlg',  # Set securely
+    'x-sessionId': 'OMS670ec32e-baa8-40f2-8d2b-131d293d8d78',  # Set securely
     'Content-Type': 'application/json'
 }
 
