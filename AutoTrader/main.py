@@ -1,5 +1,5 @@
 # main.py
-
+# TODO while TURE ha fix nashode
 import time
 import jdatetime
 import datetime
