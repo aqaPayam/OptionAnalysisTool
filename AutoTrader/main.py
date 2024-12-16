@@ -1,9 +1,7 @@
-# main.py
-# TODO while TURE ha fix nashode
 import time
 import jdatetime
 import datetime
-import sys  # Add this import
+import sys
 from threading import Thread, Event
 from collections import deque
 import pandas as pd
@@ -31,30 +29,27 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 
 
 def main():
-    # Initialize API and error counters
     api = TradingAPI()
     counters = ErrorCounters()
 
-    # Initialize DataFrame to store trading data
     columns = [
         "Date", "Time", "avg_price_underlying", "avg_price_option",
         "black_scholes_price", "implied_vol", "estimated_vol",
         "price_difference", "rolling_mean_diff", "rolling_std_diff", "z_score",
         "signal", "under_negative_one_count", "over_positive_one_count"
     ]
-    data = pd.DataFrame(columns=columns)  # Collection for trading data
+    data = pd.DataFrame(columns=columns)
 
-    # Initialize rolling_vols and price_diff_window
     rolling_vols = deque(maxlen=SMOOTHING_PARAM)
     price_diff_window = deque(maxlen=WINDOW_SIZE)
 
-    # Queues for inter-thread communication
-    data_queue = deque(maxlen=MAX_SIZE)  # Queue for fetched data
-    result_queue = deque()  # Queue for processed results
+    data_queue = deque(maxlen=MAX_SIZE)
+    result_queue = deque()
     signal_queue = deque(maxlen=MAX_SIZE)
 
-    # Events to signal when historical data and processing are ready
     processing_ready_event = Event()
+    stop_event = Event()  # <-- Stop event for graceful shutdown
+
     if USE_HISTORICAL:
         historical_data_ready_event = Event()
         historical_data_container = {}
@@ -62,81 +57,85 @@ def main():
         historical_data_ready_event = None
         historical_data_container = None
 
+    # Start historical data thread if needed
     if USE_HISTORICAL:
-        # Start historical data thread
         historical_thread = Thread(target=historical_data_thread, args=(
-            historical_data_ready_event, historical_data_container))
-        historical_thread.daemon = True  # Set thread as daemon
+            historical_data_ready_event, historical_data_container, stop_event))
         historical_thread.start()
+    else:
+        historical_thread = None
 
     # Start data fetching thread
-    data_thread = Thread(target=data_fetching_thread, args=(api, data_queue, counters))
-    data_thread.daemon = True  # Set thread as daemon
+    data_thread = Thread(target=data_fetching_thread, args=(api, data_queue, counters, stop_event))
     data_thread.start()
 
     # Start processing thread
     processing_thread_instance = Thread(target=processing_thread, args=(
-        data_queue, result_queue, signal_queue, counters, processing_ready_event, rolling_vols, price_diff_window))
-    processing_thread_instance.daemon = True  # Set thread as daemon
+        data_queue, result_queue, signal_queue, counters, processing_ready_event,
+        rolling_vols, price_diff_window, stop_event))
     processing_thread_instance.start()
 
-    signal_thread = Thread(target=signal_handling_thread, args=(signal_queue,))
-    signal_thread.daemon = True  # Set thread as daemon so it exits with main
+    signal_thread = Thread(target=signal_handling_thread, args=(signal_queue, stop_event))
     signal_thread.start()
 
-    result_thread = None  # Placeholder for result handling thread
+    result_thread = None
 
     try:
-        # Main thread loop
         historical_data_merged = False
-        while True:
+        while not stop_event.is_set():
             if USE_HISTORICAL:
-                # Check if historical data is ready and merge data
                 if historical_data_ready_event.is_set() and not historical_data_merged:
-                    # Merge historical and live data, and update `data`
                     data = merge_historical_and_live_data(
                         data_queue, historical_data_container, columns,
                         rolling_vols, price_diff_window, processing_ready_event, counters
                     )
                     historical_data_merged = True
 
-                    # Start result handling thread after merging data
-                    result_thread = Thread(target=result_handling_thread, args=(result_queue, data))
-                    result_thread.daemon = True  # Set thread as daemon
+                    result_thread = Thread(target=result_handling_thread, args=(result_queue, data, stop_event))
                     result_thread.start()
 
                     data_queue.clear()
                     print("INFO: Cleared data_queue to start fresh after historical data is ready.")
-
-                    # Signal the processing thread to start
                     processing_ready_event.set()
-
-
             else:
-                # Signal that processing can start when not using historical data
                 if not processing_ready_event.is_set():
                     processing_ready_event.set()
 
-                # Start result handling thread when not using historical data
                 if result_thread is None:
-                    result_thread = Thread(target=result_handling_thread, args=(result_queue, data))
-                    result_thread.daemon = True  # Set thread as daemon
+                    result_thread = Thread(target=result_handling_thread, args=(result_queue, data, stop_event))
                     result_thread.start()
 
-            # Check the current time against VALID_TIME_END
             current_time = jdatetime.datetime.now().time()
 
             if current_time > VALID_TIME_END:
-                print("INFO: Current time has passed VALID_TIME_END, exiting program.")
-                sys.exit()  # Exit the main thread
+                print("INFO: Current time has passed VALID_TIME_END, initiating graceful shutdown.")
+                stop_event.set()  # Signal all threads to stop
+                break
+
             time.sleep(1)
+
     except KeyboardInterrupt:
-        print("INFO: Processing stopped by user.")
-        sys.exit()  # Exit the main thread
+        print("INFO: Processing stopped by user, initiating graceful shutdown.")
+        stop_event.set()
     finally:
-        # Report error counters
+        # Wait for all threads to finish
+        if historical_thread and historical_thread.is_alive():
+            historical_thread.join()
+
+        if data_thread.is_alive():
+            data_thread.join()
+
+        if processing_thread_instance.is_alive():
+            processing_thread_instance.join()
+
+        if signal_thread.is_alive():
+            signal_thread.join()
+
+        if result_thread and result_thread.is_alive():
+            result_thread.join()
+
         counters.report()
-        print("INFO: Program terminated.")
+        print("INFO: Program terminated gracefully.")
 
 
 if __name__ == "__main__":

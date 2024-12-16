@@ -1,5 +1,3 @@
-# data_processing.py
-
 import time
 import jdatetime
 import numpy as np
@@ -8,19 +6,18 @@ from helpers import (
     calculate_implied_volatility, calculate_estimated_volatility,
     calculate_black_scholes_price
 )
-from signals import process_price_difference, buy, sell, cancel_all_orders
+from signals import process_price_difference
 from config import (
     EXPIRATION_DATE, STRIKE_PRICE, RISK_FREE_RATE, CALL_PUT,
-    SLEEP_INTERVAL, Z_THRESHOLD, SMOOTHING_PARAM, WINDOW_SIZE
+    WINDOW_SIZE, Z_THRESHOLD
 )
 
 
 def processing_thread(data_queue, result_queue, signal_queue, counters, processing_ready_event, rolling_vols,
-                      price_diff_window):
+                      price_diff_window, stop_event):
     """
     Thread function for data processing and signal generation.
     """
-    # Wait until the historical data is ready
     print("INFO: Processing thread waiting for historical data to be ready...")
     processing_ready_event.wait()
     print("INFO: Historical data is ready. Processing thread starting analysis.")
@@ -28,73 +25,65 @@ def processing_thread(data_queue, result_queue, signal_queue, counters, processi
     under_negative_one_count = 0
     over_positive_one_count = 0
 
-    while True:
-        time.sleep(0.01)
-        if data_queue:
-            current_date_jalali, current_time, underlying_data, option_data = data_queue.popleft()
+    try:
+        while not stop_event.is_set():
+            time.sleep(0.01)
+            if data_queue:
+                current_date_jalali, current_time, underlying_data, option_data = data_queue.popleft()
 
-            # Validate data and time
-            avg_price_underlying, avg_price_option, is_valid = validate_time_and_data(
-                current_time, underlying_data, option_data, counters
-            )
+                avg_price_underlying, avg_price_option, is_valid = validate_time_and_data(
+                    current_time, underlying_data, option_data, counters
+                )
+                if not is_valid:
+                    print("INFO: Skipping due to invalid data or time :data has 0 :")
+                    continue
 
-            if not is_valid:
-                print("INFO: Skipping due to invalid data or time :data has 0 :")
-                continue
+                time_to_expiration = calculate_time_to_expiration(current_date_jalali, EXPIRATION_DATE)
+                if time_to_expiration <= 0:
+                    print("WARNING: Expiration date reached or passed.")
+                    break
 
-            # Calculate time to expiration
-            time_to_expiration = calculate_time_to_expiration(current_date_jalali, EXPIRATION_DATE)
-            if time_to_expiration <= 0:
-                print("WARNING: Expiration date reached or passed.")
-                break
+                implied_vol = calculate_implied_volatility(
+                    avg_price_option, avg_price_underlying, time_to_expiration, STRIKE_PRICE,
+                    RISK_FREE_RATE, CALL_PUT, counters
+                )
 
-            # Calculate implied volatility
-            implied_vol = calculate_implied_volatility(
-                avg_price_option, avg_price_underlying, time_to_expiration, STRIKE_PRICE,
-                RISK_FREE_RATE, CALL_PUT, counters
-            )
+                estimated_vol = calculate_estimated_volatility(
+                    implied_vol, rolling_vols
+                )
 
-            # Calculate estimated volatility
-            estimated_vol = calculate_estimated_volatility(
-                implied_vol, rolling_vols
-            )
+                black_scholes_price = calculate_black_scholes_price(
+                    avg_price_underlying, STRIKE_PRICE, RISK_FREE_RATE,
+                    EXPIRATION_DATE, CALL_PUT, current_date_jalali, estimated_vol
+                )
 
-            # Calculate Black-Scholes price
-            black_scholes_price = calculate_black_scholes_price(
-                avg_price_underlying, STRIKE_PRICE, RISK_FREE_RATE,
-                EXPIRATION_DATE, CALL_PUT, current_date_jalali, estimated_vol
-            )
+                price_difference = avg_price_option - black_scholes_price
 
-            # Calculate price difference
-            price_difference = avg_price_option - black_scholes_price
+                signal, under_count, over_count, rolling_mean_diff, rolling_std_diff, z_score = process_price_difference(
+                    price_difference, price_diff_window, WINDOW_SIZE, Z_THRESHOLD, counters
+                )
 
-            # Process price difference and generate signals
-            signal, under_count, over_count, rolling_mean_diff, rolling_std_diff, z_score = process_price_difference(
-                price_difference, price_diff_window, WINDOW_SIZE, Z_THRESHOLD, counters
-            )
+                under_negative_one_count += under_count
+                over_positive_one_count += over_count
 
-            # Update counts
-            under_negative_one_count += under_count
-            over_positive_one_count += over_count
+                result = {
+                    "Date": current_date_jalali,
+                    "Time": current_time,
+                    "avg_price_underlying": avg_price_underlying,
+                    "avg_price_option": avg_price_option,
+                    "black_scholes_price": black_scholes_price,
+                    "implied_vol": implied_vol,
+                    "estimated_vol": estimated_vol,
+                    "price_difference": price_difference,
+                    "rolling_mean_diff": rolling_mean_diff,
+                    "rolling_std_diff": rolling_std_diff,
+                    "z_score": z_score,
+                    "signal": signal,
+                    "under_negative_one_count": under_negative_one_count,
+                    "over_positive_one_count": over_positive_one_count
+                }
 
-            # Prepare result data
-            result = {
-                "Date": current_date_jalali,
-                "Time": current_time,
-                "avg_price_underlying": avg_price_underlying,
-                "avg_price_option": avg_price_option,
-                "black_scholes_price": black_scholes_price,
-                "implied_vol": implied_vol,
-                "estimated_vol": estimated_vol,
-                "price_difference": price_difference,
-                "rolling_mean_diff": rolling_mean_diff,
-                "rolling_std_diff": rolling_std_diff,
-                "z_score": z_score,
-                "signal": signal,
-                "under_negative_one_count": under_negative_one_count,
-                "over_positive_one_count": over_positive_one_count
-            }
-
-            # Put result into the queue
-            result_queue.append(result)
-            signal_queue.append({"Time": current_time, "signal": signal})
+                result_queue.append(result)
+                signal_queue.append({"Time": current_time, "signal": signal})
+    finally:
+        print("INFO: processing_thread is shutting down gracefully.")

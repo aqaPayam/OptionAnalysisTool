@@ -1,44 +1,34 @@
-# data_fetching.py
-
 import time
 import jdatetime
 from helpers import fetch_data
-from config import SLEEP_INTERVAL
-from config import UNDERLYING_TICKER
-from config import OPTION_TICKER
+from config import SLEEP_INTERVAL, UNDERLYING_TICKER, OPTION_TICKER
 
 
-def data_fetching_thread(api, data_queue, counters):
+def data_fetching_thread(api, data_queue, counters, stop_event):
     """
     Thread function for data fetching.
     """
-    while True:
-        try:
-            # Record the start time of the iteration
+    try:
+        while not stop_event.is_set():
             start_time = time.time()
-
             now = jdatetime.datetime.now()
+            current_date = now.strftime("%Y-%m-%d")
+            current_time = now.strftime("%H:%M:%S")
 
-            # Separating date and time
-            current_date = now.strftime("%Y-%m-%d")  # Format for date string
-            current_time = now.strftime("%H:%M:%S")  # Format for time string
-
-            # Fetch data
             underlying_data, option_data = fetch_data(api, UNDERLYING_TICKER, OPTION_TICKER)
             if underlying_data is None and option_data is None:
                 print("Fetched data is null")
             else:
-                # Put data into the queue
                 data_queue.append((current_date, current_time, underlying_data, option_data))
 
-            # Calculate elapsed time and adjust sleep
             elapsed_time = time.time() - start_time
             sleep_time = max(0, SLEEP_INTERVAL - elapsed_time)
             time.sleep(sleep_time)
-
-        except Exception as e:
-            counters.try_except_counter += 1
-            print(f"ERROR: Exception in data_fetching_thread: {e}")
-            import traceback
-            traceback.print_exc()
-            time.sleep(SLEEP_INTERVAL)
+    except Exception as e:
+        counters.try_except_counter += 1
+        print(f"ERROR: Exception in data_fetching_thread: {e}")
+        import traceback
+        traceback.print_exc()
+        # If exception occurs, the thread ends here and finally will execute
+    finally:
+        print("INFO: data_fetching_thread is shutting down gracefully.")

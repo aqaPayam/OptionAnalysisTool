@@ -1,31 +1,26 @@
-# signal_handling.py
-
 import time
 from signals import buy, sell, cancel_all_orders
 
 
-def signal_handling_thread(signal_queue):
+def signal_handling_thread(signal_queue, stop_event):
     """
-    Thread function for handling signals and executing trading actions.
-    Avoids redundant actions if the previous signal was also 'hold'.
+    Thread function for handling signals.
     """
     last_signal = None
+    try:
+        while not stop_event.is_set():
+            time.sleep(0.01)
+            if signal_queue:
+                signal_data = signal_queue.popleft()
+                current_time = signal_data.get("Time")
+                signal = signal_data.get("signal")
 
-    while True:
-        time.sleep(0.01)
-        if signal_queue:
-            signal_data = signal_queue.popleft()
-            current_time = signal_data.get("Time")
-            signal = signal_data.get("signal")
-
-            # Execute trading actions based on the signal
-            # Only cancel orders on 'hold' if the previous signal wasn't also 'hold'
-            if signal == 'buy':
-                buy()
-            elif signal == 'sell':
-                sell()
-            elif signal == 'hold' and last_signal != 'hold':
-                cancel_all_orders()
-
-            # Update the last signal
-            last_signal = signal
+                if signal == 'buy':
+                    buy()
+                elif signal == 'sell':
+                    sell()
+                elif signal == 'hold' and last_signal != 'hold':
+                    cancel_all_orders()
+                last_signal = signal
+    finally:
+        print("INFO: signal_handling_thread is shutting down gracefully.")
