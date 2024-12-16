@@ -193,3 +193,43 @@ def validate_time_and_data(current_time, underlying_data, option_data, counters)
         print(f"ERROR: Error in validate_time_and_data: {e}")
         counters.try_except_counter += 1
         return None, None, False
+
+
+def validate_time_and_data_preprocess(current_time, counters, avg_price_underlying, avg_price_option):
+    """
+    Validate current time and precomputed average prices for the underlying and options market.
+
+    Args:
+        current_time (datetime.time): The current time.
+        counters (ErrorCounters): An instance of the ErrorCounters class.
+        avg_price_underlying (float): Precomputed average price for the underlying asset.
+        avg_price_option (float): Precomputed average price for the option.
+
+    Returns:
+        bool: Validation status.
+    """
+    # Check current time
+    time = current_time
+    if isinstance(time, str):
+        current_time = datetime.datetime.strptime(time, "%H:%M:%S").time()
+    elif isinstance(time, datetime.time):
+        current_time = time
+    else:
+        print(type, time)
+        print("ERROR IN HELPERS VALIDATE DATE TIME")
+        return False
+
+    if not (VALID_TIME_START <= current_time <= VALID_TIME_END):
+        counters.skip_by_time_counter += 1
+        return False
+
+    # Validate the precomputed prices
+    if avg_price_underlying is None or avg_price_option is None:
+        counters.null_counter += 1
+        return False
+
+    if avg_price_underlying == 0 or avg_price_option == 0:
+        counters.null_counter += 1
+        return False
+
+    return True

@@ -6,7 +6,7 @@ import numpy as np
 from helpers import (
     validate_time_and_data, calculate_time_to_expiration,
     calculate_implied_volatility, calculate_estimated_volatility,
-    calculate_black_scholes_price
+    calculate_black_scholes_price, validate_time_and_data_preprocess
 )
 from signals import process_price_difference
 from config import (
@@ -98,7 +98,7 @@ def merge_historical_and_live_data(
         avg_price_option = row["avg_price_option"]
 
         # Validate data
-        _, _, is_valid = validate_time_and_data(
+        is_valid = validate_time_and_data_preprocess(
             current_time, avg_price_underlying, avg_price_option, counters
         )
         if not is_valid:
