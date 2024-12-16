@@ -172,11 +172,11 @@ def process_and_flatten_market_data(
                 break
 
         # Save processed data to file
-        datapirim.to_pickle(file_name)
+        # datapirim.to_pickle(file_name)
 
-        csv_file_name = os.path.join(save_folder, f"{market_type}_{stock_name}_{start_date}_{end_date}.csv")
-        datapirim.to_csv(csv_file_name)
-        print(f"Data saved as {file_name} and CSV saved as {csv_file_name}!")
+        # csv_file_name = os.path.join(save_folder, f"{market_type}_{stock_name}_{start_date}_{end_date}.csv")
+        # datapirim.to_csv(csv_file_name)
+        # print(f"Data saved as {file_name} and CSV saved as {csv_file_name}!")
 
         return datapirim
 
