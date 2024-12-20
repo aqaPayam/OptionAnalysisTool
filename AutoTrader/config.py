@@ -16,7 +16,7 @@ class BaseConfig:
         'Content-Type': 'application/json',
     }
 
-    RISK_FREE_RATE = 0.32  # Shared Risk-Free Rate
+    RISK_FREE_RATE = 0.3
     USE_HISTORICAL = True
     CALL_PUT = 'c'  # 'c' for call, 'p' for put
     VALID_TIME_START = pd.to_datetime("09:15:00").time()
@@ -31,7 +31,7 @@ class BaseConfig:
     SELL_PRICE_OFFSET = 1
     ORDER_QUANTITY = 1
 
-    HISTORICAL_DATA_START_DATE = '1403-09-24'
+    HISTORICAL_DATA_START_DATE = (jdatetime.date.today() - jdatetime.timedelta(days=4)).strftime('%Y-%m-%d')
     HISTORICAL_DATA_END_DATE = jdatetime.date.today().strftime('%Y-%m-%d')
     SAVE_FOLDER = 'data_files'
     JUST_DOWNLOAD = False
@@ -48,20 +48,20 @@ class AhromConfig(BaseConfig):
 
 class KhodroConfig(BaseConfig):
     UNDERLYING_NAME = "خودرو"
-    UNDERLYING_TICKER = "IRT1KHDR0001"
-    OPTION_NAME = "ضخودرو1007"
-    OPTION_TICKER = "IRO9KHDR2401"
-    EXPIRATION_DATE = "1403-11-15"
-    STRIKE_PRICE = 15000
+    UNDERLYING_TICKER = "IRO1IKCO0001"
+    OPTION_NAME = "ضخود1136"
+    OPTION_TICKER = "IRO9IKCO8K51"
+    EXPIRATION_DATE = "1403-11-03"
+    STRIKE_PRICE = 3000
 
 
 class ShastaConfig(BaseConfig):
     UNDERLYING_NAME = "شستا"
-    UNDERLYING_TICKER = "IRT1SHST0001"
-    OPTION_NAME = "ضشستا1007"
-    OPTION_TICKER = "IRO9SHST2401"
-    EXPIRATION_DATE = "1403-12-01"
-    STRIKE_PRICE = 20000
+    UNDERLYING_TICKER = "IRO1TAMN0001"
+    OPTION_NAME = "ضستا1125"
+    OPTION_TICKER = "IRO9TAMN0411"
+    EXPIRATION_DATE = "1403-11-10"
+    STRIKE_PRICE = 1050
 
 
 # Map modes to configurations
