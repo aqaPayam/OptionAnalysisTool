@@ -4,7 +4,9 @@ import json
 import time
 import requests
 from typing import Optional, List
-from config import BASE_URL, MARKET_URL, HEADERS, MAX_RETRIES, SLEEP_INTERVAL
+from AutoTrader.config import get_config
+
+config = get_config()
 
 
 class TradingAPI:
@@ -12,10 +14,10 @@ class TradingAPI:
     Class to interact with the trading API.
     """
 
-    def __init__(self, max_retries: int = MAX_RETRIES):
-        self.base_url = BASE_URL
-        self.market_url = MARKET_URL
-        self.headers = HEADERS
+    def __init__(self, max_retries: int = config.MAX_RETRIES):
+        self.base_url = config.BASE_URL
+        self.market_url = config.MARKET_URL
+        self.headers = config.HEADERS
         self.max_retries = max_retries
 
     def _make_request(self, method: str, url: str, data: Optional[dict] = None) -> Optional[dict]:
@@ -44,7 +46,7 @@ class TradingAPI:
                 return response.json()
             except requests.RequestException as e:
                 print(f"WARNING: Attempt {attempt} failed for {url}: {e}")
-                time.sleep(SLEEP_INTERVAL)
+                time.sleep(config.SLEEP_INTERVAL)
         print(f"ERROR: Max retries reached for {url}.")
         return None
 

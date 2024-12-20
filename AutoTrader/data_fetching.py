@@ -1,7 +1,9 @@
 import time
 import jdatetime
 from helpers import fetch_data
-from config import SLEEP_INTERVAL, UNDERLYING_TICKER, OPTION_TICKER
+from AutoTrader.config import get_config
+
+config = get_config()
 
 
 def data_fetching_thread(api, data_queue, counters, stop_event):
@@ -15,14 +17,14 @@ def data_fetching_thread(api, data_queue, counters, stop_event):
             current_date = now.strftime("%Y-%m-%d")
             current_time = now.strftime("%H:%M:%S")
 
-            underlying_data, option_data = fetch_data(api, UNDERLYING_TICKER, OPTION_TICKER)
+            underlying_data, option_data = fetch_data(api, config.UNDERLYING_TICKER, config.OPTION_TICKER)
             if underlying_data is None and option_data is None:
                 print("Fetched data is null")
             else:
                 data_queue.append((current_date, current_time, underlying_data, option_data))
 
             elapsed_time = time.time() - start_time
-            sleep_time = max(0, SLEEP_INTERVAL - elapsed_time)
+            sleep_time = max(0, config.SLEEP_INTERVAL - elapsed_time)
             time.sleep(sleep_time)
     except Exception as e:
         counters.try_except_counter += 1

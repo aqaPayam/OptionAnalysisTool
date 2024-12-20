@@ -4,17 +4,10 @@ import numpy as np
 from collections import deque
 from typing import Tuple
 from error_counters import ErrorCounters
-from helpers import calculate_time_to_expiration
-from config import (
-    EXPIRATION_DATE,
-    BUY_PRICE_OFFSET,
-    SELL_PRICE_OFFSET,
-    ORDER_QUANTITY,
-    TICKER,
-    UNDERLYING_TICKER,
-    OPTION_TICKER
-)
+from AutoTrader.config import get_config
 from trading_api import TradingAPI
+
+config = get_config()
 
 
 def generate_signals(z_score: float, z_threshold: float) -> Tuple[str, float, float]:
@@ -97,16 +90,16 @@ def buy():
     api = TradingAPI()
 
     # Calculate buy price
-    market_data = api.fetch_order_book(TICKER)
+    market_data = api.fetch_order_book(config.TICKER)
     if market_data and market_data[2]:
         best_bid_price = market_data[2]
-        buy_price = best_bid_price + BUY_PRICE_OFFSET
+        buy_price = best_bid_price + config.BUY_PRICE_OFFSET
     else:
         print("WARNING: Could not fetch market data for buy price calculation.")
         return
 
     # Place or modify buy order
-    api.buy(ticker=TICKER, price=buy_price, quantity=ORDER_QUANTITY)
+    api.buy(ticker=config.TICKER, price=buy_price, quantity=config.ORDER_QUANTITY)
 
 
 def sell():
@@ -118,16 +111,16 @@ def sell():
     api = TradingAPI()
 
     # Calculate sell price
-    market_data = api.fetch_order_book(TICKER)
+    market_data = api.fetch_order_book(config.TICKER)
     if market_data and market_data[1]:
         best_ask_price = market_data[1]
-        sell_price = best_ask_price + SELL_PRICE_OFFSET
+        sell_price = best_ask_price + config.SELL_PRICE_OFFSET
     else:
         print("WARNING: Could not fetch market data for sell price calculation.")
         return
 
     # Place or modify sell order
-    api.sell(ticker=TICKER, price=sell_price, quantity=ORDER_QUANTITY)
+    api.sell(ticker=config.TICKER, price=sell_price, quantity=config.ORDER_QUANTITY)
 
 
 def cancel_all_orders():
@@ -140,11 +133,11 @@ def cancel_all_orders():
     open_orders = api.fetch_open_orders()
     if open_orders:
         # Filter orders for the specific ticker
-        ticker_orders = [order for order in open_orders if order['isin'] == TICKER]
+        ticker_orders = [order for order in open_orders if order['isin'] == config.TICKER]
         if ticker_orders:
             serial_numbers = [order['serialNumber'] for order in ticker_orders]
             api.cancel_orders(serial_numbers=serial_numbers)
         else:
-            print(f"INFO: No open orders to cancel for ticker {TICKER}.")
+            print(f"INFO: No open orders to cancel for ticker {config.TICKER}.")
     else:
         print("INFO: No open orders found to cancel.")

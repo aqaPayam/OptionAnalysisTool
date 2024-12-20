@@ -7,7 +7,9 @@ import datetime
 from collections import deque
 from py_vollib.black_scholes import black_scholes
 from py_vollib.black_scholes.implied_volatility import implied_volatility
-from config import SMOOTHING_PARAM, CALL_PUT, RISK_FREE_RATE, STRIKE_PRICE, VALID_TIME_START, VALID_TIME_END
+from AutoTrader.config import get_config
+
+config = get_config()
 
 
 def calculate_simple_moving_average(rolling_vols: deque) -> float:
@@ -169,7 +171,7 @@ def validate_time_and_data(current_time, underlying_data, option_data, counters)
         print(type, time)
         print("ERROR IN HELPERS VALIDATE DATE TIME")
 
-    if not (VALID_TIME_START <= current_time <= VALID_TIME_END):
+    if not (config.VALID_TIME_START <= current_time <= config.VALID_TIME_END):
         counters.skip_by_time_counter += 1
         return None, None, False
 
@@ -219,7 +221,7 @@ def validate_time_and_data_preprocess(current_time, counters, avg_price_underlyi
         print("ERROR IN HELPERS VALIDATE DATE TIME")
         return False
 
-    if not (VALID_TIME_START <= current_time <= VALID_TIME_END):
+    if not (config.VALID_TIME_START <= current_time <= config.VALID_TIME_END):
         counters.skip_by_time_counter += 1
         return False
 

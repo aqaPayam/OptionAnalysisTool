@@ -1,10 +1,8 @@
 import traceback
 from data_preprocessing import process_and_flatten_market_data
-from config import (
-    UNDERLYING_NAME, OPTION_NAME, HISTORICAL_DATA_START_DATE,
-    HISTORICAL_DATA_END_DATE, STRIKE_PRICE, RISK_FREE_RATE,
-    EXPIRATION_DATE, CALL_PUT
-)
+from AutoTrader.config import get_config
+
+config = get_config()
 
 
 def historical_data_thread(historical_data_ready_event, historical_data_container, stop_event):
@@ -16,14 +14,14 @@ def historical_data_thread(historical_data_ready_event, historical_data_containe
         if stop_event.is_set():
             return
         historical_data = process_and_flatten_market_data(
-            underlying_stock=UNDERLYING_NAME,
-            option_stock=OPTION_NAME,
-            start_date=HISTORICAL_DATA_START_DATE,
-            end_date=HISTORICAL_DATA_END_DATE,
-            strike_price=STRIKE_PRICE,
-            risk_free_rate=RISK_FREE_RATE,
-            expiration_jalali_date=EXPIRATION_DATE,
-            call_put=CALL_PUT,
+            underlying_stock=config.UNDERLYING_NAME,
+            option_stock=config.OPTION_NAME,
+            start_date=config.HISTORICAL_DATA_START_DATE,
+            end_date=config.HISTORICAL_DATA_END_DATE,
+            strike_price=config.STRIKE_PRICE,
+            risk_free_rate=config.RISK_FREE_RATE,
+            expiration_jalali_date=config.EXPIRATION_DATE,
+            call_put=config.CALL_PUT,
             save_folder="data_files",
             just_download=False
         )

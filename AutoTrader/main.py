@@ -1,18 +1,10 @@
 import time
 import jdatetime
-import datetime
-import sys
 from threading import Thread, Event
 from collections import deque
 import pandas as pd
 
-from config import (
-    UNDERLYING_TICKER, OPTION_TICKER, EXPIRATION_DATE, STRIKE_PRICE,
-    RISK_FREE_RATE, CALL_PUT, SLEEP_INTERVAL, SMOOTHING_PARAM,
-    WINDOW_SIZE, Z_THRESHOLD, HISTORICAL_DATA_START_DATE, HISTORICAL_DATA_END_DATE,
-    VALID_TIME_START, VALID_TIME_END,
-    USE_HISTORICAL, MAX_SIZE
-)
+from AutoTrader.config import get_config
 from signal_handling import signal_handling_thread
 from trading_api import TradingAPI
 from error_counters import ErrorCounters
@@ -29,6 +21,7 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 
 
 def main():
+    config = get_config()
     api = TradingAPI()
     counters = ErrorCounters()
 
@@ -40,17 +33,17 @@ def main():
     ]
     data = pd.DataFrame(columns=columns)
 
-    rolling_vols = deque(maxlen=SMOOTHING_PARAM)
-    price_diff_window = deque(maxlen=WINDOW_SIZE)
+    rolling_vols = deque(maxlen=config.SMOOTHING_PARAM)
+    price_diff_window = deque(maxlen=config.WINDOW_SIZE)
 
-    data_queue = deque(maxlen=MAX_SIZE)
+    data_queue = deque(maxlen=config.MAX_SIZE)
     result_queue = deque()
-    signal_queue = deque(maxlen=MAX_SIZE)
+    signal_queue = deque(maxlen=config.MAX_SIZE)
 
     processing_ready_event = Event()
     stop_event = Event()  # <-- Stop event for graceful shutdown
 
-    if USE_HISTORICAL:
+    if config.USE_HISTORICAL:
         historical_data_ready_event = Event()
         historical_data_container = {}
     else:
@@ -58,7 +51,7 @@ def main():
         historical_data_container = None
 
     # Start historical data thread if needed
-    if USE_HISTORICAL:
+    if config.USE_HISTORICAL:
         historical_thread = Thread(target=historical_data_thread, args=(
             historical_data_ready_event, historical_data_container, stop_event))
         historical_thread.start()
@@ -83,7 +76,7 @@ def main():
     try:
         historical_data_merged = False
         while not stop_event.is_set():
-            if USE_HISTORICAL:
+            if config.USE_HISTORICAL:
                 if historical_data_ready_event.is_set() and not historical_data_merged:
                     data = merge_historical_and_live_data(
                         data_queue, historical_data_container, columns,
@@ -107,7 +100,7 @@ def main():
 
             current_time = jdatetime.datetime.now().time()
 
-            if current_time > VALID_TIME_END:
+            if current_time > config.VALID_TIME_END:
                 print("INFO: Current time has passed VALID_TIME_END, initiating graceful shutdown.")
                 stop_event.set()  # Signal all threads to stop
                 break

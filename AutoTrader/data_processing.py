@@ -7,10 +7,9 @@ from helpers import (
     calculate_black_scholes_price
 )
 from signals import process_price_difference
-from config import (
-    EXPIRATION_DATE, STRIKE_PRICE, RISK_FREE_RATE, CALL_PUT,
-    WINDOW_SIZE, Z_THRESHOLD
-)
+from AutoTrader.config import get_config
+
+config = get_config()
 
 
 def processing_thread(data_queue, result_queue, signal_queue, counters, processing_ready_event, rolling_vols,
@@ -38,14 +37,14 @@ def processing_thread(data_queue, result_queue, signal_queue, counters, processi
                     print("INFO: Skipping due to invalid data or time :data has 0 :")
                     continue
 
-                time_to_expiration = calculate_time_to_expiration(current_date_jalali, EXPIRATION_DATE)
+                time_to_expiration = calculate_time_to_expiration(current_date_jalali, config.EXPIRATION_DATE)
                 if time_to_expiration <= 0:
                     print("WARNING: Expiration date reached or passed.")
                     break
 
                 implied_vol = calculate_implied_volatility(
-                    avg_price_option, avg_price_underlying, time_to_expiration, STRIKE_PRICE,
-                    RISK_FREE_RATE, CALL_PUT, counters
+                    avg_price_option, avg_price_underlying, time_to_expiration, config.STRIKE_PRICE,
+                    config.RISK_FREE_RATE, config.CALL_PUT, counters
                 )
 
                 estimated_vol = calculate_estimated_volatility(
@@ -53,14 +52,14 @@ def processing_thread(data_queue, result_queue, signal_queue, counters, processi
                 )
 
                 black_scholes_price = calculate_black_scholes_price(
-                    avg_price_underlying, STRIKE_PRICE, RISK_FREE_RATE,
-                    EXPIRATION_DATE, CALL_PUT, current_date_jalali, estimated_vol
+                    avg_price_underlying, config.STRIKE_PRICE, config.RISK_FREE_RATE,
+                    config.EXPIRATION_DATE, config.CALL_PUT, current_date_jalali, estimated_vol
                 )
 
                 price_difference = avg_price_option - black_scholes_price
 
                 signal, under_count, over_count, rolling_mean_diff, rolling_std_diff, z_score = process_price_difference(
-                    price_difference, price_diff_window, WINDOW_SIZE, Z_THRESHOLD, counters
+                    price_difference, price_diff_window, config.WINDOW_SIZE, config.Z_THRESHOLD, counters
                 )
 
                 under_negative_one_count += under_count

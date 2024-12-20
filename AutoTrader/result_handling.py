@@ -3,7 +3,9 @@ import time
 import pandas as pd
 import jdatetime
 import os
-from config import Z_THRESHOLD
+from AutoTrader.config import get_config
+
+config = get_config()
 
 
 def result_handling_thread(result_queue, data, stop_event):
@@ -30,8 +32,8 @@ def result_handling_thread(result_queue, data, stop_event):
                 print(f"INFO: Rolling Std Dev Difference: {result['rolling_std_diff']}")
                 print(f"INFO: Z-Score: {result['z_score']}")
                 print(f"INFO: Signal: {result['signal']}")
-                print(f"INFO: Z-Score < -{Z_THRESHOLD} Count: {result['under_negative_one_count']}")
-                print(f"INFO: Z-Score > +{Z_THRESHOLD} Count: {result['over_positive_one_count']}")
+                print(f"INFO: Z-Score < -{config.Z_THRESHOLD} Count: {result['under_negative_one_count']}")
+                print(f"INFO: Z-Score > +{config.Z_THRESHOLD} Count: {result['over_positive_one_count']}")
                 print("\n")
 
     finally:
