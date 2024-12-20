@@ -4,7 +4,6 @@ import numpy as np
 from collections import deque
 from typing import Tuple
 from error_counters import ErrorCounters
-from AutoTrader.config import get_config
 from config import get_config
 config = get_config()
 
