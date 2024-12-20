@@ -7,8 +7,7 @@ import datetime
 from collections import deque
 from py_vollib.black_scholes import black_scholes
 from py_vollib.black_scholes.implied_volatility import implied_volatility
-from AutoTrader.config import get_config
-
+from config import get_config
 config = get_config()
 
 

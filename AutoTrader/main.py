@@ -4,7 +4,7 @@ from threading import Thread, Event
 from collections import deque
 import pandas as pd
 
-from AutoTrader.config import get_config
+from config import get_config
 from signal_handling import signal_handling_thread
 from trading_api import TradingAPI
 from error_counters import ErrorCounters

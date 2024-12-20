@@ -9,7 +9,7 @@ from helpers import (
     calculate_black_scholes_price, validate_time_and_data_preprocess
 )
 from signals import process_price_difference
-from AutoTrader.config import get_config
+from config import get_config
 
 config = get_config()
 

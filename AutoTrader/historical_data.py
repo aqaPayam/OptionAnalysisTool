@@ -1,7 +1,6 @@
 import traceback
 from data_preprocessing import process_and_flatten_market_data
-from AutoTrader.config import get_config
-
+from config import get_config
 config = get_config()
 
 

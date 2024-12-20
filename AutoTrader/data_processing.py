@@ -7,8 +7,7 @@ from helpers import (
     calculate_black_scholes_price
 )
 from signals import process_price_difference
-from AutoTrader.config import get_config
-
+from config import get_config
 config = get_config()
 
 

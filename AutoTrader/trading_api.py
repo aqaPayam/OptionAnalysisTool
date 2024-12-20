@@ -4,8 +4,7 @@ import json
 import time
 import requests
 from typing import Optional, List
-from AutoTrader.config import get_config
-
+from config import get_config
 config = get_config()
 
 
