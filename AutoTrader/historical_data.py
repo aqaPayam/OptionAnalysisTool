@@ -3,7 +3,7 @@ from data_preprocessing import process_and_flatten_market_data
 from config import (
     UNDERLYING_NAME, OPTION_NAME, HISTORICAL_DATA_START_DATE,
     HISTORICAL_DATA_END_DATE, STRIKE_PRICE, RISK_FREE_RATE,
-    EXPIRATION_DATE, CALL_PUT, SAVE_FOLDER, JUST_DOWNLOAD
+    EXPIRATION_DATE, CALL_PUT
 )
 
 
@@ -24,8 +24,8 @@ def historical_data_thread(historical_data_ready_event, historical_data_containe
             risk_free_rate=RISK_FREE_RATE,
             expiration_jalali_date=EXPIRATION_DATE,
             call_put=CALL_PUT,
-            save_folder=SAVE_FOLDER,
-            just_download=JUST_DOWNLOAD
+            save_folder="data_files",
+            just_download=False
         )
         historical_data_container['data'] = historical_data
         print("INFO: Historical data is ready.")
