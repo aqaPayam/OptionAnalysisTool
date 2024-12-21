@@ -48,7 +48,6 @@ class AhromConfig(BaseConfig):
     STRIKE_PRICE = 18000
 
 
-
 class KhodroConfig(BaseConfig):
     UNDERLYING_NAME = "خودرو"
     UNDERLYING_TICKER = "IRO1IKCO0001"
