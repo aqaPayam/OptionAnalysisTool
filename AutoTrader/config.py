@@ -9,10 +9,12 @@ class BaseConfig:
     MDAPI_URL = 'https://mdapi1.ephoenix.ir/api/v2'
 
     HEADERS = {
-        'User-Agent': '',  # Empty User-Agent
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+        # Empty User-Agent
         'Accept': 'application/json, text/plain, */*',
-        'Cookie': '',  # Empty Cookie
-        'x-sessionId': '',  # Empty x-sessionId
+        'Cookie': 'cookiesession1=678B2928B1B3FC87D21EEC7CB0BB44AB; otauth-178-OMS8096cc0b-814f-4040-bd43-b6843fff32c0=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJTZXNzaW9uSWQiOiI4MDk2Y2MwYi04MTRmLTQwNDAtYmQ0My1iNjg0M2ZmZjMyYzAiLCJVc2VySWQiOiIxMDA3OTUiLCJBcHBOYW1lIjoiT01TIiwiQnJva2VyQ29kZSI6IjE3OCIsIm5iZiI6MTczNDc1OTc4NCwiZXhwIjoxNzM0Nzg4NTg0LCJpc3MiOiJPTVMiLCJhdWQiOiJPTVMifQ.Ox-22Jh2e1beqBoCqqltHUwvQwYr0GIwWfvU8m4Vf9jEYVrMXhCEf9jY0CVM7ugnr-RRx6QXh3vnX6DVkep-Yw',
+        # Empty Cookie
+        'x-sessionId': 'OMS8096cc0b-814f-4040-bd43-b6843fff32c0',  # Empty x-sessionId
         'Content-Type': 'application/json',
     }
 

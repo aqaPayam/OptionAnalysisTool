@@ -3,8 +3,11 @@
 import numpy as np
 from collections import deque
 from typing import Tuple
+
+from trading_api import TradingAPI
 from error_counters import ErrorCounters
 from config import get_config
+
 config = get_config()
 
 
