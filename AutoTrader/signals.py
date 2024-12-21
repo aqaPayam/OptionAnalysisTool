@@ -91,7 +91,7 @@ def buy():
     api = TradingAPI()
 
     # Calculate buy price
-    market_data = api.fetch_order_book(config.TICKER)
+    market_data = api.fetch_order_book(config.OPTION_TICKER)
     if market_data and market_data[2]:
         best_bid_price = market_data[2]
         buy_price = best_bid_price + config.BUY_PRICE_OFFSET
@@ -100,7 +100,7 @@ def buy():
         return
 
     # Place or modify buy order
-    api.buy(ticker=config.TICKER, price=buy_price, quantity=config.ORDER_QUANTITY)
+    api.buy(ticker=config.OPTION_TICKER, price=buy_price, quantity=config.ORDER_QUANTITY)
 
 
 def sell():
@@ -112,7 +112,7 @@ def sell():
     api = TradingAPI()
 
     # Calculate sell price
-    market_data = api.fetch_order_book(config.TICKER)
+    market_data = api.fetch_order_book(config.OPTION_TICKER)
     if market_data and market_data[1]:
         best_ask_price = market_data[1]
         sell_price = best_ask_price + config.SELL_PRICE_OFFSET
@@ -121,7 +121,7 @@ def sell():
         return
 
     # Place or modify sell order
-    api.sell(ticker=config.TICKER, price=sell_price, quantity=config.ORDER_QUANTITY)
+    api.sell(ticker=config.OPTION_TICKER, price=sell_price, quantity=config.ORDER_QUANTITY)
 
 
 def cancel_all_orders():
@@ -134,11 +134,11 @@ def cancel_all_orders():
     open_orders = api.fetch_open_orders()
     if open_orders:
         # Filter orders for the specific ticker
-        ticker_orders = [order for order in open_orders if order['isin'] == config.TICKER]
+        ticker_orders = [order for order in open_orders if order['isin'] == config.OPTION_TICKER]
         if ticker_orders:
             serial_numbers = [order['serialNumber'] for order in ticker_orders]
             api.cancel_orders(serial_numbers=serial_numbers)
         else:
-            print(f"INFO: No open orders to cancel for ticker {config.TICKER}.")
+            print(f"INFO: No open orders to cancel for ticker {config.OPTION_TICKER}.")
     else:
         print("INFO: No open orders found to cancel.")
