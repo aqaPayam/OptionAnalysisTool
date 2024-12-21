@@ -5,6 +5,7 @@ import time
 import requests
 from typing import Optional, List
 from config import get_config
+
 config = get_config()
 
 
