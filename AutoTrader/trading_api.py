@@ -20,6 +20,7 @@ class TradingAPI:
         self.max_retries = config.MAX_RETRIES
 
     def _make_request(self, method: str, url: str, data: Optional[dict] = None) -> Optional[dict]:
+        config = get_config()
         """
         Makes an HTTP request with retries on failure.
 
