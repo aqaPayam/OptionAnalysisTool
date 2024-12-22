@@ -8,7 +8,6 @@ from helpers import (
 )
 from signals import process_price_difference
 from config import get_config
-config = get_config()
 
 
 def processing_thread(data_queue, result_queue, signal_queue, counters, processing_ready_event, rolling_vols,
@@ -16,6 +15,8 @@ def processing_thread(data_queue, result_queue, signal_queue, counters, processi
     """
     Thread function for data processing and signal generation.
     """
+    config = get_config()
+
     print("INFO: Processing thread waiting for historical data to be ready...")
     processing_ready_event.wait()
     print("INFO: Historical data is ready. Processing thread starting analysis.")

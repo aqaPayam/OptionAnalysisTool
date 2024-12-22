@@ -1,10 +1,11 @@
+import argparse
 import time
 import jdatetime
 from threading import Thread, Event
 from collections import deque
 import pandas as pd
 
-from config import get_config
+from config import get_config, set_current_mode
 from signal_handling import signal_handling_thread
 from trading_api import TradingAPI
 from error_counters import ErrorCounters
@@ -21,6 +22,16 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Run the script with a specific configuration mode.")
+    parser.add_argument('--mode', type=str, required=True, choices=['ahrom', 'khodro', 'shasta'],
+                        help="Mode to run the script in.")
+    args = parser.parse_args()
+
+    # Set the current mode globally
+    set_current_mode(args.mode)
+
+    print(f"Loaded configuration for mode: {args.mode}")
+
     config = get_config()
     api = TradingAPI()
     counters = ErrorCounters()

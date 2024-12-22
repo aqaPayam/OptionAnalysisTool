@@ -3,13 +3,13 @@ import jdatetime
 from helpers import fetch_data
 from config import get_config
 
-config = get_config()
-
 
 def data_fetching_thread(api, data_queue, counters, stop_event):
     """
     Thread function for data fetching.
     """
+    config = get_config()
+
     try:
         while not stop_event.is_set():
             start_time = time.time()

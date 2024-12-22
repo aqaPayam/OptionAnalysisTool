@@ -8,8 +8,6 @@ from trading_api import TradingAPI
 from error_counters import ErrorCounters
 from config import get_config
 
-config = get_config()
-
 
 def generate_signals(z_score: float, z_threshold: float) -> Tuple[str, float, float]:
     """
@@ -83,6 +81,7 @@ def process_price_difference(price_difference, price_diff_window, window_size, z
 
 
 def buy():
+    config = get_config()
     """
     Implements the buy logic using the TradingAPI.
     """
@@ -104,6 +103,7 @@ def buy():
 
 
 def sell():
+    config = get_config()
     """
     Implements the sell logic using the TradingAPI.
     """
@@ -125,6 +125,7 @@ def sell():
 
 
 def cancel_all_orders():
+    config = get_config()
     """
     Cancels all open orders for the specified ticker.
     """

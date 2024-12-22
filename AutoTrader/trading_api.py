@@ -6,19 +6,18 @@ import requests
 from typing import Optional, List
 from config import get_config
 
-config = get_config()
-
 
 class TradingAPI:
     """
     Class to interact with the trading API.
     """
 
-    def __init__(self, max_retries: int = config.MAX_RETRIES):
+    def __init__(self):
+        config = get_config()
         self.base_url = config.BASE_URL
         self.market_url = config.MARKET_URL
         self.headers = config.HEADERS
-        self.max_retries = max_retries
+        self.max_retries = config.MAX_RETRIES
 
     def _make_request(self, method: str, url: str, data: Optional[dict] = None) -> Optional[dict]:
         """

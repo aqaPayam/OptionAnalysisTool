@@ -8,7 +8,6 @@ from collections import deque
 from py_vollib.black_scholes import black_scholes
 from py_vollib.black_scholes.implied_volatility import implied_volatility
 from config import get_config
-config = get_config()
 
 
 def calculate_simple_moving_average(rolling_vols: deque) -> float:
@@ -147,6 +146,7 @@ def fetch_data(api, underlying_ticker, option_ticker):
 
 
 def validate_time_and_data(current_time, underlying_data, option_data, counters):
+    config = get_config()
     """
     Validate current time and market data for the underlying and options market.
 
@@ -209,6 +209,7 @@ def validate_time_and_data_preprocess(current_time, counters, avg_price_underlyi
     Returns:
         bool: Validation status.
     """
+    config = get_config()
     # Check current time
     time = current_time
     if isinstance(time, str):

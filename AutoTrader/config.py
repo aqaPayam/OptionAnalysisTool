@@ -1,5 +1,9 @@
+import time
+
 import pandas as pd
 import jdatetime
+
+CURRENT_MODE = None
 
 
 class BaseConfig:
@@ -12,9 +16,9 @@ class BaseConfig:
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
         # Empty User-Agent
         'Accept': 'application/json, text/plain, */*',
-        'Cookie': 'cookiesession1=678B2928B1B3FC87D21EEC7CB0BB44AB; otauth-178-OMSfcb26943-0c7a-4a4d-b436-ad0e90f1d589=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJTZXNzaW9uSWQiOiJmY2IyNjk0My0wYzdhLTRhNGQtYjQzNi1hZDBlOTBmMWQ1ODkiLCJVc2VySWQiOiIxMDA3OTUiLCJBcHBOYW1lIjoiT01TIiwiQnJva2VyQ29kZSI6IjE3OCIsIm5iZiI6MTczNDc2MjIxOCwiZXhwIjoxNzM0NzkxMDE4LCJpc3MiOiJPTVMiLCJhdWQiOiJPTVMifQ.NIfuCKdZqdja1_mmCjDHHHNa7tTXsg9CWVIRPY0WSS8YsIyzrfJetQE_K6fG9MQLJSELx04javWhcny2WEC-Hg',
+        'Cookie': 'cookiesession1=678B2928B1B3FC87D21EEC7CB0BB44AB; otauth-178-OMS09a9abcb-7a9f-4844-8082-4a96788027b9=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJTZXNzaW9uSWQiOiIwOWE5YWJjYi03YTlmLTQ4NDQtODA4Mi00YTk2Nzg4MDI3YjkiLCJVc2VySWQiOiIxMDA3OTUiLCJBcHBOYW1lIjoiT01TIiwiQnJva2VyQ29kZSI6IjE3OCIsIm5iZiI6MTczNDg0NTgwNCwiZXhwIjoxNzM0ODc0NjA0LCJpc3MiOiJPTVMiLCJhdWQiOiJPTVMifQ.gu2smZtlEQgw_zbE2IEPeQUPknwNxhCCUS0PDy3W-7pTxGHq1dYF5OGBqj__HssSS9PX_xyudpEjr1qTEALUwQ',
         # Empty Cookie
-        'x-sessionId': 'OMSfcb26943-0c7a-4a4d-b436-ad0e90f1d589',  # Empty x-sessionId
+        'x-sessionId': 'OMS09a9abcb-7a9f-4844-8082-4a96788027b9',  # Empty x-sessionId
         'Content-Type': 'application/json',
     }
 
@@ -72,7 +76,21 @@ CONFIGS = {
 }
 
 
+def set_current_mode(mode):
+    """
+    Sets the current mode globally.
+    """
+    global CURRENT_MODE
+    if mode not in CONFIGS:
+        raise ValueError(f"Invalid mode: {mode}")
+    CURRENT_MODE = mode
+
+
 def get_config():
-    import os
-    mode = os.getenv('APP_MODE', 'ahrom')  # Default mode is 'ahrom'
-    return CONFIGS.get(mode, AhromConfig)()
+    """
+    Waits for the current mode to be set and then retrieves the configuration.
+    """
+    global CURRENT_MODE
+    while CURRENT_MODE is None:
+        time.sleep(0.01)  # Wait a short time to avoid busy waiting
+    return CONFIGS[CURRENT_MODE]

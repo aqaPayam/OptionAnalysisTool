@@ -11,14 +11,13 @@ from helpers import (
 from signals import process_price_difference
 from config import get_config
 
-config = get_config()
-
 
 def merge_historical_and_live_data(
         data_queue, historical_data_container, columns,
         rolling_vols, price_diff_window, processing_ready_event,
         counters
 ):
+    config = get_config()
     """
     Merges historical data with live data and initializes rolling variables.
     Then applies the same processing steps (implied_vol, estimated_vol,

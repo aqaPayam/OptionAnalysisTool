@@ -1,10 +1,10 @@
 import traceback
 from data_preprocessing import process_and_flatten_market_data
 from config import get_config
-config = get_config()
 
 
 def historical_data_thread(historical_data_ready_event, historical_data_container, stop_event):
+    config = get_config()
     """
     Thread function for downloading and processing historical data.
     """

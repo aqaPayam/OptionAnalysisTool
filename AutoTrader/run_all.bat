@@ -1,10 +1,10 @@
 @echo off
 
 :: Run for ahrom
-start cmd /k "title Running ahrom && set APP_MODE=ahrom && python main.py"
+start cmd /k "python main.py --mode ahrom"
 
 :: Run for khodro
-start cmd /k "title Running khodro && set APP_MODE=khodro && python main.py"
+start cmd /k "python main.py --mode khodro"
 
 :: Run for shasta
-start cmd /k "title Running shasta && set APP_MODE=shasta && python main.py"
+start cmd /k "python main.py --mode shasta"

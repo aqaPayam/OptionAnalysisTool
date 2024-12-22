@@ -4,10 +4,11 @@ import pandas as pd
 import jdatetime
 import os
 from config import get_config
-config = get_config()
 
 
 def result_handling_thread(result_queue, data, stop_event):
+    config = get_config()
+
     """
     Thread function for handling results and logging.
     """
