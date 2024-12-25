@@ -16,9 +16,9 @@ class BaseConfig:
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
         # Empty User-Agent
         'Accept': 'application/json, text/plain, */*',
-        'Cookie': 'cookiesession1=678B2928B1B3FC87D21EEC7CB0BB44AB; otauth-178-OMS09a9abcb-7a9f-4844-8082-4a96788027b9=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJTZXNzaW9uSWQiOiIwOWE5YWJjYi03YTlmLTQ4NDQtODA4Mi00YTk2Nzg4MDI3YjkiLCJVc2VySWQiOiIxMDA3OTUiLCJBcHBOYW1lIjoiT01TIiwiQnJva2VyQ29kZSI6IjE3OCIsIm5iZiI6MTczNDg0NTgwNCwiZXhwIjoxNzM0ODc0NjA0LCJpc3MiOiJPTVMiLCJhdWQiOiJPTVMifQ.gu2smZtlEQgw_zbE2IEPeQUPknwNxhCCUS0PDy3W-7pTxGHq1dYF5OGBqj__HssSS9PX_xyudpEjr1qTEALUwQ',
+        'Cookie': 'cookiesession1=678B2928B1B3FC87D21EEC7CB0BB44AB; otauth-178-OMS648d541f-2d37-4172-a944-f7eda0d70dd9=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJTZXNzaW9uSWQiOiI2NDhkNTQxZi0yZDM3LTQxNzItYTk0NC1mN2VkYTBkNzBkZDkiLCJVc2VySWQiOiIxMDA3OTUiLCJBcHBOYW1lIjoiT01TIiwiQnJva2VyQ29kZSI6IjE3OCIsIm5iZiI6MTczNTEwNDk1OSwiZXhwIjoxNzM1MTMzNzU5LCJpc3MiOiJPTVMiLCJhdWQiOiJPTVMifQ.OVFE5WYQSLINuyPeqKbgyLn65DQwpSlnOOXSrG4pJegOLA5DnrX7-W-T4p5Bs2CPDoU-shBc8sm2J1Zlg__8zQ',
         # Empty Cookie
-        'x-sessionId': 'OMS09a9abcb-7a9f-4844-8082-4a96788027b9',  # Empty x-sessionId
+        'x-sessionId': 'OMS648d541f-2d37-4172-a944-f7eda0d70dd9',  # Empty x-sessionId
         'Content-Type': 'application/json',
     }
 
