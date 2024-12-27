@@ -13,12 +13,12 @@ class BaseConfig:
     MDAPI_URL = 'https://mdapi1.ephoenix.ir/api/v2'
 
     HEADERS = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+        'User-Agent': '',
         # Empty User-Agent
         'Accept': 'application/json, text/plain, */*',
-        'Cookie': 'cookiesession1=678B2928B1B3FC87D21EEC7CB0BB44AB; otauth-178-OMS648d541f-2d37-4172-a944-f7eda0d70dd9=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJTZXNzaW9uSWQiOiI2NDhkNTQxZi0yZDM3LTQxNzItYTk0NC1mN2VkYTBkNzBkZDkiLCJVc2VySWQiOiIxMDA3OTUiLCJBcHBOYW1lIjoiT01TIiwiQnJva2VyQ29kZSI6IjE3OCIsIm5iZiI6MTczNTEwNDk1OSwiZXhwIjoxNzM1MTMzNzU5LCJpc3MiOiJPTVMiLCJhdWQiOiJPTVMifQ.OVFE5WYQSLINuyPeqKbgyLn65DQwpSlnOOXSrG4pJegOLA5DnrX7-W-T4p5Bs2CPDoU-shBc8sm2J1Zlg__8zQ',
+        'Cookie': '',
         # Empty Cookie
-        'x-sessionId': 'OMS648d541f-2d37-4172-a944-f7eda0d70dd9',  # Empty x-sessionId
+        'x-sessionId': '',  # Empty x-sessionId
         'Content-Type': 'application/json',
     }
 
@@ -35,7 +35,7 @@ class BaseConfig:
     Z_THRESHOLD = 1.5
     BUY_PRICE_OFFSET = -1
     SELL_PRICE_OFFSET = 1
-    ORDER_QUANTITY = 1
+    ORDER_PRICE = 1000000 / 100
 
     HISTORICAL_DATA_START_DATE = (jdatetime.date.today() - jdatetime.timedelta(days=4)).strftime('%Y-%m-%d')
     HISTORICAL_DATA_END_DATE = jdatetime.date.today().strftime('%Y-%m-%d')

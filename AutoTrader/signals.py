@@ -98,8 +98,9 @@ def buy():
         print("WARNING: Could not fetch market data for buy price calculation.")
         return
 
+    order_quantity = min(1, config.ORDER_PRICE / buy_price)
     # Place or modify buy order
-    api.buy(ticker=config.OPTION_TICKER, price=buy_price, quantity=config.ORDER_QUANTITY)
+    api.buy(ticker=config.OPTION_TICKER, price=buy_price, quantity=order_quantity)
 
 
 def sell():
@@ -120,8 +121,9 @@ def sell():
         print("WARNING: Could not fetch market data for sell price calculation.")
         return
 
+    order_quantity = min(1, config.ORDER_PRICE / sell_price)
     # Place or modify sell order
-    api.sell(ticker=config.OPTION_TICKER, price=sell_price, quantity=config.ORDER_QUANTITY)
+    api.sell(ticker=config.OPTION_TICKER, price=sell_price, quantity=order_quantity)
 
 
 def cancel_all_orders():
