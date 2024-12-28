@@ -32,8 +32,8 @@ class BaseConfig:
     SMOOTHING_PARAM = 3600
     WINDOW_SIZE = 3600
     Z_THRESHOLD = 1.5
-    BUY_PRICE_OFFSET = -1
-    SELL_PRICE_OFFSET = 1
+    BUY_PRICE_OFFSET = 1
+    SELL_PRICE_OFFSET = -1
     ORDER_PRICE = 1000000 // 100
 
     HISTORICAL_DATA_START_DATE = (jdatetime.date.today() - jdatetime.timedelta(days=4)).strftime('%Y-%m-%d')
