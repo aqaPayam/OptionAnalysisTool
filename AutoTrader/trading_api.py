@@ -18,7 +18,6 @@ class TradingAPI:
         self.market_url = config.MARKET_URL
         self.headers = config.HEADERS
         self.max_retries = config.MAX_RETRIES
-        self.option_ticker = config.OPTION_TICKER
 
     def _make_request(self, method: str, url: str, data: Optional[dict] = None) -> Optional[dict]:
         config = get_config()
@@ -51,40 +50,40 @@ class TradingAPI:
         print(f"ERROR: Max retries reached for {url}.")
         return None
 
-    # Existing methods (fetch_order_book, place_order, modify_order, etc.) remain unchanged
-
-    def get_net_worth_balance(self) -> Optional[float]:
+    def fetch_order_book(self, ticker: str) -> Optional[List[float]]:
         """
-        Retrieves the netWorthBalance for the configured OPTION_TICKER.
+        Retrieves the current order book for a specific ticker.
 
-        Sends a GET request to the Portfolio endpoint, searches for the position with the specified ISIN,
-        and returns its netWorthBalance.
+        Args:
+            ticker (str): The ISIN ticker symbol.
 
         Returns:
-            Optional[float]: The netWorthBalance if found, else None.
+            Optional[List[float]]: A list containing [sell_volume, sell_price, buy_price, buy_volume].
         """
-        url = f"{self.base_url}/positions/options/Portfolio"
+        url = f"{self.market_url}/Queue/BestLimitWithSize?isin={ticker}"
 
         response = self._make_request('GET', url)
 
         if response:
             try:
-                # Assuming the response is a list of position dictionaries
-                print("INFO: Retrieved portfolio positions successfully.")
-                for position in response:
-                    if position.get('isin') == self.option_ticker:
-                        net_worth = position.get('netWorthBalance')
-                        if net_worth is not None:
-                            print(f"INFO: netWorthBalance for {self.option_ticker} is {net_worth}")
-                            return net_worth
-                        else:
-                            print(f"WARNING: netWorthBalance not found for ISIN {self.option_ticker}.")
-                            return None
-                print(f"WARNING: No position found for ISIN {self.option_ticker}.")
-            except (KeyError, TypeError) as e:
-                print(f"ERROR: Error processing portfolio positions: {e}")
-        else:
-            print("ERROR: Failed to retrieve portfolio positions.")
+                buy = response.get('buy', [])
+                sell = response.get('sell', [])
+
+                # Handle cases where either buy or sell is empty
+                if buy and sell:
+                    buy_data = buy[0]
+                    sell_data = sell[0]
+                    return [sell_data['v'], sell_data['p'], buy_data['p'], buy_data['v']]
+                elif sell:
+                    sell_data = sell[0]
+                    return [sell_data['v'], sell_data['p'], sell_data['p'], sell_data['v']]
+                elif buy:
+                    buy_data = buy[0]
+                    return [buy_data['v'], buy_data['p'], buy_data['p'], buy_data['v']]
+                else:
+                    print(f"WARNING: No buy or sell data available for ticker {ticker}.")
+            except (KeyError, IndexError) as e:
+                print(f"ERROR: Error extracting order book data for {ticker}: {e}")
         return None
 
     def place_order(self, ticker: str, price: float, quantity: int, side: str) -> Optional[dict]:
@@ -278,3 +277,37 @@ class TradingAPI:
         else:
             print(f"ERROR: Failed to cancel orders with serial numbers: {serial_numbers}")
         return response
+
+    def get_net_worth_balance(self) -> Optional[float]:
+        """
+        Retrieves the netWorthBalance for the configured OPTION_TICKER.
+
+        Sends a GET request to the Portfolio endpoint, searches for the position with the specified ISIN,
+        and returns its netWorthBalance.
+
+        Returns:
+            Optional[float]: The netWorthBalance if found, else None.
+        """
+        url = f"{self.base_url}/positions/options/Portfolio"
+
+        response = self._make_request('GET', url)
+
+        if response:
+            try:
+                # Assuming the response is a list of position dictionaries
+                print("INFO: Retrieved portfolio positions successfully.")
+                for position in response:
+                    if position.get('isin') == self.option_ticker:
+                        net_worth = position.get('netWorthBalance')
+                        if net_worth is not None:
+                            print(f"INFO: netWorthBalance for {self.option_ticker} is {net_worth}")
+                            return net_worth
+                        else:
+                            print(f"WARNING: netWorthBalance not found for ISIN {self.option_ticker}.")
+                            return None
+                print(f"WARNING: No position found for ISIN {self.option_ticker}.")
+            except (KeyError, TypeError) as e:
+                print(f"ERROR: Error processing portfolio positions: {e}")
+        else:
+            print("ERROR: Failed to retrieve portfolio positions.")
+        return None
