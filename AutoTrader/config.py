@@ -36,7 +36,7 @@ class BaseConfig:
     BUY_PRICE_OFFSET = 1
     SELL_PRICE_OFFSET = -1
     ORDER_PRICE = 1000000 // 100
-    MAX_BID = 33000000 // 100
+    MAX_BID = 33000000 * 10
     NET_WORTH = 0
 
     HISTORICAL_DATA_START_DATE = (jdatetime.date.today() - jdatetime.timedelta(days=4)).strftime('%Y-%m-%d')

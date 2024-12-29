@@ -18,6 +18,7 @@ class TradingAPI:
         self.market_url = config.MARKET_URL
         self.headers = config.HEADERS
         self.max_retries = config.MAX_RETRIES
+        self.option_ticker = config.OPTION_TICKER
 
     def _make_request(self, method: str, url: str, data: Optional[dict] = None) -> Optional[dict]:
         config = get_config()
