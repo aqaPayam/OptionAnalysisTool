@@ -13,11 +13,12 @@ class BaseConfig:
     MDAPI_URL = 'https://mdapi1.ephoenix.ir/api/v2'
 
     HEADERS = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
+        'User-Agent': '',
         # Empty User-Agent
         'Accept': 'application/json, text/plain, */*',
-        'Cookie': 'cookiesession1=678B2928B1B3FC87D21EEC7CB0BB44AB; otauth-178-OMS474afcd3-2d21-4c1d-8320-e83165aef1b2=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJTZXNzaW9uSWQiOiI0NzRhZmNkMy0yZDIxLTRjMWQtODMyMC1lODMxNjVhZWYxYjIiLCJVc2VySWQiOiIxMDA3OTUiLCJBcHBOYW1lIjoiT01TIiwiQnJva2VyQ29kZSI6IjE3OCIsIm5iZiI6MTczNTM2NTU1NCwiZXhwIjoxNzM1Mzk0MzU0LCJpc3MiOiJPTVMiLCJhdWQiOiJPTVMifQ.6kBIK0TQCB1Bq-1MBrlUUquT5EKKw63_-SNuEZeX4G_rve_F4VLXlqqcPStMSROPXc2ZPbvcAM0_lLVjhR4EpA' ,        # Empty Cookie
-        'x-sessionId': 'OMS474afcd3-2d21-4c1d-8320-e83165aef1b2',  # Empty x-sessionId
+        'Cookie': '',
+        # Empty Cookie
+        'x-sessionId': '',  # Empty x-sessionId
         'Content-Type': 'application/json',
     }
 
@@ -26,7 +27,7 @@ class BaseConfig:
     CALL_PUT = 'c'  # 'c' for call, 'p' for put
     VALID_TIME_START = pd.to_datetime("09:15:00").time()
     VALID_TIME_END = pd.to_datetime("12:30:00").time()
-    MAX_RETRIES = 7
+    MAX_RETRIES = 3
     SLEEP_INTERVAL = 1  # seconds
     MAX_SIZE = 10
     SMOOTHING_PARAM = 3600
@@ -35,6 +36,8 @@ class BaseConfig:
     BUY_PRICE_OFFSET = 1
     SELL_PRICE_OFFSET = -1
     ORDER_PRICE = 1000000 // 100
+    MAX_BID = 33000000 // 100
+    NET_WORTH = 0
 
     HISTORICAL_DATA_START_DATE = (jdatetime.date.today() - jdatetime.timedelta(days=4)).strftime('%Y-%m-%d')
     HISTORICAL_DATA_END_DATE = jdatetime.date.today().strftime('%Y-%m-%d')
@@ -43,10 +46,10 @@ class BaseConfig:
 class AhromConfig(BaseConfig):
     UNDERLYING_NAME = "اهرم"
     UNDERLYING_TICKER = "IRT1AHRM0001"
-    OPTION_NAME = "ضهرم1007"
-    OPTION_TICKER = "IRO9AHRM2401"
-    EXPIRATION_DATE = "1403-10-26"
-    STRIKE_PRICE = 18000
+    OPTION_NAME = "ضهرم1110"
+    OPTION_TICKER = "IRO9AHRM2551"
+    EXPIRATION_DATE = "1403-11-24"
+    STRIKE_PRICE = 26000
 
 
 class KhodroConfig(BaseConfig):
@@ -67,11 +70,21 @@ class ShastaConfig(BaseConfig):
     STRIKE_PRICE = 1050
 
 
+class ZaspaConfig(BaseConfig):
+    UNDERLYING_NAME = "خساپا"
+    UNDERLYING_TICKER = "IRO1SIPA0001"
+    OPTION_NAME = "ضسپا1027"
+    OPTION_TICKER = "IRO9SIPA8781"
+    EXPIRATION_DATE = "1403-10-26"
+    STRIKE_PRICE = 3000
+
+
 # Map modes to configurations
 CONFIGS = {
     'ahrom': AhromConfig,
     'khodro': KhodroConfig,
     'shasta': ShastaConfig,
+    'zaspa': ZaspaConfig,
 }
 
 

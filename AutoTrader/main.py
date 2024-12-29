@@ -1,3 +1,5 @@
+# main.py
+
 import argparse
 import time
 import jdatetime
@@ -16,6 +18,8 @@ from result_handling import result_handling_thread
 from data_merging import merge_historical_and_live_data
 from historical_data import historical_data_thread
 
+from net_worth_monitor import monitor_net_worth
+
 import warnings
 
 warnings.filterwarnings("ignore", category=FutureWarning)
@@ -23,7 +27,7 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 
 def main():
     parser = argparse.ArgumentParser(description="Run the script with a specific configuration mode.")
-    parser.add_argument('--mode', type=str, required=True, choices=['ahrom', 'khodro', 'shasta'],
+    parser.add_argument('--mode', type=str, required=True, choices=['ahrom', 'khodro', 'shasta', 'zaspa'],
                         help="Mode to run the script in.")
     args = parser.parse_args()
 
@@ -79,11 +83,21 @@ def main():
         rolling_vols, price_diff_window, stop_event))
     processing_thread_instance.start()
 
+    # Start signal handling thread
     signal_thread = Thread(target=signal_handling_thread, args=(signal_queue, stop_event))
     signal_thread.start()
 
+    # Start result handling thread (initialized later)
     result_thread = None
 
+    # Start the net worth monitoring thread
+    net_worth_thread = Thread(
+        target=monitor_net_worth,
+        args=(stop_event,),
+        name="NetWorthMonitorThread"
+    )
+    net_worth_thread.start()
+    print("INFO: Started net worth monitoring thread.")
     try:
         historical_data_merged = False
         while not stop_event.is_set():
@@ -118,11 +132,22 @@ def main():
 
             time.sleep(1)
 
+
     except KeyboardInterrupt:
+
         print("INFO: Processing stopped by user, initiating graceful shutdown.")
+
         stop_event.set()
+
+
     finally:
-        # Wait for all threads to finish
+
+        net_worth_thread.join()
+
+        print("INFO: Net worth monitoring thread has been terminated.")
+
+        # Join other threads as necessary
+
         if historical_thread and historical_thread.is_alive():
             historical_thread.join()
 
@@ -139,6 +164,7 @@ def main():
             result_thread.join()
 
         counters.report()
+
         print("INFO: Program terminated gracefully.")
 
 

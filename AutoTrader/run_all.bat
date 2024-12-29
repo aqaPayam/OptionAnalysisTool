@@ -8,3 +8,5 @@ start cmd /k "python main.py --mode khodro"
 
 :: Run for shasta
 start cmd /k "python main.py --mode shasta"
+
+start cmd /k "python main.py --mode zaspa"
