@@ -281,13 +281,13 @@ class TradingAPI:
 
     def get_net_worth_balance(self) -> Optional[float]:
         """
-        Retrieves the netWorthBalance for the configured OPTION_TICKER.
+        Retrieves the netWorthBalance and optionMarginBlockAmount for the configured OPTION_TICKER.
 
         Sends a GET request to the Portfolio endpoint, searches for the position with the specified ISIN,
-        and returns its netWorthBalance.
+        and determines the net worth based on the provided conditions.
 
         Returns:
-            Optional[float]: The netWorthBalance if found, else None.
+            Optional[float]: The computed net worth if conditions are met, else None.
         """
         url = f"{self.base_url}/positions/options/Portfolio"
 
@@ -299,16 +299,26 @@ class TradingAPI:
                 print("INFO: Retrieved portfolio positions successfully.")
                 for position in response:
                     if position.get('isin') == self.option_ticker:
-                        net_worth = position.get('netWorthBalance')
-                        if net_worth is not None:
-                            print(f"INFO: netWorthBalance for {self.option_ticker} is {net_worth}")
-                            return net_worth
+                        net_worth_balance = int(position.get('netWorthBalance', 0))
+                        option_margin_block_amount = int(position.get('optionMarginBlockAmount', 0))
+
+                        if option_margin_block_amount == 0 and net_worth_balance > 0:
+                            print(f"INFO: netWorthBalance for {self.option_ticker} is {net_worth_balance}")
+                            return net_worth_balance
+
+                        elif option_margin_block_amount != 0 and net_worth_balance < 0:
+                            adjusted_net_worth = -option_margin_block_amount
+                            print(f"INFO: Adjusted net worth for {self.option_ticker} is {adjusted_net_worth}")
+                            return adjusted_net_worth
+
                         else:
-                            print(f"WARNING: netWorthBalance not found for ISIN {self.option_ticker}.")
+                            print("ERROR: Conditions not met for calculating net worth.")
                             return None
+
                 print(f"WARNING: No position found for ISIN {self.option_ticker}.")
             except (KeyError, TypeError) as e:
                 print(f"ERROR: Error processing portfolio positions: {e}")
         else:
             print("ERROR: Failed to retrieve portfolio positions.")
+
         return None
