@@ -24,7 +24,6 @@ class BaseConfig:
 
     RISK_FREE_RATE = 0.3
     USE_HISTORICAL = True
-    CALL_PUT = 'c'  # 'c' for call, 'p' for put
     VALID_TIME_START = pd.to_datetime("09:15:00").time()
     VALID_TIME_END = pd.to_datetime("12:30:00").time()
     MAX_RETRIES = 3
@@ -50,6 +49,7 @@ class zahrom1111(BaseConfig):
     OPTION_TICKER = "IRO9AHRM2811"
     EXPIRATION_DATE = "1403-11-24"
     STRIKE_PRICE = 28000
+    CALL_PUT = 'c'  # 'c' for call, 'p' for put
 
 
 class zahrom1110(BaseConfig):
@@ -59,6 +59,7 @@ class zahrom1110(BaseConfig):
     OPTION_TICKER = "IRO9AHRM2551"
     EXPIRATION_DATE = "1403-11-24"
     STRIKE_PRICE = 26000
+    CALL_PUT = 'c'  # 'c' for call, 'p' for put
 
 
 class tahrom1112(BaseConfig):
@@ -68,6 +69,7 @@ class tahrom1112(BaseConfig):
     OPTION_TICKER = "IROFAHRM3821"
     EXPIRATION_DATE = "1403-11-24"
     STRIKE_PRICE = 30000
+    CALL_PUT = 'p'  # 'c' for call, 'p' for put
 
 
 class tahrom1111(BaseConfig):
@@ -77,6 +79,7 @@ class tahrom1111(BaseConfig):
     OPTION_TICKER = "IROFAHRM3811"
     EXPIRATION_DATE = "1403-11-24"
     STRIKE_PRICE = 28000
+    CALL_PUT = 'p'  # 'c' for call, 'p' for put
 
 
 # Map modes to configurations
