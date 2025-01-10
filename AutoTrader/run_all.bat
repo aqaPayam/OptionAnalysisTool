@@ -1,12 +1,12 @@
 @echo off
 
 :: Run for ahrom
-start cmd /k "python main.py --mode ahrom"
+start cmd /k "python main.py --mode a"
 
 :: Run for khodro
-start cmd /k "python main.py --mode khodro"
+start cmd /k "python main.py --mode b"
 
 :: Run for shasta
-start cmd /k "python main.py --mode shasta"
+start cmd /k "python main.py --mode c"
 
-start cmd /k "python main.py --mode zaspa"
+start cmd /k "python main.py --mode d"

@@ -43,7 +43,16 @@ class BaseConfig:
     HISTORICAL_DATA_END_DATE = jdatetime.date.today().strftime('%Y-%m-%d')
 
 
-class AhromConfig(BaseConfig):
+class zahrom1111(BaseConfig):
+    UNDERLYING_NAME = "اهرم"
+    UNDERLYING_TICKER = "IRT1AHRM0001"
+    OPTION_NAME = "ضهرم1111"
+    OPTION_TICKER = "IRO9AHRM2811"
+    EXPIRATION_DATE = "1403-11-24"
+    STRIKE_PRICE = 28000
+
+
+class zahrom1110(BaseConfig):
     UNDERLYING_NAME = "اهرم"
     UNDERLYING_TICKER = "IRT1AHRM0001"
     OPTION_NAME = "ضهرم1110"
@@ -52,39 +61,30 @@ class AhromConfig(BaseConfig):
     STRIKE_PRICE = 26000
 
 
-class KhodroConfig(BaseConfig):
-    UNDERLYING_NAME = "خودرو"
-    UNDERLYING_TICKER = "IRO1IKCO0001"
-    OPTION_NAME = "ضخود1136"
-    OPTION_TICKER = "IRO9IKCO8K51"
-    EXPIRATION_DATE = "1403-11-03"
-    STRIKE_PRICE = 3000
+class tahrom1112(BaseConfig):
+    UNDERLYING_NAME = "اهرم"
+    UNDERLYING_TICKER = "IRT1AHRM0001"
+    OPTION_NAME = "طهرم1112"
+    OPTION_TICKER = "IROFAHRM3821"
+    EXPIRATION_DATE = "1403-11-24"
+    STRIKE_PRICE = 30000
 
 
-class ShastaConfig(BaseConfig):
-    UNDERLYING_NAME = "شستا"
-    UNDERLYING_TICKER = "IRO1TAMN0001"
-    OPTION_NAME = "ضستا1125"
-    OPTION_TICKER = "IRO9TAMN0411"
-    EXPIRATION_DATE = "1403-11-10"
-    STRIKE_PRICE = 1050
-
-
-class ZaspaConfig(BaseConfig):
-    UNDERLYING_NAME = "خساپا"
-    UNDERLYING_TICKER = "IRO1SIPA0001"
-    OPTION_NAME = "ضسپا1027"
-    OPTION_TICKER = "IRO9SIPA8781"
-    EXPIRATION_DATE = "1403-10-26"
-    STRIKE_PRICE = 3000
+class tahrom1111(BaseConfig):
+    UNDERLYING_NAME = "اهرم"
+    UNDERLYING_TICKER = "IRT1AHRM0001"
+    OPTION_NAME = "طهرم1111"
+    OPTION_TICKER = "IROFAHRM3811"
+    EXPIRATION_DATE = "1403-11-24"
+    STRIKE_PRICE = 28000
 
 
 # Map modes to configurations
 CONFIGS = {
-    'ahrom': AhromConfig,
-    'khodro': KhodroConfig,
-    'shasta': ShastaConfig,
-    'zaspa': ZaspaConfig,
+    'a': zahrom1110,
+    'b': zahrom1111,
+    'c': tahrom1111,
+    'd': tahrom1112,
 }
 
 
