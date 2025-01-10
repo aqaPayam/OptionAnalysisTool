@@ -81,10 +81,10 @@ class tahrom1111(BaseConfig):
 
 # Map modes to configurations
 CONFIGS = {
-    'a': zahrom1110,
-    'b': zahrom1111,
-    'c': tahrom1111,
-    'd': tahrom1112,
+    'zahrom1110': zahrom1110,
+    'zahrom1111': zahrom1111,
+    'tahrom1111': tahrom1111,
+    'tahrom1112': tahrom1112,
 }
 
 
