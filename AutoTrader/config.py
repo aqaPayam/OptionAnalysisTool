@@ -16,9 +16,9 @@ class BaseConfig:
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36',
         # Empty User-Agent
         'Accept': 'application/json, text/plain, */*',
-        'Cookie': 'cookiesession1=678B2928B1B3FC87D21EEC7CB0BB44AB; otauth-178-OMSb5297e43-bcae-40e2-9f04-8c2d4a10bec7=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJTZXNzaW9uSWQiOiJiNTI5N2U0My1iY2FlLTQwZTItOWYwNC04YzJkNGExMGJlYzciLCJVc2VySWQiOiIxMDA3OTUiLCJBcHBOYW1lIjoiT01TIiwiQnJva2VyQ29kZSI6IjE3OCIsIm5iZiI6MTczNjU3NDM0OSwiZXhwIjoxNzM2NjAzMTQ5LCJpc3MiOiJPTVMiLCJhdWQiOiJPTVMifQ.ExWR8zBMIhPdAjlVyWgwhakYEIGNmyUZ0Ae4UyzVW4MRCSiMaAGNb5M0QFfNgq5nWb7nbLxeGNi5qxva5_X7xQ',
+        'Cookie': 'cookiesession1=678B2928B1B3FC87D21EEC7CB0BB44AB; otauth-178-OMSb62bdcfb-cabd-44c7-8e40-1a34289a7be6=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJTZXNzaW9uSWQiOiJiNjJiZGNmYi1jYWJkLTQ0YzctOGU0MC0xYTM0Mjg5YTdiZTYiLCJVc2VySWQiOiIxMDA3OTUiLCJBcHBOYW1lIjoiT01TIiwiQnJva2VyQ29kZSI6IjE3OCIsIm5iZiI6MTczNjc0MzAxMiwiZXhwIjoxNzM2NzcxODEyLCJpc3MiOiJPTVMiLCJhdWQiOiJPTVMifQ.UyaZWCddZF63kI3TPLdEBJZe53C_oxO86WKOSwvYjmxRV4A5EwepObjVO_PAblM3Bk3TVW7o4qkh3R-qscZdqw',
         # Empty Cookie
-        'x-sessionId': 'OMSb5297e43-bcae-40e2-9f04-8c2d4a10bec7',  # Empty x-sessionId
+        'x-sessionId': 'OMSb62bdcfb-cabd-44c7-8e40-1a34289a7be6',  # Empty x-sessionId
         'Content-Type': 'application/json',
     }
 
@@ -35,7 +35,7 @@ class BaseConfig:
     BUY_PRICE_OFFSET = 0
     SELL_PRICE_OFFSET = 0
     ORDER_PRICE = 1000000 // 100
-    MAX_BID = 25000000 * 10
+    MAX_BID = 50000000 * 10
     NET_WORTH = 0
 
     HISTORICAL_DATA_START_DATE = (jdatetime.date.today() - jdatetime.timedelta(days=4)).strftime('%Y-%m-%d')
