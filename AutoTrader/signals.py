@@ -82,7 +82,7 @@ def process_price_difference(price_difference, price_diff_window, window_size, z
 
 def buy():
     config = get_config()
-    if config.NET_WORTH > config.MAX_BID:
+    if config.NET_WORTH > 0:
         print(f"Net worth buy (${config.NET_WORTH}) exceeds the maximum bid (${config.MAX_BID}).")
         return
 
@@ -109,7 +109,7 @@ def buy():
 
 def sell():
     config = get_config()
-    if config.NET_WORTH < -config.MAX_BID:
+    if config.NET_WORTH < 0:
         print(f"Net worth sell (${config.NET_WORTH}) exceeds the maximum bid (${config.MAX_BID}).")
         return
     """
@@ -127,6 +127,8 @@ def sell():
     else:
         print("WARNING: Could not fetch market data for sell price calculation.")
         return
+
+
 
     order_quantity = max(1, config.ORDER_PRICE // sell_price)
     # Place or modify sell order
