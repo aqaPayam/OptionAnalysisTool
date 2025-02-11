@@ -37,6 +37,11 @@ class BaseConfig:
     ORDER_PRICE = 1000000 // 100
     MAX_BID = 50000000 * 10
     NET_WORTH = 0
+    DELTA_BUY_MIN = 0.3
+    DELTA_BUY_MAX = 1.0  # Since Call option Delta is always between 0 and 1
+
+    DELTA_SELL_MIN = -1.0  # Since Put option Delta is between -1 and 0
+    DELTA_SELL_MAX = -0.3
 
     HISTORICAL_DATA_START_DATE = (jdatetime.date.today() - jdatetime.timedelta(days=4)).strftime('%Y-%m-%d')
     HISTORICAL_DATA_END_DATE = jdatetime.date.today().strftime('%Y-%m-%d')
