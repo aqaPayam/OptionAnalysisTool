@@ -82,7 +82,7 @@ def process_price_difference(price_difference, price_diff_window, window_size, z
 
 def buy():
     config = get_config()
-    if config.NET_WORTH > 0:
+    if config.NET_WORTH > config.MAX_BID:
         print(f"Net worth buy (${config.NET_WORTH}) exceeds the maximum bid (${config.MAX_BID}).")
         return
 

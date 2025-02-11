@@ -72,12 +72,12 @@ def processing_thread(data_queue, result_queue, signal_queue, counters, processi
                 over_positive_one_count += over_count
 
                 # **Modify Signal Based on Delta (Different for Buy & Sell)**
-                if signal == "buy" and config.NET_WORTH > 0:
+                if signal == "buy" and config.NET_WORTH >= 0:
                     if not (config.DELTA_BUY_MIN <= delta <= config.DELTA_BUY_MAX):
                         signal = "hold"  # Change to hold instead of buying
                         print(f"INFO: Buy signal changed to 'hold' due to Delta condition. Delta: {delta:.4f}")
 
-                elif signal == "sell" and config.NET_WORTH < 0:
+                elif signal == "sell" and config.NET_WORTH <= 0:
                     if not (config.DELTA_SELL_MIN <= delta <= config.DELTA_SELL_MAX):
                         signal = "hold"  # Change to hold instead of selling
                         print(f"INFO: Sell signal changed to 'hold' due to Delta condition. Delta: {delta:.4f}")
