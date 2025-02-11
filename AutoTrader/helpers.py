@@ -4,10 +4,41 @@ import numpy as np
 import pandas as pd
 import jdatetime
 import datetime
+from scipy.stats import norm
 from collections import deque
 from py_vollib.black_scholes import black_scholes
 from py_vollib.black_scholes.implied_volatility import implied_volatility
 from config import get_config
+
+
+def calculate_delta(avg_price_underlying, strike_price, time_to_expiration, risk_free_rate, estimated_vol, call_put):
+    """
+    Calculate the Delta of a European Call or Put option using the Black-Scholes Model.
+
+    Args:
+        avg_price_underlying (float): Current price of the underlying asset.
+        strike_price (float): Strike price of the option.
+        time_to_expiration (float): Time to expiration in years.
+        risk_free_rate (float): Risk-free interest rate.
+        estimated_vol (float): Estimated volatility.
+        call_put (str): Option type ('c' for call, 'p' for put').
+
+    Returns:
+        float: Delta value.
+    """
+    if time_to_expiration <= 0 or estimated_vol <= 0:
+        return 0  # Prevent division by zero errors
+
+    d1 = (np.log(avg_price_underlying / strike_price) +
+          (risk_free_rate + 0.5 * estimated_vol ** 2) * time_to_expiration) / (
+                     estimated_vol * np.sqrt(time_to_expiration))
+
+    if call_put == 'c':
+        return norm.cdf(d1)  # Call option Delta
+    elif call_put == 'p':
+        return norm.cdf(d1) - 1  # Put option Delta
+    else:
+        raise ValueError("call_put must be 'c' (call) or 'p' (put')")
 
 
 def calculate_simple_moving_average(rolling_vols: deque) -> float:
