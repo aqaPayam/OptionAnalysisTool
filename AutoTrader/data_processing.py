@@ -4,7 +4,7 @@ import numpy as np
 from helpers import (
     validate_time_and_data, calculate_time_to_expiration,
     calculate_implied_volatility, calculate_estimated_volatility,
-    calculate_black_scholes_price
+    calculate_black_scholes_price, calculate_delta  # Added Delta import
 )
 from signals import process_price_difference
 from config import get_config
@@ -58,12 +58,29 @@ def processing_thread(data_queue, result_queue, signal_queue, counters, processi
 
                 price_difference = avg_price_option - black_scholes_price
 
+                # **Delta Calculation**
+                delta = calculate_delta(
+                    avg_price_underlying, config.STRIKE_PRICE, time_to_expiration,
+                    config.RISK_FREE_RATE, estimated_vol, config.CALL_PUT
+                )
+
                 signal, under_count, over_count, rolling_mean_diff, rolling_std_diff, z_score = process_price_difference(
                     price_difference, price_diff_window, config.WINDOW_SIZE, config.Z_THRESHOLD, counters
                 )
 
                 under_negative_one_count += under_count
                 over_positive_one_count += over_count
+
+                # **Modify Signal Based on Delta (Different for Buy & Sell)**
+                if signal == "buy" and config.NET_WORTH > 0:
+                    if not (config.DELTA_BUY_MIN <= delta <= config.DELTA_BUY_MAX):
+                        signal = "hold"  # Change to hold instead of buying
+                        print(f"INFO: Buy signal changed to 'hold' due to Delta condition. Delta: {delta:.4f}")
+
+                elif signal == "sell" and config.NET_WORTH < 0:
+                    if not (config.DELTA_SELL_MIN <= delta <= config.DELTA_SELL_MAX):
+                        signal = "hold"  # Change to hold instead of selling
+                        print(f"INFO: Sell signal changed to 'hold' due to Delta condition. Delta: {delta:.4f}")
 
                 result = {
                     "Date": current_date_jalali,
@@ -77,9 +94,10 @@ def processing_thread(data_queue, result_queue, signal_queue, counters, processi
                     "rolling_mean_diff": rolling_mean_diff,
                     "rolling_std_diff": rolling_std_diff,
                     "z_score": z_score,
-                    "signal": signal,
+                    "signal": signal,  # Updated signal if necessary
                     "under_negative_one_count": under_negative_one_count,
-                    "over_positive_one_count": over_positive_one_count
+                    "over_positive_one_count": over_positive_one_count,
+                    "delta": delta  # Added Delta to results
                 }
 
                 result_queue.append(result)
