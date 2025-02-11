@@ -6,7 +6,8 @@ import numpy as np
 from helpers import (
     validate_time_and_data, calculate_time_to_expiration,
     calculate_implied_volatility, calculate_estimated_volatility,
-    calculate_black_scholes_price, validate_time_and_data_preprocess
+    calculate_black_scholes_price, validate_time_and_data_preprocess,
+    calculate_delta  # Added Delta import
 )
 from signals import process_price_difference
 from config import get_config
@@ -127,6 +128,12 @@ def merge_historical_and_live_data(
         # Price difference
         price_difference = avg_price_option - black_scholes_price
 
+        # **Delta Calculation**
+        delta = calculate_delta(
+            avg_price_underlying, config.STRIKE_PRICE, time_to_expiration,
+            config.RISK_FREE_RATE, estimated_vol, config.CALL_PUT
+        )
+
         # Process price difference for signals
         signal, under_count, over_count, rolling_mean_diff, rolling_std_diff, z_score = process_price_difference(
             price_difference, price_diff_window, config.WINDOW_SIZE, config.Z_THRESHOLD, counters
@@ -147,6 +154,7 @@ def merge_historical_and_live_data(
         row["signal"] = signal
         row["under_negative_one_count"] = under_negative_one_count
         row["over_positive_one_count"] = over_positive_one_count
+        row["delta"] = delta  # Added Delta to results
 
         processed_rows.append(row)
 
@@ -190,6 +198,12 @@ def merge_historical_and_live_data(
         # Calculate price difference
         price_difference = avg_price_option - black_scholes_price
 
+        # **Delta Calculation**
+        delta = calculate_delta(
+            avg_price_underlying, config.STRIKE_PRICE, time_to_expiration,
+            config.RISK_FREE_RATE, estimated_vol, config.CALL_PUT
+        )
+
         # Process price difference and generate signals
         signal, under_count, over_count, rolling_mean_diff, rolling_std_diff, z_score = process_price_difference(
             price_difference, price_diff_window, config.WINDOW_SIZE, config.Z_THRESHOLD, counters
@@ -214,7 +228,8 @@ def merge_historical_and_live_data(
             "z_score": z_score,
             "signal": signal,
             "under_negative_one_count": under_negative_one_count,
-            "over_positive_one_count": over_positive_one_count
+            "over_positive_one_count": over_positive_one_count,
+            "delta": delta  # Added Delta to results
         }
 
         live_processed_rows.append(live_result)
