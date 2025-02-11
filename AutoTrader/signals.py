@@ -102,14 +102,18 @@ def buy():
         print("WARNING: Could not fetch market data for buy price calculation.")
         return
 
-    order_quantity = max(1, config.ORDER_PRICE // buy_price)
+    if config.NET_WORTH < 0 and config.ORDER_PRICE * 0.8 <= -config.NET_WORTH // 1000 <= config.ORDER_PRICE * 1.2:
+        order_quantity = max(1, -config.NET_WORTH // (1000 * buy_price))
+    else:
+        order_quantity = max(1, config.ORDER_PRICE // buy_price)
+
     # Place or modify buy order
     api.buy(ticker=config.OPTION_TICKER, price=buy_price, quantity=order_quantity)
 
 
 def sell():
     config = get_config()
-    if config.NET_WORTH < 0:
+    if config.NET_WORTH < -config.MAX_BID:
         print(f"Net worth sell (${config.NET_WORTH}) exceeds the maximum bid (${config.MAX_BID}).")
         return
     """
@@ -128,9 +132,11 @@ def sell():
         print("WARNING: Could not fetch market data for sell price calculation.")
         return
 
+    if config.NET_WORTH > 0 and config.ORDER_PRICE * 0.8 <= config.NET_WORTH // 1000 <= config.ORDER_PRICE * 1.2:
+        order_quantity = max(1, config.NET_WORTH // (1000 * sell_price))
+    else:
+        order_quantity = max(1, config.ORDER_PRICE // sell_price)
 
-
-    order_quantity = max(1, config.ORDER_PRICE // sell_price)
     # Place or modify sell order
     api.sell(ticker=config.OPTION_TICKER, price=sell_price, quantity=order_quantity)
 
