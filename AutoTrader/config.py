@@ -46,54 +46,8 @@ class BaseConfig:
     HISTORICAL_DATA_START_DATE = (jdatetime.date.today() - jdatetime.timedelta(days=4)).strftime('%Y-%m-%d')
     HISTORICAL_DATA_END_DATE = jdatetime.date.today().strftime('%Y-%m-%d')
 
-
-class zahrom1111(BaseConfig):
-    UNDERLYING_NAME = "اهرم"
-    UNDERLYING_TICKER = "IRT1AHRM0001"
-    OPTION_NAME = "ضهرم1111"
-    OPTION_TICKER = "IRO9AHRM2811"
-    EXPIRATION_DATE = "1403-11-24"
-    STRIKE_PRICE = 28000
-    CALL_PUT = 'c'  # 'c' for call, 'p' for put
-
-
-class zahrom1110(BaseConfig):
-    UNDERLYING_NAME = "اهرم"
-    UNDERLYING_TICKER = "IRT1AHRM0001"
-    OPTION_NAME = "ضهرم1110"
-    OPTION_TICKER = "IRO9AHRM2551"
-    EXPIRATION_DATE = "1403-11-24"
-    STRIKE_PRICE = 26000
-    CALL_PUT = 'c'  # 'c' for call, 'p' for put
-
-
-class tahrom1112(BaseConfig):
-    UNDERLYING_NAME = "اهرم"
-    UNDERLYING_TICKER = "IRT1AHRM0001"
-    OPTION_NAME = "طهرم1112"
-    OPTION_TICKER = "IROFAHRM3821"
-    EXPIRATION_DATE = "1403-11-24"
-    STRIKE_PRICE = 30000
-    CALL_PUT = 'p'  # 'c' for call, 'p' for put
-
-
-class tahrom1111(BaseConfig):
-    UNDERLYING_NAME = "اهرم"
-    UNDERLYING_TICKER = "IRT1AHRM0001"
-    OPTION_NAME = "طهرم1111"
-    OPTION_TICKER = "IROFAHRM3811"
-    EXPIRATION_DATE = "1403-11-24"
-    STRIKE_PRICE = 28000
-    CALL_PUT = 'p'  # 'c' for call, 'p' for put
-
-
-# Map modes to configurations
-CONFIGS = {
-    'zahrom1110': zahrom1110,
-    'zahrom1111': zahrom1111,
-    'tahrom1111': tahrom1111,
-    'tahrom1112': tahrom1112,
-}
+    UNDERLYING_NAME = "خودرو"
+    UNDERLYING_TICKER = "IRO1IKCO0001"
 
 
 def set_current_mode(mode):
@@ -114,3 +68,998 @@ def get_config():
     while CURRENT_MODE is None:
         time.sleep(0.01)  # Wait a short time to avoid busy waiting
     return CONFIGS[CURRENT_MODE]
+
+
+class Option_takhod1239(BaseConfig):
+    OPTION_NAME = "takhod1239"
+    OPTION_TICKER = "IROFIKCO9Q51"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 4500
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod1240(BaseConfig):
+    OPTION_NAME = "takhod1240"
+    OPTION_TICKER = "IROFIKCO9Q61"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 5000
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod0142(BaseConfig):
+    OPTION_NAME = "takhod0142"
+    OPTION_TICKER = "IROFIKCO9Q71"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 5000
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod1226(BaseConfig):
+    OPTION_NAME = "takhod1226"
+    OPTION_TICKER = "IROFIKCO9L01"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 1700
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod1227(BaseConfig):
+    OPTION_NAME = "takhod1227"
+    OPTION_TICKER = "IROFIKCO9L11"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 1800
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod1228(BaseConfig):
+    OPTION_NAME = "takhod1228"
+    OPTION_TICKER = "IROFIKCO9L21"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 1900
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod1229(BaseConfig):
+    OPTION_NAME = "takhod1229"
+    OPTION_TICKER = "IROFIKCO9L31"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 2000
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod1230(BaseConfig):
+    OPTION_NAME = "takhod1230"
+    OPTION_TICKER = "IROFIKCO9L41"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 2200
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod1231(BaseConfig):
+    OPTION_NAME = "takhod1231"
+    OPTION_TICKER = "IROFIKCO9L51"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 2400
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod1232(BaseConfig):
+    OPTION_NAME = "takhod1232"
+    OPTION_TICKER = "IROFIKCO9L61"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 2600
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod1233(BaseConfig):
+    OPTION_NAME = "takhod1233"
+    OPTION_TICKER = "IROFIKCO9L71"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 2800
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod1234(BaseConfig):
+    OPTION_NAME = "takhod1234"
+    OPTION_TICKER = "IROFIKCO9L81"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 3000
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod1235(BaseConfig):
+    OPTION_NAME = "takhod1235"
+    OPTION_TICKER = "IROFIKCO9L91"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 3250
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod1236(BaseConfig):
+    OPTION_NAME = "takhod1236"
+    OPTION_TICKER = "IROFIKCO9M01"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 3500
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod1237(BaseConfig):
+    OPTION_NAME = "takhod1237"
+    OPTION_TICKER = "IROFIKCO9M11"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 3750
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod1238(BaseConfig):
+    OPTION_NAME = "takhod1238"
+    OPTION_TICKER = "IROFIKCO9M21"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 4000
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod0126(BaseConfig):
+    OPTION_NAME = "takhod0126"
+    OPTION_TICKER = "IROFIKCO9M31"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 1500
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod0127(BaseConfig):
+    OPTION_NAME = "takhod0127"
+    OPTION_TICKER = "IROFIKCO9M41"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 1600
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod0128(BaseConfig):
+    OPTION_NAME = "takhod0128"
+    OPTION_TICKER = "IROFIKCO9M51"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 1700
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod0129(BaseConfig):
+    OPTION_NAME = "takhod0129"
+    OPTION_TICKER = "IROFIKCO9M61"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 1800
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod0130(BaseConfig):
+    OPTION_NAME = "takhod0130"
+    OPTION_TICKER = "IROFIKCO9M71"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 1900
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod0131(BaseConfig):
+    OPTION_NAME = "takhod0131"
+    OPTION_TICKER = "IROFIKCO9M81"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 2000
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod0132(BaseConfig):
+    OPTION_NAME = "takhod0132"
+    OPTION_TICKER = "IROFIKCO9M91"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 2200
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod0133(BaseConfig):
+    OPTION_NAME = "takhod0133"
+    OPTION_TICKER = "IROFIKCO9N01"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 2400
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod0134(BaseConfig):
+    OPTION_NAME = "takhod0134"
+    OPTION_TICKER = "IROFIKCO9N11"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 2600
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod0135(BaseConfig):
+    OPTION_NAME = "takhod0135"
+    OPTION_TICKER = "IROFIKCO9N21"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 2800
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod0136(BaseConfig):
+    OPTION_NAME = "takhod0136"
+    OPTION_TICKER = "IROFIKCO9N31"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 3000
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod0137(BaseConfig):
+    OPTION_NAME = "takhod0137"
+    OPTION_TICKER = "IROFIKCO9N41"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 3250
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod0138(BaseConfig):
+    OPTION_NAME = "takhod0138"
+    OPTION_TICKER = "IROFIKCO9N51"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 3500
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod2050(BaseConfig):
+    OPTION_NAME = "takhod2050"
+    OPTION_TICKER = "IROFIKCO9N61"
+    EXPIRATION_DATE = "1404-02-03"
+    STRIKE_PRICE = 2000
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod2051(BaseConfig):
+    OPTION_NAME = "takhod2051"
+    OPTION_TICKER = "IROFIKCO9N71"
+    EXPIRATION_DATE = "1404-02-03"
+    STRIKE_PRICE = 2200
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod2052(BaseConfig):
+    OPTION_NAME = "takhod2052"
+    OPTION_TICKER = "IROFIKCO9N81"
+    EXPIRATION_DATE = "1404-02-03"
+    STRIKE_PRICE = 2400
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod2053(BaseConfig):
+    OPTION_NAME = "takhod2053"
+    OPTION_TICKER = "IROFIKCO9N91"
+    EXPIRATION_DATE = "1404-02-03"
+    STRIKE_PRICE = 2600
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod2054(BaseConfig):
+    OPTION_NAME = "takhod2054"
+    OPTION_TICKER = "IROFIKCO9O11"
+    EXPIRATION_DATE = "1404-02-03"
+    STRIKE_PRICE = 2800
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod2055(BaseConfig):
+    OPTION_NAME = "takhod2055"
+    OPTION_TICKER = "IROFIKCO9O21"
+    EXPIRATION_DATE = "1404-02-03"
+    STRIKE_PRICE = 3000
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod2056(BaseConfig):
+    OPTION_NAME = "takhod2056"
+    OPTION_TICKER = "IROFIKCO9O31"
+    EXPIRATION_DATE = "1404-02-03"
+    STRIKE_PRICE = 3250
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod2057(BaseConfig):
+    OPTION_NAME = "takhod2057"
+    OPTION_TICKER = "IROFIKCO9O41"
+    EXPIRATION_DATE = "1404-02-03"
+    STRIKE_PRICE = 3500
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod2058(BaseConfig):
+    OPTION_NAME = "takhod2058"
+    OPTION_TICKER = "IROFIKCO9O51"
+    EXPIRATION_DATE = "1404-02-03"
+    STRIKE_PRICE = 3750
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod2059(BaseConfig):
+    OPTION_NAME = "takhod2059"
+    OPTION_TICKER = "IROFIKCO9O61"
+    EXPIRATION_DATE = "1404-02-03"
+    STRIKE_PRICE = 4000
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod2060(BaseConfig):
+    OPTION_NAME = "takhod2060"
+    OPTION_TICKER = "IROFIKCO9O71"
+    EXPIRATION_DATE = "1404-02-03"
+    STRIKE_PRICE = 4500
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod2061(BaseConfig):
+    OPTION_NAME = "takhod2061"
+    OPTION_TICKER = "IROFIKCO9O81"
+    EXPIRATION_DATE = "1404-02-03"
+    STRIKE_PRICE = 5000
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod0139(BaseConfig):
+    OPTION_NAME = "takhod0139"
+    OPTION_TICKER = "IROFIKCO9O91"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 3750
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod0140(BaseConfig):
+    OPTION_NAME = "takhod0140"
+    OPTION_TICKER = "IROFIKCO9P01"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 4000
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod0141(BaseConfig):
+    OPTION_NAME = "takhod0141"
+    OPTION_TICKER = "IROFIKCO9P11"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 4500
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod3089(BaseConfig):
+    OPTION_NAME = "takhod3089"
+    OPTION_TICKER = "IROFIKCO9P21"
+    EXPIRATION_DATE = "1404-03-07"
+    STRIKE_PRICE = 2400
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod3090(BaseConfig):
+    OPTION_NAME = "takhod3090"
+    OPTION_TICKER = "IROFIKCO9P31"
+    EXPIRATION_DATE = "1404-03-07"
+    STRIKE_PRICE = 2600
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod3091(BaseConfig):
+    OPTION_NAME = "takhod3091"
+    OPTION_TICKER = "IROFIKCO9P41"
+    EXPIRATION_DATE = "1404-03-07"
+    STRIKE_PRICE = 2800
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod3092(BaseConfig):
+    OPTION_NAME = "takhod3092"
+    OPTION_TICKER = "IROFIKCO9P51"
+    EXPIRATION_DATE = "1404-03-07"
+    STRIKE_PRICE = 3000
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod3093(BaseConfig):
+    OPTION_NAME = "takhod3093"
+    OPTION_TICKER = "IROFIKCO9P61"
+    EXPIRATION_DATE = "1404-03-07"
+    STRIKE_PRICE = 3250
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod3094(BaseConfig):
+    OPTION_NAME = "takhod3094"
+    OPTION_TICKER = "IROFIKCO9P71"
+    EXPIRATION_DATE = "1404-03-07"
+    STRIKE_PRICE = 3500
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod3095(BaseConfig):
+    OPTION_NAME = "takhod3095"
+    OPTION_TICKER = "IROFIKCO9P81"
+    EXPIRATION_DATE = "1404-03-07"
+    STRIKE_PRICE = 3750
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod3096(BaseConfig):
+    OPTION_NAME = "takhod3096"
+    OPTION_TICKER = "IROFIKCO9P91"
+    EXPIRATION_DATE = "1404-03-07"
+    STRIKE_PRICE = 4000
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod3097(BaseConfig):
+    OPTION_NAME = "takhod3097"
+    OPTION_TICKER = "IROFIKCO9Q01"
+    EXPIRATION_DATE = "1404-03-07"
+    STRIKE_PRICE = 4500
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod3098(BaseConfig):
+    OPTION_NAME = "takhod3098"
+    OPTION_TICKER = "IROFIKCO9Q11"
+    EXPIRATION_DATE = "1404-03-07"
+    STRIKE_PRICE = 5000
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_takhod3099(BaseConfig):
+    OPTION_NAME = "takhod3099"
+    OPTION_TICKER = "IROFIKCO9Q21"
+    EXPIRATION_DATE = "1404-03-07"
+    STRIKE_PRICE = 5500
+    CALL_PUT = 'p'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod1239(BaseConfig):
+    OPTION_NAME = "zakhod1239"
+    OPTION_TICKER = "IRO9IKCO8Q51"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 4500
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod1240(BaseConfig):
+    OPTION_NAME = "zakhod1240"
+    OPTION_TICKER = "IRO9IKCO8Q61"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 5000
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod0142(BaseConfig):
+    OPTION_NAME = "zakhod0142"
+    OPTION_TICKER = "IRO9IKCO8Q71"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 5000
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod3089(BaseConfig):
+    OPTION_NAME = "zakhod3089"
+    OPTION_TICKER = "IRO9IKCO8P21"
+    EXPIRATION_DATE = "1404-03-07"
+    STRIKE_PRICE = 2400
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod3090(BaseConfig):
+    OPTION_NAME = "zakhod3090"
+    OPTION_TICKER = "IRO9IKCO8P31"
+    EXPIRATION_DATE = "1404-03-07"
+    STRIKE_PRICE = 2600
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod3091(BaseConfig):
+    OPTION_NAME = "zakhod3091"
+    OPTION_TICKER = "IRO9IKCO8P41"
+    EXPIRATION_DATE = "1404-03-07"
+    STRIKE_PRICE = 2800
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod3092(BaseConfig):
+    OPTION_NAME = "zakhod3092"
+    OPTION_TICKER = "IRO9IKCO8P51"
+    EXPIRATION_DATE = "1404-03-07"
+    STRIKE_PRICE = 3000
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod3093(BaseConfig):
+    OPTION_NAME = "zakhod3093"
+    OPTION_TICKER = "IRO9IKCO8P61"
+    EXPIRATION_DATE = "1404-03-07"
+    STRIKE_PRICE = 3250
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod3094(BaseConfig):
+    OPTION_NAME = "zakhod3094"
+    OPTION_TICKER = "IRO9IKCO8P71"
+    EXPIRATION_DATE = "1404-03-07"
+    STRIKE_PRICE = 3500
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod3095(BaseConfig):
+    OPTION_NAME = "zakhod3095"
+    OPTION_TICKER = "IRO9IKCO8P81"
+    EXPIRATION_DATE = "1404-03-07"
+    STRIKE_PRICE = 3750
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod3096(BaseConfig):
+    OPTION_NAME = "zakhod3096"
+    OPTION_TICKER = "IRO9IKCO8P91"
+    EXPIRATION_DATE = "1404-03-07"
+    STRIKE_PRICE = 4000
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod3097(BaseConfig):
+    OPTION_NAME = "zakhod3097"
+    OPTION_TICKER = "IRO9IKCO8Q01"
+    EXPIRATION_DATE = "1404-03-07"
+    STRIKE_PRICE = 4500
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod3098(BaseConfig):
+    OPTION_NAME = "zakhod3098"
+    OPTION_TICKER = "IRO9IKCO8Q11"
+    EXPIRATION_DATE = "1404-03-07"
+    STRIKE_PRICE = 5000
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod3099(BaseConfig):
+    OPTION_NAME = "zakhod3099"
+    OPTION_TICKER = "IRO9IKCO8Q21"
+    EXPIRATION_DATE = "1404-03-07"
+    STRIKE_PRICE = 5500
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod0139(BaseConfig):
+    OPTION_NAME = "zakhod0139"
+    OPTION_TICKER = "IRO9IKCO8O91"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 3750
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod0140(BaseConfig):
+    OPTION_NAME = "zakhod0140"
+    OPTION_TICKER = "IRO9IKCO8P01"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 4000
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod0141(BaseConfig):
+    OPTION_NAME = "zakhod0141"
+    OPTION_TICKER = "IRO9IKCO8P11"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 4500
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod1226(BaseConfig):
+    OPTION_NAME = "zakhod1226"
+    OPTION_TICKER = "IRO9IKCO8L01"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 1700
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod1227(BaseConfig):
+    OPTION_NAME = "zakhod1227"
+    OPTION_TICKER = "IRO9IKCO8L11"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 1800
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod1228(BaseConfig):
+    OPTION_NAME = "zakhod1228"
+    OPTION_TICKER = "IRO9IKCO8L21"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 1900
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod1229(BaseConfig):
+    OPTION_NAME = "zakhod1229"
+    OPTION_TICKER = "IRO9IKCO8L31"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 2000
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod1230(BaseConfig):
+    OPTION_NAME = "zakhod1230"
+    OPTION_TICKER = "IRO9IKCO8L41"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 2200
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod1231(BaseConfig):
+    OPTION_NAME = "zakhod1231"
+    OPTION_TICKER = "IRO9IKCO8L51"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 2400
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod1232(BaseConfig):
+    OPTION_NAME = "zakhod1232"
+    OPTION_TICKER = "IRO9IKCO8L61"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 2600
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod1233(BaseConfig):
+    OPTION_NAME = "zakhod1233"
+    OPTION_TICKER = "IRO9IKCO8L71"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 2800
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod1234(BaseConfig):
+    OPTION_NAME = "zakhod1234"
+    OPTION_TICKER = "IRO9IKCO8L81"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 3000
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod1235(BaseConfig):
+    OPTION_NAME = "zakhod1235"
+    OPTION_TICKER = "IRO9IKCO8L91"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 3250
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod1236(BaseConfig):
+    OPTION_NAME = "zakhod1236"
+    OPTION_TICKER = "IRO9IKCO8M01"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 3500
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod1237(BaseConfig):
+    OPTION_NAME = "zakhod1237"
+    OPTION_TICKER = "IRO9IKCO8M11"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 3750
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod1238(BaseConfig):
+    OPTION_NAME = "zakhod1238"
+    OPTION_TICKER = "IRO9IKCO8M21"
+    EXPIRATION_DATE = "1403-12-01"
+    STRIKE_PRICE = 4000
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod2050(BaseConfig):
+    OPTION_NAME = "zakhod2050"
+    OPTION_TICKER = "IRO9IKCO8N61"
+    EXPIRATION_DATE = "1404-02-03"
+    STRIKE_PRICE = 2000
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod2051(BaseConfig):
+    OPTION_NAME = "zakhod2051"
+    OPTION_TICKER = "IRO9IKCO8N71"
+    EXPIRATION_DATE = "1404-02-03"
+    STRIKE_PRICE = 2200
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod2052(BaseConfig):
+    OPTION_NAME = "zakhod2052"
+    OPTION_TICKER = "IRO9IKCO8N81"
+    EXPIRATION_DATE = "1404-02-03"
+    STRIKE_PRICE = 2400
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod2053(BaseConfig):
+    OPTION_NAME = "zakhod2053"
+    OPTION_TICKER = "IRO9IKCO8N91"
+    EXPIRATION_DATE = "1404-02-03"
+    STRIKE_PRICE = 2600
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod2054(BaseConfig):
+    OPTION_NAME = "zakhod2054"
+    OPTION_TICKER = "IRO9IKCO8O11"
+    EXPIRATION_DATE = "1404-02-03"
+    STRIKE_PRICE = 2800
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod2055(BaseConfig):
+    OPTION_NAME = "zakhod2055"
+    OPTION_TICKER = "IRO9IKCO8O21"
+    EXPIRATION_DATE = "1404-02-03"
+    STRIKE_PRICE = 3000
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod2056(BaseConfig):
+    OPTION_NAME = "zakhod2056"
+    OPTION_TICKER = "IRO9IKCO8O31"
+    EXPIRATION_DATE = "1404-02-03"
+    STRIKE_PRICE = 3250
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod2057(BaseConfig):
+    OPTION_NAME = "zakhod2057"
+    OPTION_TICKER = "IRO9IKCO8O41"
+    EXPIRATION_DATE = "1404-02-03"
+    STRIKE_PRICE = 3500
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod2058(BaseConfig):
+    OPTION_NAME = "zakhod2058"
+    OPTION_TICKER = "IRO9IKCO8O51"
+    EXPIRATION_DATE = "1404-02-03"
+    STRIKE_PRICE = 3750
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod2059(BaseConfig):
+    OPTION_NAME = "zakhod2059"
+    OPTION_TICKER = "IRO9IKCO8O61"
+    EXPIRATION_DATE = "1404-02-03"
+    STRIKE_PRICE = 4000
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod2060(BaseConfig):
+    OPTION_NAME = "zakhod2060"
+    OPTION_TICKER = "IRO9IKCO8O71"
+    EXPIRATION_DATE = "1404-02-03"
+    STRIKE_PRICE = 4500
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod2061(BaseConfig):
+    OPTION_NAME = "zakhod2061"
+    OPTION_TICKER = "IRO9IKCO8O81"
+    EXPIRATION_DATE = "1404-02-03"
+    STRIKE_PRICE = 5000
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod0126(BaseConfig):
+    OPTION_NAME = "zakhod0126"
+    OPTION_TICKER = "IRO9IKCO8M31"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 1500
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod0127(BaseConfig):
+    OPTION_NAME = "zakhod0127"
+    OPTION_TICKER = "IRO9IKCO8M41"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 1600
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod0128(BaseConfig):
+    OPTION_NAME = "zakhod0128"
+    OPTION_TICKER = "IRO9IKCO8M51"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 1700
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod0129(BaseConfig):
+    OPTION_NAME = "zakhod0129"
+    OPTION_TICKER = "IRO9IKCO8M61"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 1800
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod0130(BaseConfig):
+    OPTION_NAME = "zakhod0130"
+    OPTION_TICKER = "IRO9IKCO8M71"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 1900
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod0131(BaseConfig):
+    OPTION_NAME = "zakhod0131"
+    OPTION_TICKER = "IRO9IKCO8M81"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 2000
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod0132(BaseConfig):
+    OPTION_NAME = "zakhod0132"
+    OPTION_TICKER = "IRO9IKCO8M91"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 2200
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod0133(BaseConfig):
+    OPTION_NAME = "zakhod0133"
+    OPTION_TICKER = "IRO9IKCO8N01"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 2400
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod0134(BaseConfig):
+    OPTION_NAME = "zakhod0134"
+    OPTION_TICKER = "IRO9IKCO8N11"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 2600
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod0135(BaseConfig):
+    OPTION_NAME = "zakhod0135"
+    OPTION_TICKER = "IRO9IKCO8N21"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 2800
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod0136(BaseConfig):
+    OPTION_NAME = "zakhod0136"
+    OPTION_TICKER = "IRO9IKCO8N31"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 3000
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod0137(BaseConfig):
+    OPTION_NAME = "zakhod0137"
+    OPTION_TICKER = "IRO9IKCO8N41"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 3250
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+class Option_zakhod0138(BaseConfig):
+    OPTION_NAME = "zakhod0138"
+    OPTION_TICKER = "IRO9IKCO8N51"
+    EXPIRATION_DATE = "1404-01-06"
+    STRIKE_PRICE = 3500
+    CALL_PUT = 'c'  # 'c' for call (kharid), 'p' for put (forosh)
+
+
+# Map modes to configurations
+CONFIGS = {
+    'takhod1239': Option_takhod1239,
+    'takhod1240': Option_takhod1240,
+    'takhod0142': Option_takhod0142,
+    'takhod1226': Option_takhod1226,
+    'takhod1227': Option_takhod1227,
+    'takhod1228': Option_takhod1228,
+    'takhod1229': Option_takhod1229,
+    'takhod1230': Option_takhod1230,
+    'takhod1231': Option_takhod1231,
+    'takhod1232': Option_takhod1232,
+    'takhod1233': Option_takhod1233,
+    'takhod1234': Option_takhod1234,
+    'takhod1235': Option_takhod1235,
+    'takhod1236': Option_takhod1236,
+    'takhod1237': Option_takhod1237,
+    'takhod1238': Option_takhod1238,
+    'takhod0126': Option_takhod0126,
+    'takhod0127': Option_takhod0127,
+    'takhod0128': Option_takhod0128,
+    'takhod0129': Option_takhod0129,
+    'takhod0130': Option_takhod0130,
+    'takhod0131': Option_takhod0131,
+    'takhod0132': Option_takhod0132,
+    'takhod0133': Option_takhod0133,
+    'takhod0134': Option_takhod0134,
+    'takhod0135': Option_takhod0135,
+    'takhod0136': Option_takhod0136,
+    'takhod0137': Option_takhod0137,
+    'takhod0138': Option_takhod0138,
+    'takhod2050': Option_takhod2050,
+    'takhod2051': Option_takhod2051,
+    'takhod2052': Option_takhod2052,
+    'takhod2053': Option_takhod2053,
+    'takhod2054': Option_takhod2054,
+    'takhod2055': Option_takhod2055,
+    'takhod2056': Option_takhod2056,
+    'takhod2057': Option_takhod2057,
+    'takhod2058': Option_takhod2058,
+    'takhod2059': Option_takhod2059,
+    'takhod2060': Option_takhod2060,
+    'takhod2061': Option_takhod2061,
+    'takhod0139': Option_takhod0139,
+    'takhod0140': Option_takhod0140,
+    'takhod0141': Option_takhod0141,
+    'takhod3089': Option_takhod3089,
+    'takhod3090': Option_takhod3090,
+    'takhod3091': Option_takhod3091,
+    'takhod3092': Option_takhod3092,
+    'takhod3093': Option_takhod3093,
+    'takhod3094': Option_takhod3094,
+    'takhod3095': Option_takhod3095,
+    'takhod3096': Option_takhod3096,
+    'takhod3097': Option_takhod3097,
+    'takhod3098': Option_takhod3098,
+    'takhod3099': Option_takhod3099,
+    'zakhod1239': Option_zakhod1239,
+    'zakhod1240': Option_zakhod1240,
+    'zakhod0142': Option_zakhod0142,
+    'zakhod3089': Option_zakhod3089,
+    'zakhod3090': Option_zakhod3090,
+    'zakhod3091': Option_zakhod3091,
+    'zakhod3092': Option_zakhod3092,
+    'zakhod3093': Option_zakhod3093,
+    'zakhod3094': Option_zakhod3094,
+    'zakhod3095': Option_zakhod3095,
+    'zakhod3096': Option_zakhod3096,
+    'zakhod3097': Option_zakhod3097,
+    'zakhod3098': Option_zakhod3098,
+    'zakhod3099': Option_zakhod3099,
+    'zakhod0139': Option_zakhod0139,
+    'zakhod0140': Option_zakhod0140,
+    'zakhod0141': Option_zakhod0141,
+    'zakhod1226': Option_zakhod1226,
+    'zakhod1227': Option_zakhod1227,
+    'zakhod1228': Option_zakhod1228,
+    'zakhod1229': Option_zakhod1229,
+    'zakhod1230': Option_zakhod1230,
+    'zakhod1231': Option_zakhod1231,
+    'zakhod1232': Option_zakhod1232,
+    'zakhod1233': Option_zakhod1233,
+    'zakhod1234': Option_zakhod1234,
+    'zakhod1235': Option_zakhod1235,
+    'zakhod1236': Option_zakhod1236,
+    'zakhod1237': Option_zakhod1237,
+    'zakhod1238': Option_zakhod1238,
+    'zakhod2050': Option_zakhod2050,
+    'zakhod2051': Option_zakhod2051,
+    'zakhod2052': Option_zakhod2052,
+    'zakhod2053': Option_zakhod2053,
+    'zakhod2054': Option_zakhod2054,
+    'zakhod2055': Option_zakhod2055,
+    'zakhod2056': Option_zakhod2056,
+    'zakhod2057': Option_zakhod2057,
+    'zakhod2058': Option_zakhod2058,
+    'zakhod2059': Option_zakhod2059,
+    'zakhod2060': Option_zakhod2060,
+    'zakhod2061': Option_zakhod2061,
+    'zakhod0126': Option_zakhod0126,
+    'zakhod0127': Option_zakhod0127,
+    'zakhod0128': Option_zakhod0128,
+    'zakhod0129': Option_zakhod0129,
+    'zakhod0130': Option_zakhod0130,
+    'zakhod0131': Option_zakhod0131,
+    'zakhod0132': Option_zakhod0132,
+    'zakhod0133': Option_zakhod0133,
+    'zakhod0134': Option_zakhod0134,
+    'zakhod0135': Option_zakhod0135,
+    'zakhod0136': Option_zakhod0136,
+    'zakhod0137': Option_zakhod0137,
+    'zakhod0138': Option_zakhod0138,
+}
