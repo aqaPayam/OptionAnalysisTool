@@ -7,7 +7,7 @@ from threading import Thread, Event
 from collections import deque
 import pandas as pd
 
-from AutoTrader.trade_condition_checking import run_trade_checker
+from trade_condition_checking import run_trade_checker
 from config import get_config, set_current_mode
 from signal_handling import signal_handling_thread
 from trading_api import TradingAPI
