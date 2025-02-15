@@ -664,6 +664,7 @@ input_text = """
     }
 ]
 """
+import re
 
 symbol_mapping = {
     "ضخود": "zakhod",
@@ -695,6 +696,7 @@ def extract_options(text):
 
     class_definitions = []
     config_mappings = []
+    config_names = []
 
     for isin, symbol, title in matches:
         match = re.search(r"اختیار([خ|ف]) خودرو-(\d+)-(\d{4}/\d{2}/\d{2})", title)
@@ -717,9 +719,18 @@ def extract_options(text):
 
             # Adding to CONFIGS dictionary
             config_mappings.append(f"    '{eng_symbol}': {class_name},")
+            config_names.append(eng_symbol)
 
     # Generate CONFIGS dictionary
     configs_code = "\n# Map modes to configurations\nCONFIGS = {\n" + "\n".join(config_mappings) + "\n}"
+
+    # Generate batch script content
+    batch_script = "@echo off\n" + "\n".join(
+        [f"start cmd /k \"python main.py --mode {name}\"" for name in config_names])
+
+    # Write batch script to file
+    with open("run_all.bat", "w", encoding="utf-8") as f:
+        f.write(batch_script)
 
     return "\n".join(class_definitions) + "\n" + configs_code
 
