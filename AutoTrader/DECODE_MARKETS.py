@@ -708,7 +708,7 @@ def extract_options(text):
 
             class_definitions.append(class_template.format(
                 class_name=class_name,
-                option_name=eng_symbol,
+                option_name=symbol,
                 option_ticker=isin,
                 expiration_date=expiration_date,
                 strike_price=strike_price,

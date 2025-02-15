@@ -71,7 +71,7 @@ def get_config():
 
 
 class Option_takhod1239(BaseConfig):
-    OPTION_NAME = "takhod1239"
+    OPTION_NAME = "طخود1239"
     OPTION_TICKER = "IROFIKCO9Q51"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 4500
@@ -79,7 +79,7 @@ class Option_takhod1239(BaseConfig):
 
 
 class Option_takhod1240(BaseConfig):
-    OPTION_NAME = "takhod1240"
+    OPTION_NAME = "طخود1240"
     OPTION_TICKER = "IROFIKCO9Q61"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 5000
@@ -87,7 +87,7 @@ class Option_takhod1240(BaseConfig):
 
 
 class Option_takhod0142(BaseConfig):
-    OPTION_NAME = "takhod0142"
+    OPTION_NAME = "طخود0142"
     OPTION_TICKER = "IROFIKCO9Q71"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 5000
@@ -95,7 +95,7 @@ class Option_takhod0142(BaseConfig):
 
 
 class Option_takhod1226(BaseConfig):
-    OPTION_NAME = "takhod1226"
+    OPTION_NAME = "طخود1226"
     OPTION_TICKER = "IROFIKCO9L01"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 1700
@@ -103,7 +103,7 @@ class Option_takhod1226(BaseConfig):
 
 
 class Option_takhod1227(BaseConfig):
-    OPTION_NAME = "takhod1227"
+    OPTION_NAME = "طخود1227"
     OPTION_TICKER = "IROFIKCO9L11"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 1800
@@ -111,7 +111,7 @@ class Option_takhod1227(BaseConfig):
 
 
 class Option_takhod1228(BaseConfig):
-    OPTION_NAME = "takhod1228"
+    OPTION_NAME = "طخود1228"
     OPTION_TICKER = "IROFIKCO9L21"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 1900
@@ -119,7 +119,7 @@ class Option_takhod1228(BaseConfig):
 
 
 class Option_takhod1229(BaseConfig):
-    OPTION_NAME = "takhod1229"
+    OPTION_NAME = "طخود1229"
     OPTION_TICKER = "IROFIKCO9L31"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 2000
@@ -127,7 +127,7 @@ class Option_takhod1229(BaseConfig):
 
 
 class Option_takhod1230(BaseConfig):
-    OPTION_NAME = "takhod1230"
+    OPTION_NAME = "طخود1230"
     OPTION_TICKER = "IROFIKCO9L41"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 2200
@@ -135,7 +135,7 @@ class Option_takhod1230(BaseConfig):
 
 
 class Option_takhod1231(BaseConfig):
-    OPTION_NAME = "takhod1231"
+    OPTION_NAME = "طخود1231"
     OPTION_TICKER = "IROFIKCO9L51"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 2400
@@ -143,7 +143,7 @@ class Option_takhod1231(BaseConfig):
 
 
 class Option_takhod1232(BaseConfig):
-    OPTION_NAME = "takhod1232"
+    OPTION_NAME = "طخود1232"
     OPTION_TICKER = "IROFIKCO9L61"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 2600
@@ -151,7 +151,7 @@ class Option_takhod1232(BaseConfig):
 
 
 class Option_takhod1233(BaseConfig):
-    OPTION_NAME = "takhod1233"
+    OPTION_NAME = "طخود1233"
     OPTION_TICKER = "IROFIKCO9L71"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 2800
@@ -159,7 +159,7 @@ class Option_takhod1233(BaseConfig):
 
 
 class Option_takhod1234(BaseConfig):
-    OPTION_NAME = "takhod1234"
+    OPTION_NAME = "طخود1234"
     OPTION_TICKER = "IROFIKCO9L81"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 3000
@@ -167,7 +167,7 @@ class Option_takhod1234(BaseConfig):
 
 
 class Option_takhod1235(BaseConfig):
-    OPTION_NAME = "takhod1235"
+    OPTION_NAME = "طخود1235"
     OPTION_TICKER = "IROFIKCO9L91"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 3250
@@ -175,7 +175,7 @@ class Option_takhod1235(BaseConfig):
 
 
 class Option_takhod1236(BaseConfig):
-    OPTION_NAME = "takhod1236"
+    OPTION_NAME = "طخود1236"
     OPTION_TICKER = "IROFIKCO9M01"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 3500
@@ -183,7 +183,7 @@ class Option_takhod1236(BaseConfig):
 
 
 class Option_takhod1237(BaseConfig):
-    OPTION_NAME = "takhod1237"
+    OPTION_NAME = "طخود1237"
     OPTION_TICKER = "IROFIKCO9M11"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 3750
@@ -191,7 +191,7 @@ class Option_takhod1237(BaseConfig):
 
 
 class Option_takhod1238(BaseConfig):
-    OPTION_NAME = "takhod1238"
+    OPTION_NAME = "طخود1238"
     OPTION_TICKER = "IROFIKCO9M21"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 4000
@@ -199,7 +199,7 @@ class Option_takhod1238(BaseConfig):
 
 
 class Option_takhod0126(BaseConfig):
-    OPTION_NAME = "takhod0126"
+    OPTION_NAME = "طخود0126"
     OPTION_TICKER = "IROFIKCO9M31"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 1500
@@ -207,7 +207,7 @@ class Option_takhod0126(BaseConfig):
 
 
 class Option_takhod0127(BaseConfig):
-    OPTION_NAME = "takhod0127"
+    OPTION_NAME = "طخود0127"
     OPTION_TICKER = "IROFIKCO9M41"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 1600
@@ -215,7 +215,7 @@ class Option_takhod0127(BaseConfig):
 
 
 class Option_takhod0128(BaseConfig):
-    OPTION_NAME = "takhod0128"
+    OPTION_NAME = "طخود0128"
     OPTION_TICKER = "IROFIKCO9M51"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 1700
@@ -223,7 +223,7 @@ class Option_takhod0128(BaseConfig):
 
 
 class Option_takhod0129(BaseConfig):
-    OPTION_NAME = "takhod0129"
+    OPTION_NAME = "طخود0129"
     OPTION_TICKER = "IROFIKCO9M61"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 1800
@@ -231,7 +231,7 @@ class Option_takhod0129(BaseConfig):
 
 
 class Option_takhod0130(BaseConfig):
-    OPTION_NAME = "takhod0130"
+    OPTION_NAME = "طخود0130"
     OPTION_TICKER = "IROFIKCO9M71"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 1900
@@ -239,7 +239,7 @@ class Option_takhod0130(BaseConfig):
 
 
 class Option_takhod0131(BaseConfig):
-    OPTION_NAME = "takhod0131"
+    OPTION_NAME = "طخود0131"
     OPTION_TICKER = "IROFIKCO9M81"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 2000
@@ -247,7 +247,7 @@ class Option_takhod0131(BaseConfig):
 
 
 class Option_takhod0132(BaseConfig):
-    OPTION_NAME = "takhod0132"
+    OPTION_NAME = "طخود0132"
     OPTION_TICKER = "IROFIKCO9M91"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 2200
@@ -255,7 +255,7 @@ class Option_takhod0132(BaseConfig):
 
 
 class Option_takhod0133(BaseConfig):
-    OPTION_NAME = "takhod0133"
+    OPTION_NAME = "طخود0133"
     OPTION_TICKER = "IROFIKCO9N01"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 2400
@@ -263,7 +263,7 @@ class Option_takhod0133(BaseConfig):
 
 
 class Option_takhod0134(BaseConfig):
-    OPTION_NAME = "takhod0134"
+    OPTION_NAME = "طخود0134"
     OPTION_TICKER = "IROFIKCO9N11"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 2600
@@ -271,7 +271,7 @@ class Option_takhod0134(BaseConfig):
 
 
 class Option_takhod0135(BaseConfig):
-    OPTION_NAME = "takhod0135"
+    OPTION_NAME = "طخود0135"
     OPTION_TICKER = "IROFIKCO9N21"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 2800
@@ -279,7 +279,7 @@ class Option_takhod0135(BaseConfig):
 
 
 class Option_takhod0136(BaseConfig):
-    OPTION_NAME = "takhod0136"
+    OPTION_NAME = "طخود0136"
     OPTION_TICKER = "IROFIKCO9N31"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 3000
@@ -287,7 +287,7 @@ class Option_takhod0136(BaseConfig):
 
 
 class Option_takhod0137(BaseConfig):
-    OPTION_NAME = "takhod0137"
+    OPTION_NAME = "طخود0137"
     OPTION_TICKER = "IROFIKCO9N41"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 3250
@@ -295,7 +295,7 @@ class Option_takhod0137(BaseConfig):
 
 
 class Option_takhod0138(BaseConfig):
-    OPTION_NAME = "takhod0138"
+    OPTION_NAME = "طخود0138"
     OPTION_TICKER = "IROFIKCO9N51"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 3500
@@ -303,7 +303,7 @@ class Option_takhod0138(BaseConfig):
 
 
 class Option_takhod2050(BaseConfig):
-    OPTION_NAME = "takhod2050"
+    OPTION_NAME = "طخود2050"
     OPTION_TICKER = "IROFIKCO9N61"
     EXPIRATION_DATE = "1404-02-03"
     STRIKE_PRICE = 2000
@@ -311,7 +311,7 @@ class Option_takhod2050(BaseConfig):
 
 
 class Option_takhod2051(BaseConfig):
-    OPTION_NAME = "takhod2051"
+    OPTION_NAME = "طخود2051"
     OPTION_TICKER = "IROFIKCO9N71"
     EXPIRATION_DATE = "1404-02-03"
     STRIKE_PRICE = 2200
@@ -319,7 +319,7 @@ class Option_takhod2051(BaseConfig):
 
 
 class Option_takhod2052(BaseConfig):
-    OPTION_NAME = "takhod2052"
+    OPTION_NAME = "طخود2052"
     OPTION_TICKER = "IROFIKCO9N81"
     EXPIRATION_DATE = "1404-02-03"
     STRIKE_PRICE = 2400
@@ -327,7 +327,7 @@ class Option_takhod2052(BaseConfig):
 
 
 class Option_takhod2053(BaseConfig):
-    OPTION_NAME = "takhod2053"
+    OPTION_NAME = "طخود2053"
     OPTION_TICKER = "IROFIKCO9N91"
     EXPIRATION_DATE = "1404-02-03"
     STRIKE_PRICE = 2600
@@ -335,7 +335,7 @@ class Option_takhod2053(BaseConfig):
 
 
 class Option_takhod2054(BaseConfig):
-    OPTION_NAME = "takhod2054"
+    OPTION_NAME = "طخود2054"
     OPTION_TICKER = "IROFIKCO9O11"
     EXPIRATION_DATE = "1404-02-03"
     STRIKE_PRICE = 2800
@@ -343,7 +343,7 @@ class Option_takhod2054(BaseConfig):
 
 
 class Option_takhod2055(BaseConfig):
-    OPTION_NAME = "takhod2055"
+    OPTION_NAME = "طخود2055"
     OPTION_TICKER = "IROFIKCO9O21"
     EXPIRATION_DATE = "1404-02-03"
     STRIKE_PRICE = 3000
@@ -351,7 +351,7 @@ class Option_takhod2055(BaseConfig):
 
 
 class Option_takhod2056(BaseConfig):
-    OPTION_NAME = "takhod2056"
+    OPTION_NAME = "طخود2056"
     OPTION_TICKER = "IROFIKCO9O31"
     EXPIRATION_DATE = "1404-02-03"
     STRIKE_PRICE = 3250
@@ -359,7 +359,7 @@ class Option_takhod2056(BaseConfig):
 
 
 class Option_takhod2057(BaseConfig):
-    OPTION_NAME = "takhod2057"
+    OPTION_NAME = "طخود2057"
     OPTION_TICKER = "IROFIKCO9O41"
     EXPIRATION_DATE = "1404-02-03"
     STRIKE_PRICE = 3500
@@ -367,7 +367,7 @@ class Option_takhod2057(BaseConfig):
 
 
 class Option_takhod2058(BaseConfig):
-    OPTION_NAME = "takhod2058"
+    OPTION_NAME = "طخود2058"
     OPTION_TICKER = "IROFIKCO9O51"
     EXPIRATION_DATE = "1404-02-03"
     STRIKE_PRICE = 3750
@@ -375,7 +375,7 @@ class Option_takhod2058(BaseConfig):
 
 
 class Option_takhod2059(BaseConfig):
-    OPTION_NAME = "takhod2059"
+    OPTION_NAME = "طخود2059"
     OPTION_TICKER = "IROFIKCO9O61"
     EXPIRATION_DATE = "1404-02-03"
     STRIKE_PRICE = 4000
@@ -383,7 +383,7 @@ class Option_takhod2059(BaseConfig):
 
 
 class Option_takhod2060(BaseConfig):
-    OPTION_NAME = "takhod2060"
+    OPTION_NAME = "طخود2060"
     OPTION_TICKER = "IROFIKCO9O71"
     EXPIRATION_DATE = "1404-02-03"
     STRIKE_PRICE = 4500
@@ -391,7 +391,7 @@ class Option_takhod2060(BaseConfig):
 
 
 class Option_takhod2061(BaseConfig):
-    OPTION_NAME = "takhod2061"
+    OPTION_NAME = "طخود2061"
     OPTION_TICKER = "IROFIKCO9O81"
     EXPIRATION_DATE = "1404-02-03"
     STRIKE_PRICE = 5000
@@ -399,7 +399,7 @@ class Option_takhod2061(BaseConfig):
 
 
 class Option_takhod0139(BaseConfig):
-    OPTION_NAME = "takhod0139"
+    OPTION_NAME = "طخود0139"
     OPTION_TICKER = "IROFIKCO9O91"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 3750
@@ -407,7 +407,7 @@ class Option_takhod0139(BaseConfig):
 
 
 class Option_takhod0140(BaseConfig):
-    OPTION_NAME = "takhod0140"
+    OPTION_NAME = "طخود0140"
     OPTION_TICKER = "IROFIKCO9P01"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 4000
@@ -415,7 +415,7 @@ class Option_takhod0140(BaseConfig):
 
 
 class Option_takhod0141(BaseConfig):
-    OPTION_NAME = "takhod0141"
+    OPTION_NAME = "طخود0141"
     OPTION_TICKER = "IROFIKCO9P11"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 4500
@@ -423,7 +423,7 @@ class Option_takhod0141(BaseConfig):
 
 
 class Option_takhod3089(BaseConfig):
-    OPTION_NAME = "takhod3089"
+    OPTION_NAME = "طخود3089"
     OPTION_TICKER = "IROFIKCO9P21"
     EXPIRATION_DATE = "1404-03-07"
     STRIKE_PRICE = 2400
@@ -431,7 +431,7 @@ class Option_takhod3089(BaseConfig):
 
 
 class Option_takhod3090(BaseConfig):
-    OPTION_NAME = "takhod3090"
+    OPTION_NAME = "طخود3090"
     OPTION_TICKER = "IROFIKCO9P31"
     EXPIRATION_DATE = "1404-03-07"
     STRIKE_PRICE = 2600
@@ -439,7 +439,7 @@ class Option_takhod3090(BaseConfig):
 
 
 class Option_takhod3091(BaseConfig):
-    OPTION_NAME = "takhod3091"
+    OPTION_NAME = "طخود3091"
     OPTION_TICKER = "IROFIKCO9P41"
     EXPIRATION_DATE = "1404-03-07"
     STRIKE_PRICE = 2800
@@ -447,7 +447,7 @@ class Option_takhod3091(BaseConfig):
 
 
 class Option_takhod3092(BaseConfig):
-    OPTION_NAME = "takhod3092"
+    OPTION_NAME = "طخود3092"
     OPTION_TICKER = "IROFIKCO9P51"
     EXPIRATION_DATE = "1404-03-07"
     STRIKE_PRICE = 3000
@@ -455,7 +455,7 @@ class Option_takhod3092(BaseConfig):
 
 
 class Option_takhod3093(BaseConfig):
-    OPTION_NAME = "takhod3093"
+    OPTION_NAME = "طخود3093"
     OPTION_TICKER = "IROFIKCO9P61"
     EXPIRATION_DATE = "1404-03-07"
     STRIKE_PRICE = 3250
@@ -463,7 +463,7 @@ class Option_takhod3093(BaseConfig):
 
 
 class Option_takhod3094(BaseConfig):
-    OPTION_NAME = "takhod3094"
+    OPTION_NAME = "طخود3094"
     OPTION_TICKER = "IROFIKCO9P71"
     EXPIRATION_DATE = "1404-03-07"
     STRIKE_PRICE = 3500
@@ -471,7 +471,7 @@ class Option_takhod3094(BaseConfig):
 
 
 class Option_takhod3095(BaseConfig):
-    OPTION_NAME = "takhod3095"
+    OPTION_NAME = "طخود3095"
     OPTION_TICKER = "IROFIKCO9P81"
     EXPIRATION_DATE = "1404-03-07"
     STRIKE_PRICE = 3750
@@ -479,7 +479,7 @@ class Option_takhod3095(BaseConfig):
 
 
 class Option_takhod3096(BaseConfig):
-    OPTION_NAME = "takhod3096"
+    OPTION_NAME = "طخود3096"
     OPTION_TICKER = "IROFIKCO9P91"
     EXPIRATION_DATE = "1404-03-07"
     STRIKE_PRICE = 4000
@@ -487,7 +487,7 @@ class Option_takhod3096(BaseConfig):
 
 
 class Option_takhod3097(BaseConfig):
-    OPTION_NAME = "takhod3097"
+    OPTION_NAME = "طخود3097"
     OPTION_TICKER = "IROFIKCO9Q01"
     EXPIRATION_DATE = "1404-03-07"
     STRIKE_PRICE = 4500
@@ -495,7 +495,7 @@ class Option_takhod3097(BaseConfig):
 
 
 class Option_takhod3098(BaseConfig):
-    OPTION_NAME = "takhod3098"
+    OPTION_NAME = "طخود3098"
     OPTION_TICKER = "IROFIKCO9Q11"
     EXPIRATION_DATE = "1404-03-07"
     STRIKE_PRICE = 5000
@@ -503,7 +503,7 @@ class Option_takhod3098(BaseConfig):
 
 
 class Option_takhod3099(BaseConfig):
-    OPTION_NAME = "takhod3099"
+    OPTION_NAME = "طخود3099"
     OPTION_TICKER = "IROFIKCO9Q21"
     EXPIRATION_DATE = "1404-03-07"
     STRIKE_PRICE = 5500
@@ -511,7 +511,7 @@ class Option_takhod3099(BaseConfig):
 
 
 class Option_zakhod1239(BaseConfig):
-    OPTION_NAME = "zakhod1239"
+    OPTION_NAME = "ضخود1239"
     OPTION_TICKER = "IRO9IKCO8Q51"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 4500
@@ -519,7 +519,7 @@ class Option_zakhod1239(BaseConfig):
 
 
 class Option_zakhod1240(BaseConfig):
-    OPTION_NAME = "zakhod1240"
+    OPTION_NAME = "ضخود1240"
     OPTION_TICKER = "IRO9IKCO8Q61"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 5000
@@ -527,7 +527,7 @@ class Option_zakhod1240(BaseConfig):
 
 
 class Option_zakhod0142(BaseConfig):
-    OPTION_NAME = "zakhod0142"
+    OPTION_NAME = "ضخود0142"
     OPTION_TICKER = "IRO9IKCO8Q71"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 5000
@@ -535,7 +535,7 @@ class Option_zakhod0142(BaseConfig):
 
 
 class Option_zakhod3089(BaseConfig):
-    OPTION_NAME = "zakhod3089"
+    OPTION_NAME = "ضخود3089"
     OPTION_TICKER = "IRO9IKCO8P21"
     EXPIRATION_DATE = "1404-03-07"
     STRIKE_PRICE = 2400
@@ -543,7 +543,7 @@ class Option_zakhod3089(BaseConfig):
 
 
 class Option_zakhod3090(BaseConfig):
-    OPTION_NAME = "zakhod3090"
+    OPTION_NAME = "ضخود3090"
     OPTION_TICKER = "IRO9IKCO8P31"
     EXPIRATION_DATE = "1404-03-07"
     STRIKE_PRICE = 2600
@@ -551,7 +551,7 @@ class Option_zakhod3090(BaseConfig):
 
 
 class Option_zakhod3091(BaseConfig):
-    OPTION_NAME = "zakhod3091"
+    OPTION_NAME = "ضخود3091"
     OPTION_TICKER = "IRO9IKCO8P41"
     EXPIRATION_DATE = "1404-03-07"
     STRIKE_PRICE = 2800
@@ -559,7 +559,7 @@ class Option_zakhod3091(BaseConfig):
 
 
 class Option_zakhod3092(BaseConfig):
-    OPTION_NAME = "zakhod3092"
+    OPTION_NAME = "ضخود3092"
     OPTION_TICKER = "IRO9IKCO8P51"
     EXPIRATION_DATE = "1404-03-07"
     STRIKE_PRICE = 3000
@@ -567,7 +567,7 @@ class Option_zakhod3092(BaseConfig):
 
 
 class Option_zakhod3093(BaseConfig):
-    OPTION_NAME = "zakhod3093"
+    OPTION_NAME = "ضخود3093"
     OPTION_TICKER = "IRO9IKCO8P61"
     EXPIRATION_DATE = "1404-03-07"
     STRIKE_PRICE = 3250
@@ -575,7 +575,7 @@ class Option_zakhod3093(BaseConfig):
 
 
 class Option_zakhod3094(BaseConfig):
-    OPTION_NAME = "zakhod3094"
+    OPTION_NAME = "ضخود3094"
     OPTION_TICKER = "IRO9IKCO8P71"
     EXPIRATION_DATE = "1404-03-07"
     STRIKE_PRICE = 3500
@@ -583,7 +583,7 @@ class Option_zakhod3094(BaseConfig):
 
 
 class Option_zakhod3095(BaseConfig):
-    OPTION_NAME = "zakhod3095"
+    OPTION_NAME = "ضخود3095"
     OPTION_TICKER = "IRO9IKCO8P81"
     EXPIRATION_DATE = "1404-03-07"
     STRIKE_PRICE = 3750
@@ -591,7 +591,7 @@ class Option_zakhod3095(BaseConfig):
 
 
 class Option_zakhod3096(BaseConfig):
-    OPTION_NAME = "zakhod3096"
+    OPTION_NAME = "ضخود3096"
     OPTION_TICKER = "IRO9IKCO8P91"
     EXPIRATION_DATE = "1404-03-07"
     STRIKE_PRICE = 4000
@@ -599,7 +599,7 @@ class Option_zakhod3096(BaseConfig):
 
 
 class Option_zakhod3097(BaseConfig):
-    OPTION_NAME = "zakhod3097"
+    OPTION_NAME = "ضخود3097"
     OPTION_TICKER = "IRO9IKCO8Q01"
     EXPIRATION_DATE = "1404-03-07"
     STRIKE_PRICE = 4500
@@ -607,7 +607,7 @@ class Option_zakhod3097(BaseConfig):
 
 
 class Option_zakhod3098(BaseConfig):
-    OPTION_NAME = "zakhod3098"
+    OPTION_NAME = "ضخود3098"
     OPTION_TICKER = "IRO9IKCO8Q11"
     EXPIRATION_DATE = "1404-03-07"
     STRIKE_PRICE = 5000
@@ -615,7 +615,7 @@ class Option_zakhod3098(BaseConfig):
 
 
 class Option_zakhod3099(BaseConfig):
-    OPTION_NAME = "zakhod3099"
+    OPTION_NAME = "ضخود3099"
     OPTION_TICKER = "IRO9IKCO8Q21"
     EXPIRATION_DATE = "1404-03-07"
     STRIKE_PRICE = 5500
@@ -623,7 +623,7 @@ class Option_zakhod3099(BaseConfig):
 
 
 class Option_zakhod0139(BaseConfig):
-    OPTION_NAME = "zakhod0139"
+    OPTION_NAME = "ضخود0139"
     OPTION_TICKER = "IRO9IKCO8O91"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 3750
@@ -631,7 +631,7 @@ class Option_zakhod0139(BaseConfig):
 
 
 class Option_zakhod0140(BaseConfig):
-    OPTION_NAME = "zakhod0140"
+    OPTION_NAME = "ضخود0140"
     OPTION_TICKER = "IRO9IKCO8P01"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 4000
@@ -639,7 +639,7 @@ class Option_zakhod0140(BaseConfig):
 
 
 class Option_zakhod0141(BaseConfig):
-    OPTION_NAME = "zakhod0141"
+    OPTION_NAME = "ضخود0141"
     OPTION_TICKER = "IRO9IKCO8P11"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 4500
@@ -647,7 +647,7 @@ class Option_zakhod0141(BaseConfig):
 
 
 class Option_zakhod1226(BaseConfig):
-    OPTION_NAME = "zakhod1226"
+    OPTION_NAME = "ضخود1226"
     OPTION_TICKER = "IRO9IKCO8L01"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 1700
@@ -655,7 +655,7 @@ class Option_zakhod1226(BaseConfig):
 
 
 class Option_zakhod1227(BaseConfig):
-    OPTION_NAME = "zakhod1227"
+    OPTION_NAME = "ضخود1227"
     OPTION_TICKER = "IRO9IKCO8L11"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 1800
@@ -663,7 +663,7 @@ class Option_zakhod1227(BaseConfig):
 
 
 class Option_zakhod1228(BaseConfig):
-    OPTION_NAME = "zakhod1228"
+    OPTION_NAME = "ضخود1228"
     OPTION_TICKER = "IRO9IKCO8L21"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 1900
@@ -671,7 +671,7 @@ class Option_zakhod1228(BaseConfig):
 
 
 class Option_zakhod1229(BaseConfig):
-    OPTION_NAME = "zakhod1229"
+    OPTION_NAME = "ضخود1229"
     OPTION_TICKER = "IRO9IKCO8L31"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 2000
@@ -679,7 +679,7 @@ class Option_zakhod1229(BaseConfig):
 
 
 class Option_zakhod1230(BaseConfig):
-    OPTION_NAME = "zakhod1230"
+    OPTION_NAME = "ضخود1230"
     OPTION_TICKER = "IRO9IKCO8L41"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 2200
@@ -687,7 +687,7 @@ class Option_zakhod1230(BaseConfig):
 
 
 class Option_zakhod1231(BaseConfig):
-    OPTION_NAME = "zakhod1231"
+    OPTION_NAME = "ضخود1231"
     OPTION_TICKER = "IRO9IKCO8L51"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 2400
@@ -695,7 +695,7 @@ class Option_zakhod1231(BaseConfig):
 
 
 class Option_zakhod1232(BaseConfig):
-    OPTION_NAME = "zakhod1232"
+    OPTION_NAME = "ضخود1232"
     OPTION_TICKER = "IRO9IKCO8L61"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 2600
@@ -703,7 +703,7 @@ class Option_zakhod1232(BaseConfig):
 
 
 class Option_zakhod1233(BaseConfig):
-    OPTION_NAME = "zakhod1233"
+    OPTION_NAME = "ضخود1233"
     OPTION_TICKER = "IRO9IKCO8L71"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 2800
@@ -711,7 +711,7 @@ class Option_zakhod1233(BaseConfig):
 
 
 class Option_zakhod1234(BaseConfig):
-    OPTION_NAME = "zakhod1234"
+    OPTION_NAME = "ضخود1234"
     OPTION_TICKER = "IRO9IKCO8L81"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 3000
@@ -719,7 +719,7 @@ class Option_zakhod1234(BaseConfig):
 
 
 class Option_zakhod1235(BaseConfig):
-    OPTION_NAME = "zakhod1235"
+    OPTION_NAME = "ضخود1235"
     OPTION_TICKER = "IRO9IKCO8L91"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 3250
@@ -727,7 +727,7 @@ class Option_zakhod1235(BaseConfig):
 
 
 class Option_zakhod1236(BaseConfig):
-    OPTION_NAME = "zakhod1236"
+    OPTION_NAME = "ضخود1236"
     OPTION_TICKER = "IRO9IKCO8M01"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 3500
@@ -735,7 +735,7 @@ class Option_zakhod1236(BaseConfig):
 
 
 class Option_zakhod1237(BaseConfig):
-    OPTION_NAME = "zakhod1237"
+    OPTION_NAME = "ضخود1237"
     OPTION_TICKER = "IRO9IKCO8M11"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 3750
@@ -743,7 +743,7 @@ class Option_zakhod1237(BaseConfig):
 
 
 class Option_zakhod1238(BaseConfig):
-    OPTION_NAME = "zakhod1238"
+    OPTION_NAME = "ضخود1238"
     OPTION_TICKER = "IRO9IKCO8M21"
     EXPIRATION_DATE = "1403-12-01"
     STRIKE_PRICE = 4000
@@ -751,7 +751,7 @@ class Option_zakhod1238(BaseConfig):
 
 
 class Option_zakhod2050(BaseConfig):
-    OPTION_NAME = "zakhod2050"
+    OPTION_NAME = "ضخود2050"
     OPTION_TICKER = "IRO9IKCO8N61"
     EXPIRATION_DATE = "1404-02-03"
     STRIKE_PRICE = 2000
@@ -759,7 +759,7 @@ class Option_zakhod2050(BaseConfig):
 
 
 class Option_zakhod2051(BaseConfig):
-    OPTION_NAME = "zakhod2051"
+    OPTION_NAME = "ضخود2051"
     OPTION_TICKER = "IRO9IKCO8N71"
     EXPIRATION_DATE = "1404-02-03"
     STRIKE_PRICE = 2200
@@ -767,7 +767,7 @@ class Option_zakhod2051(BaseConfig):
 
 
 class Option_zakhod2052(BaseConfig):
-    OPTION_NAME = "zakhod2052"
+    OPTION_NAME = "ضخود2052"
     OPTION_TICKER = "IRO9IKCO8N81"
     EXPIRATION_DATE = "1404-02-03"
     STRIKE_PRICE = 2400
@@ -775,7 +775,7 @@ class Option_zakhod2052(BaseConfig):
 
 
 class Option_zakhod2053(BaseConfig):
-    OPTION_NAME = "zakhod2053"
+    OPTION_NAME = "ضخود2053"
     OPTION_TICKER = "IRO9IKCO8N91"
     EXPIRATION_DATE = "1404-02-03"
     STRIKE_PRICE = 2600
@@ -783,7 +783,7 @@ class Option_zakhod2053(BaseConfig):
 
 
 class Option_zakhod2054(BaseConfig):
-    OPTION_NAME = "zakhod2054"
+    OPTION_NAME = "ضخود2054"
     OPTION_TICKER = "IRO9IKCO8O11"
     EXPIRATION_DATE = "1404-02-03"
     STRIKE_PRICE = 2800
@@ -791,7 +791,7 @@ class Option_zakhod2054(BaseConfig):
 
 
 class Option_zakhod2055(BaseConfig):
-    OPTION_NAME = "zakhod2055"
+    OPTION_NAME = "ضخود2055"
     OPTION_TICKER = "IRO9IKCO8O21"
     EXPIRATION_DATE = "1404-02-03"
     STRIKE_PRICE = 3000
@@ -799,7 +799,7 @@ class Option_zakhod2055(BaseConfig):
 
 
 class Option_zakhod2056(BaseConfig):
-    OPTION_NAME = "zakhod2056"
+    OPTION_NAME = "ضخود2056"
     OPTION_TICKER = "IRO9IKCO8O31"
     EXPIRATION_DATE = "1404-02-03"
     STRIKE_PRICE = 3250
@@ -807,7 +807,7 @@ class Option_zakhod2056(BaseConfig):
 
 
 class Option_zakhod2057(BaseConfig):
-    OPTION_NAME = "zakhod2057"
+    OPTION_NAME = "ضخود2057"
     OPTION_TICKER = "IRO9IKCO8O41"
     EXPIRATION_DATE = "1404-02-03"
     STRIKE_PRICE = 3500
@@ -815,7 +815,7 @@ class Option_zakhod2057(BaseConfig):
 
 
 class Option_zakhod2058(BaseConfig):
-    OPTION_NAME = "zakhod2058"
+    OPTION_NAME = "ضخود2058"
     OPTION_TICKER = "IRO9IKCO8O51"
     EXPIRATION_DATE = "1404-02-03"
     STRIKE_PRICE = 3750
@@ -823,7 +823,7 @@ class Option_zakhod2058(BaseConfig):
 
 
 class Option_zakhod2059(BaseConfig):
-    OPTION_NAME = "zakhod2059"
+    OPTION_NAME = "ضخود2059"
     OPTION_TICKER = "IRO9IKCO8O61"
     EXPIRATION_DATE = "1404-02-03"
     STRIKE_PRICE = 4000
@@ -831,7 +831,7 @@ class Option_zakhod2059(BaseConfig):
 
 
 class Option_zakhod2060(BaseConfig):
-    OPTION_NAME = "zakhod2060"
+    OPTION_NAME = "ضخود2060"
     OPTION_TICKER = "IRO9IKCO8O71"
     EXPIRATION_DATE = "1404-02-03"
     STRIKE_PRICE = 4500
@@ -839,7 +839,7 @@ class Option_zakhod2060(BaseConfig):
 
 
 class Option_zakhod2061(BaseConfig):
-    OPTION_NAME = "zakhod2061"
+    OPTION_NAME = "ضخود2061"
     OPTION_TICKER = "IRO9IKCO8O81"
     EXPIRATION_DATE = "1404-02-03"
     STRIKE_PRICE = 5000
@@ -847,7 +847,7 @@ class Option_zakhod2061(BaseConfig):
 
 
 class Option_zakhod0126(BaseConfig):
-    OPTION_NAME = "zakhod0126"
+    OPTION_NAME = "ضخود0126"
     OPTION_TICKER = "IRO9IKCO8M31"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 1500
@@ -855,7 +855,7 @@ class Option_zakhod0126(BaseConfig):
 
 
 class Option_zakhod0127(BaseConfig):
-    OPTION_NAME = "zakhod0127"
+    OPTION_NAME = "ضخود0127"
     OPTION_TICKER = "IRO9IKCO8M41"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 1600
@@ -863,7 +863,7 @@ class Option_zakhod0127(BaseConfig):
 
 
 class Option_zakhod0128(BaseConfig):
-    OPTION_NAME = "zakhod0128"
+    OPTION_NAME = "ضخود0128"
     OPTION_TICKER = "IRO9IKCO8M51"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 1700
@@ -871,7 +871,7 @@ class Option_zakhod0128(BaseConfig):
 
 
 class Option_zakhod0129(BaseConfig):
-    OPTION_NAME = "zakhod0129"
+    OPTION_NAME = "ضخود0129"
     OPTION_TICKER = "IRO9IKCO8M61"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 1800
@@ -879,7 +879,7 @@ class Option_zakhod0129(BaseConfig):
 
 
 class Option_zakhod0130(BaseConfig):
-    OPTION_NAME = "zakhod0130"
+    OPTION_NAME = "ضخود0130"
     OPTION_TICKER = "IRO9IKCO8M71"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 1900
@@ -887,7 +887,7 @@ class Option_zakhod0130(BaseConfig):
 
 
 class Option_zakhod0131(BaseConfig):
-    OPTION_NAME = "zakhod0131"
+    OPTION_NAME = "ضخود0131"
     OPTION_TICKER = "IRO9IKCO8M81"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 2000
@@ -895,7 +895,7 @@ class Option_zakhod0131(BaseConfig):
 
 
 class Option_zakhod0132(BaseConfig):
-    OPTION_NAME = "zakhod0132"
+    OPTION_NAME = "ضخود0132"
     OPTION_TICKER = "IRO9IKCO8M91"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 2200
@@ -903,7 +903,7 @@ class Option_zakhod0132(BaseConfig):
 
 
 class Option_zakhod0133(BaseConfig):
-    OPTION_NAME = "zakhod0133"
+    OPTION_NAME = "ضخود0133"
     OPTION_TICKER = "IRO9IKCO8N01"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 2400
@@ -911,7 +911,7 @@ class Option_zakhod0133(BaseConfig):
 
 
 class Option_zakhod0134(BaseConfig):
-    OPTION_NAME = "zakhod0134"
+    OPTION_NAME = "ضخود0134"
     OPTION_TICKER = "IRO9IKCO8N11"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 2600
@@ -919,7 +919,7 @@ class Option_zakhod0134(BaseConfig):
 
 
 class Option_zakhod0135(BaseConfig):
-    OPTION_NAME = "zakhod0135"
+    OPTION_NAME = "ضخود0135"
     OPTION_TICKER = "IRO9IKCO8N21"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 2800
@@ -927,7 +927,7 @@ class Option_zakhod0135(BaseConfig):
 
 
 class Option_zakhod0136(BaseConfig):
-    OPTION_NAME = "zakhod0136"
+    OPTION_NAME = "ضخود0136"
     OPTION_TICKER = "IRO9IKCO8N31"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 3000
@@ -935,7 +935,7 @@ class Option_zakhod0136(BaseConfig):
 
 
 class Option_zakhod0137(BaseConfig):
-    OPTION_NAME = "zakhod0137"
+    OPTION_NAME = "ضخود0137"
     OPTION_TICKER = "IRO9IKCO8N41"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 3250
@@ -943,7 +943,7 @@ class Option_zakhod0137(BaseConfig):
 
 
 class Option_zakhod0138(BaseConfig):
-    OPTION_NAME = "zakhod0138"
+    OPTION_NAME = "ضخود0138"
     OPTION_TICKER = "IRO9IKCO8N51"
     EXPIRATION_DATE = "1404-01-06"
     STRIKE_PRICE = 3500
