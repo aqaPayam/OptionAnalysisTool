@@ -1,4 +1,5 @@
-import re
+from config import set_current_mode, get_config
+from trading_api import TradingAPI
 
 input_text = """
 [
@@ -697,6 +698,7 @@ def extract_options(text):
     class_definitions = []
     config_mappings = []
     config_names = []
+    batch_commands = []
 
     for isin, symbol, title in matches:
         match = re.search(r"اختیار([خ|ف]) خودرو-(\d+)-(\d{4}/\d{2}/\d{2})", title)
@@ -717,16 +719,24 @@ def extract_options(text):
                 call_put=call_put
             ))
 
-            # Adding to CONFIGS dictionary
             config_mappings.append(f"    '{eng_symbol}': {class_name},")
             config_names.append(eng_symbol)
 
     # Generate CONFIGS dictionary
     configs_code = "\n# Map modes to configurations\nCONFIGS = {\n" + "\n".join(config_mappings) + "\n}"
 
-    # Generate batch script content
-    batch_script = "@echo off\n" + "\n".join(
-        [f"start cmd /k \"python main.py --mode {name}\"" for name in config_names])
+    # Generate batch script content based on volume check
+    batch_commands = []
+    for name in config_names:
+        set_current_mode(name)
+        config = get_config()
+        api = TradingAPI()
+        total_volume = api.fetch_total_traded_volume()
+        print(f"Total traded volume for {name}: {total_volume}")
+        if total_volume >= config.MIN_VOLUME_LIMIT:
+            batch_commands.append(f"start cmd /k \"python main.py --mode {name}\"")
+
+    batch_script = "@echo off\n" + "\n".join(batch_commands)
 
     # Write batch script to file
     with open("run_all.bat", "w", encoding="utf-8") as f:
