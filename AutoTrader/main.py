@@ -27,7 +27,7 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 
 def main():
     parser = argparse.ArgumentParser(description="Run the script with a specific configuration mode.")
-    parser.add_argument('--mode', type=str, required=True, choices=['zahrom1110', 'zahrom1111', 'tahrom1111', 'tahrom1112'],
+    parser.add_argument('--mode', type=str, required=True,
                         help="Mode to run the script in.")
     args = parser.parse_args()
 
