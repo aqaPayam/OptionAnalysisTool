@@ -7,6 +7,7 @@ from threading import Thread, Event
 from collections import deque
 import pandas as pd
 
+from AutoTrader.trade_condition_checking import run_trade_checker
 from config import get_config, set_current_mode
 from signal_handling import signal_handling_thread
 from trading_api import TradingAPI
@@ -72,6 +73,10 @@ def main():
         historical_thread.start()
     else:
         historical_thread = None
+
+    # Start trade eligibility checker thread
+    trade_checker_thread = Thread(target=run_trade_checker, args=(api, stop_event))
+    trade_checker_thread.start()
 
     # Start data fetching thread
     data_thread = Thread(target=data_fetching_thread, args=(api, data_queue, counters, stop_event))

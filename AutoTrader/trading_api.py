@@ -19,6 +19,7 @@ class TradingAPI:
         self.headers = config.HEADERS
         self.max_retries = config.MAX_RETRIES
         self.option_ticker = config.OPTION_TICKER
+        self.mdapi_url = config.MDAPI_URL  # Assign the Market Data API URL
 
     def _make_request(self, method: str, url: str, data: Optional[dict] = None) -> Optional[dict]:
         config = get_config()
@@ -321,4 +322,26 @@ class TradingAPI:
         else:
             print("ERROR: Failed to retrieve portfolio positions.")
 
+        return None
+
+    def fetch_total_traded_volume(self) -> Optional[int]:
+        """
+        Fetches the total traded volume for the configured option ticker.
+
+        Returns:
+            Optional[int]: Total traded volume if successful, else None.
+        """
+        url = f"{self.mdapi_url}/instruments/full"
+        data = {"isinList": [self.option_ticker]}  # Get ISIN from config
+
+        response = self._make_request("POST", url, data)
+        if response:
+            try:
+                total_volume = response[0]['t']['ttv']
+                print(f"INFO: Total traded volume for {self.option_ticker}: {total_volume}")
+                return total_volume
+            except (KeyError, IndexError) as e:
+                print(f"ERROR: Failed to extract total traded volume for {self.option_ticker}: {e}")
+        else:
+            print(f"ERROR: Failed to fetch data for {self.option_ticker}.")
         return None
