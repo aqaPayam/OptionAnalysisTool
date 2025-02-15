@@ -314,7 +314,7 @@ class TradingAPI:
 
                         else:
                             print("ERROR: Conditions not met for calculating net worth.")
-                            return None
+                            return 0
 
                 print(f"WARNING: No position found for ISIN {self.option_ticker}.")
             except (KeyError, TypeError) as e:
@@ -322,7 +322,7 @@ class TradingAPI:
         else:
             print("ERROR: Failed to retrieve portfolio positions.")
 
-        return None
+        return 0
 
     def fetch_total_traded_volume(self) -> Optional[int]:
         """

@@ -48,7 +48,7 @@ def run_trade_checker(api, stop_event):
             # Exit the thread since conditions are met
             return
         else:
-            print(f"WARNING: Volume too low ({total_volume}), retrying in {config.TRADE_CHECK_INTERVAL} seconds...")
+            print(f"WARNING: Volume too low ({total_volume}), retrying in {config.CONDITION_CHECK_INTERVAL} seconds...")
 
         # Wait before checking again
-        time.sleep(config.TRADE_CHECK_INTERVAL)
+        time.sleep(config.CONDITION_CHECK_INTERVAL)
