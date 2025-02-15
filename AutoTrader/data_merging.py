@@ -7,7 +7,7 @@ from helpers import (
     validate_time_and_data, calculate_time_to_expiration,
     calculate_implied_volatility, calculate_estimated_volatility,
     calculate_black_scholes_price, validate_time_and_data_preprocess,
-    calculate_delta  # Added Delta import
+    calculate_delta, update_signal  # Added Delta import
 )
 from signals import process_price_difference
 from config import get_config
@@ -138,6 +138,7 @@ def merge_historical_and_live_data(
         signal, under_count, over_count, rolling_mean_diff, rolling_std_diff, z_score = process_price_difference(
             price_difference, price_diff_window, config.WINDOW_SIZE, config.Z_THRESHOLD, counters
         )
+        signal = update_signal(signal, delta, config)
 
         # Update counts
         under_negative_one_count += under_count
@@ -208,6 +209,7 @@ def merge_historical_and_live_data(
         signal, under_count, over_count, rolling_mean_diff, rolling_std_diff, z_score = process_price_difference(
             price_difference, price_diff_window, config.WINDOW_SIZE, config.Z_THRESHOLD, counters
         )
+        signal = update_signal(signal, delta, config)
 
         # Update counts
         under_negative_one_count += under_count

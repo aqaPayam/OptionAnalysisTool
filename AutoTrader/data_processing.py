@@ -4,7 +4,7 @@ import numpy as np
 from helpers import (
     validate_time_and_data, calculate_time_to_expiration,
     calculate_implied_volatility, calculate_estimated_volatility,
-    calculate_black_scholes_price, calculate_delta  # Added Delta import
+    calculate_black_scholes_price, calculate_delta, update_signal  # Added Delta import
 )
 from signals import process_price_difference
 from config import get_config
@@ -71,15 +71,7 @@ def processing_thread(data_queue, result_queue, signal_queue, counters, processi
                 under_negative_one_count += under_count
                 over_positive_one_count += over_count
 
-                if signal == "buy" and config.NET_WORTH >= 0:
-                    if not (config.DELTA_BUY_MIN <= delta <= config.DELTA_BUY_MAX):
-                        signal = "hold"
-                        print(f"INFO: Buy signal changed to 'hold' due to Delta condition. Delta: {delta:.4f}")
-
-                elif signal == "sell" and config.NET_WORTH <= 0:
-                    if not (config.DELTA_SELL_MIN <= delta <= config.DELTA_SELL_MAX):
-                        signal = "hold"
-                        print(f"INFO: Sell signal changed to 'hold' due to Delta condition. Delta: {delta:.4f}")
+                signal = update_signal(signal, delta, config)
 
                 result = {
                     "Date": current_date_jalali,

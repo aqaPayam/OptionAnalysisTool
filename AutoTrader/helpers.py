@@ -31,7 +31,7 @@ def calculate_delta(avg_price_underlying, strike_price, time_to_expiration, risk
 
     d1 = (np.log(avg_price_underlying / strike_price) +
           (risk_free_rate + 0.5 * estimated_vol ** 2) * time_to_expiration) / (
-                     estimated_vol * np.sqrt(time_to_expiration))
+                 estimated_vol * np.sqrt(time_to_expiration))
 
     if call_put == 'c':
         return norm.cdf(d1)  # Call option Delta
@@ -266,3 +266,38 @@ def validate_time_and_data_preprocess(current_time, counters, avg_price_underlyi
         return False
 
     return True
+
+
+def update_signal(signal, delta, config):
+    """
+    Updates the trading signal based on constraints and delta conditions.
+
+    Parameters:
+        signal (str): The current trading signal ('buy', 'sell', or 'hold').
+        delta (float): The computed delta value.
+        config: The configuration object.
+
+    Returns:
+        str: The updated trading signal.
+    """
+    if signal == "hold":
+        return signal
+
+    if not config.CAN_TRADE_IN_SAME_DIRECTION:
+        if (signal == "buy" and config.NET_WORTH >= 0) or (signal == "sell" and config.NET_WORTH <= 0):
+            print("INFO: Signal changed to 'hold' due to CAN_TRADE_IN_SAME_DIRECTION constraint.")
+            return "hold"
+        else:
+            return signal
+    else:
+        if signal == "buy" and config.NET_WORTH >= 0:
+            if not (config.DELTA_BUY_MIN <= delta <= config.DELTA_BUY_MAX):
+                print(f"INFO: Buy signal changed to 'hold' due to Delta condition. Delta: {delta:.4f}")
+                return "hold"
+
+        elif signal == "sell" and config.NET_WORTH <= 0:
+            if not (config.DELTA_SELL_MIN <= delta <= config.DELTA_SELL_MAX):
+                print(f"INFO: Sell signal changed to 'hold' due to Delta condition. Delta: {delta:.4f}")
+                return "hold"
+
+    return signal  # Return the original signal if no conditions changed it

@@ -30,7 +30,7 @@ def run_trade_checker(api, stop_event):
     # Expiration date check: If it's too close, disable trading and stop the thread
     if remaining_days < config.MIN_REMAINING_DAYS:
         print(f"ERROR: Expiration date limit reached! ({remaining_days} days left)")
-        config.CAN_TRADE_AGAINST_MARKET = False  # Ensure trading stays disabled
+        config.CAN_TRADE_IN_SAME_DIRECTION = False  # Ensure trading stays disabled
         return  # Exit the thread (but NOT the entire program)
 
     while not stop_event.is_set():  # Keep running unless stopped externally
@@ -43,7 +43,7 @@ def run_trade_checker(api, stop_event):
             print(f"INFO: Trading enabled! Volume: {total_volume}, Days remaining: {remaining_days}")
 
             # Enable trading
-            config.CAN_TRADE_AGAINST_MARKET = True
+            config.CAN_TRADE_IN_SAME_DIRECTION = True
 
             # Exit the thread since conditions are met
             return

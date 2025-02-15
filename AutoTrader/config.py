@@ -51,7 +51,7 @@ class BaseConfig:
 
     MIN_REMAINING_DAYS = 14  # Minimum required days before expiration
     MIN_VOLUME_LIMIT = 40000  # Minimum volume required
-    CAN_TRADE_AGAINST_MARKET = False  # Initially False, becomes True when conditions are met
+    CAN_TRADE_IN_SAME_DIRECTION = False  # Initially False, becomes True when conditions are met
     CONDITION_CHECK_INTERVAL = 10
 
 
