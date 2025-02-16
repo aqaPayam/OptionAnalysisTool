@@ -17,6 +17,13 @@ def run_trade_checker(api, stop_event):
     """
     config = get_config()  # Load config values
 
+    config.CAN_TRADE_IN_SAME_DIRECTION = False  # Ensure trading stays disabled
+    print("FOR TEST YOU CAN NOT CREATE NEW POS")
+    return  # Exit the thread (but NOT the entire program)
+
+
+
+
     # Get today's Jalali date
     today_gregorian = datetime.today().date()
     today_jalali = jdate.fromgregorian(date=today_gregorian)

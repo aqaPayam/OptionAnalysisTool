@@ -337,7 +337,7 @@ class TradingAPI:
         response = self._make_request("POST", url, data)
         if response:
             try:
-                total_volume = response[0]['t']['ttv']
+                total_volume = response[0]['t']['tnst']
                 print(f"INFO: Total traded volume for {self.option_ticker}: {total_volume}")
                 return total_volume
             except (KeyError, IndexError) as e:
