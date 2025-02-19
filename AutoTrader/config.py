@@ -17,8 +17,8 @@ class BaseConfig:
                       'Chrome/131.0.0.0 Safari/537.36',
         # Empty User-Agent
         'Accept': 'application/json, text/plain, */*',
-        'Cookie': 'cookiesession1=678B2928B1B3FC87D21EEC7CB0BB44AB; otauth-178-OMSfe1c694d-b123-4d09-b395-01304776fae4=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJTZXNzaW9uSWQiOiJmZTFjNjk0ZC1iMTIzLTRkMDktYjM5NS0wMTMwNDc3NmZhZTQiLCJVc2VySWQiOiIxMDA3OTUiLCJBcHBOYW1lIjoiT01TIiwiQnJva2VyQ29kZSI6IjE3OCIsIm5iZiI6MTczOTczODk2MSwiZXhwIjoxNzM5NzY3NzYxLCJpc3MiOiJPTVMiLCJhdWQiOiJPTVMifQ.QtZyiXf3ReIxVhLXORMk3O6psLkNhhF9U3A3Ag_HSoEyl-_VgXN4zDTX-Xbbgo8crAFIhT9Q0pUCvhrpl70qeQ',
-        'x-sessionId': 'OMSfe1c694d-b123-4d09-b395-01304776fae4',
+        'Cookie': 'ookiesession1=678B29282432ED9087E7496A2B55BDFD; otauth-178-OMS92fb2642-bd62-4350-824b-34ebc93b8598=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJTZXNzaW9uSWQiOiI5MmZiMjY0Mi1iZDYyLTQzNTAtODI0Yi0zNGViYzkzYjg1OTgiLCJVc2VySWQiOiIxMDA3OTUiLCJBcHBOYW1lIjoiT01TIiwiQnJva2VyQ29kZSI6IjE3OCIsIm5iZiI6MTczOTk0MzI1OCwiZXhwIjoxNzM5OTcyMDU4LCJpc3MiOiJPTVMiLCJhdWQiOiJPTVMifQ.0xuOcwj66gq_EawbBroL7bN2uq42uxP1ynPq3jXSWdZuszohRJ-zpz-eut9hqPt8SiJBFLbOdInhQKphziw1wQ',
+        'x-sessionId': 'OMS92fb2642-bd62-4350-824b-34ebc93b8598',
         'Content-Type': 'application/json',
     }
 
