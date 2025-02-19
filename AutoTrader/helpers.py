@@ -9,6 +9,7 @@ from collections import deque
 from py_vollib.black_scholes import black_scholes
 from py_vollib.black_scholes.implied_volatility import implied_volatility
 from config import get_config
+from py_vollib.black_scholes.greeks.analytical import delta
 
 
 def calculate_delta(avg_price_underlying, strike_price, time_to_expiration, risk_free_rate, estimated_vol, call_put):
@@ -29,16 +30,10 @@ def calculate_delta(avg_price_underlying, strike_price, time_to_expiration, risk
     if time_to_expiration <= 0 or estimated_vol <= 0:
         return 0  # Prevent division by zero errors
 
-    d1 = (np.log(avg_price_underlying / strike_price) +
-          (risk_free_rate + 0.5 * estimated_vol ** 2) * time_to_expiration) / (
-                 estimated_vol * np.sqrt(time_to_expiration))
+    delta_value = delta(call_put, avg_price_underlying, strike_price, time_to_expiration, risk_free_rate,
+                        estimated_vol)
 
-    if call_put == 'c':
-        return norm.cdf(d1)  # Call option Delta
-    elif call_put == 'p':
-        return norm.cdf(d1) - 1  # Put option Delta
-    else:
-        raise ValueError("call_put must be 'c' (call) or 'p' (put')")
+    return delta_value
 
 
 def calculate_simple_moving_average(rolling_vols: deque) -> float:
@@ -280,24 +275,19 @@ def update_signal(signal, delta, config):
     Returns:
         str: The updated trading signal.
     """
+    # If the signal is already 'hold', no update is needed
     if signal == "hold":
         return signal
 
+    # If trading in the same direction is not allowed, check net worth constraints
     if not config.CAN_TRADE_IN_SAME_DIRECTION:
         if (signal == "buy" and config.NET_WORTH >= 0) or (signal == "sell" and config.NET_WORTH <= 0):
             print("INFO: Signal changed to 'hold' due to CAN_TRADE_IN_SAME_DIRECTION constraint.")
             return "hold"
-        else:
-            return signal
+
     else:
-        if signal == "buy" and config.NET_WORTH >= 0:
-            if not (config.DELTA_BUY_MIN <= delta <= config.DELTA_BUY_MAX):
-                print(f"INFO: Buy signal changed to 'hold' due to Delta condition. Delta: {delta:.4f}")
-                return "hold"
+        if np.abs(delta) < config.DELTA_MIN:
+            print("INFO: Signal changed to 'hold' due to delta threshold constraint.")
+            return "hold"
 
-        elif signal == "sell" and config.NET_WORTH <= 0:
-            if not (config.DELTA_SELL_MIN <= delta <= config.DELTA_SELL_MAX):
-                print(f"INFO: Sell signal changed to 'hold' due to Delta condition. Delta: {delta:.4f}")
-                return "hold"
-
-    return signal  # Return the original signal if no conditions changed it
+    return signal

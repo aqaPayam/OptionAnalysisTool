@@ -153,9 +153,9 @@ def merge_historical_and_live_data(
         row["rolling_std_diff"] = rolling_std_diff
         row["z_score"] = z_score
         row["signal"] = signal
+        row["delta"] = delta  # Added Delta to results
         row["under_negative_one_count"] = under_negative_one_count
         row["over_positive_one_count"] = over_positive_one_count
-        row["delta"] = delta  # Added Delta to results
 
         processed_rows.append(row)
 
@@ -229,9 +229,10 @@ def merge_historical_and_live_data(
             "rolling_std_diff": rolling_std_diff,
             "z_score": z_score,
             "signal": signal,
+            "delta": delta,  # Added Delta to results
             "under_negative_one_count": under_negative_one_count,
             "over_positive_one_count": over_positive_one_count,
-            "delta": delta  # Added Delta to results
+
         }
 
         live_processed_rows.append(live_result)

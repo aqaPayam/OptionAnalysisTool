@@ -32,6 +32,7 @@ def result_handling_thread(result_queue, data, stop_event):
                 print(f"INFO: Rolling Std Dev Difference: {result['rolling_std_diff']}")
                 print(f"INFO: Z-Score: {result['z_score']}")
                 print(f"INFO: Signal: {result['signal']}")
+                print(f"INFO: Delta: {result['delta']}")
                 print(f"INFO: Z-Score < -{config.Z_THRESHOLD} Count: {result['under_negative_one_count']}")
                 print(f"INFO: Z-Score > +{config.Z_THRESHOLD} Count: {result['over_positive_one_count']}")
                 print("\n")

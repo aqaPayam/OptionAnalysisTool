@@ -15,6 +15,7 @@ def processing_thread(data_queue, result_queue, signal_queue, counters, processi
     """
     Thread function for data processing and signal generation.
     """
+    global implied_vol
     config = get_config()
 
     print("INFO: Processing thread waiting for historical data to be ready...")
@@ -86,9 +87,9 @@ def processing_thread(data_queue, result_queue, signal_queue, counters, processi
                     "rolling_std_diff": rolling_std_diff,
                     "z_score": z_score,
                     "signal": signal,  # Updated signal if necessary
+                    "delta": delta,  # Added Delta to results
                     "under_negative_one_count": under_negative_one_count,
                     "over_positive_one_count": over_positive_one_count,
-                    "delta": delta  # Added Delta to results
                 }
 
                 result_queue.append(result)

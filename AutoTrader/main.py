@@ -7,8 +7,7 @@ from threading import Thread, Event
 from collections import deque
 import pandas as pd
 
-from trade_condition_checking import run_trade_checker
-from config import get_config, set_current_mode
+from config import get_config
 from signal_handling import signal_handling_thread
 from trading_api import TradingAPI
 from error_counters import ErrorCounters
@@ -25,19 +24,51 @@ import warnings
 
 warnings.filterwarnings("ignore", category=FutureWarning)
 
+import argparse
+
 
 def main():
     parser = argparse.ArgumentParser(description="Run the script with a specific configuration mode.")
-    parser.add_argument('--mode', type=str, required=True,
-                        help="Mode to run the script in.")
-    args = parser.parse_args()
 
-    # Set the current mode globally
-    set_current_mode(args.mode)
+    # Required arguments
+    parser.add_argument('--mode', type=str, required=True, help="Mode to run the script in.")
+    parser.add_argument('--option_name', type=str, required=True, help="Name of the option.")
+    parser.add_argument('--option_ticker', type=str, required=True, help="Ticker of the option.")
+    parser.add_argument('--expiration_date', type=str, required=True,
+                        help="Expiration date of the option (YYYY-MM-DD).")
+    parser.add_argument('--strike_price', type=float, required=True, help="Strike price of the option.")
+    parser.add_argument('--call_put', type=str, choices=['CALL', 'PUT'], required=True,
+                        help="Option type (CALL or PUT).")
 
-    print(f"Loaded configuration for mode: {args.mode}")
+    # Optional flag
+    parser.add_argument('--can_trade_in_same_direction', action='store_true',
+                        help="Allow trading in the same direction.")
 
+    args = parser.parse_args()  # Parse arguments
+
+    # Get config instance
     config = get_config()
+
+    # Set values using parsed arguments
+    config.set_values(
+        option_name=args.option_name,
+        option_ticker=args.option_ticker,
+        expiration_date=args.expiration_date,
+        strike_price=args.strike_price,
+        call_put=args.call_put,
+        can_trade_in_same_direction=args.can_trade_in_same_direction
+    )
+
+    # Print the configuration for verification
+    print(f"Configuration Set:\n"
+          f"Mode: {args.mode}\n"
+          f"Option Name: {config.OPTION_NAME}\n"
+          f"Option Ticker: {config.OPTION_TICKER}\n"
+          f"Expiration Date: {config.EXPIRATION_DATE}\n"
+          f"Strike Price: {config.STRIKE_PRICE}\n"
+          f"Call/Put: {config.CALL_PUT}\n"
+          f"Can Trade in Same Direction: {config.CAN_TRADE_IN_SAME_DIRECTION}")
+
     api = TradingAPI()
     counters = ErrorCounters()
 
@@ -45,18 +76,20 @@ def main():
         "Date", "Time", "avg_price_underlying", "avg_price_option",
         "black_scholes_price", "implied_vol", "estimated_vol",
         "price_difference", "rolling_mean_diff", "rolling_std_diff", "z_score",
-        "signal", "under_negative_one_count", "over_positive_one_count"
+        "signal", "delta", "under_negative_one_count", "over_positive_one_count"
     ]
-    data = pd.DataFrame(columns=columns)
+    data = pd.DataFrame(columns=columns)  # kole data inja bayad bashe ta akhare code amalan
 
-    rolling_vols = deque(maxlen=config.SMOOTHING_PARAM)
-    price_diff_window = deque(maxlen=config.WINDOW_SIZE)
+    rolling_vols = deque(
+        maxlen=config.SMOOTHING_PARAM)  # ye size az inke volatility ro cheghad ghabl tar takhmin bezanim
+    price_diff_window = deque(
+        maxlen=config.WINDOW_SIZE)  # size panjere i ke farz mikonim price dif haye in size az N(?,?) miad
 
-    data_queue = deque(maxlen=config.MAX_SIZE)
-    result_queue = deque()
-    signal_queue = deque(maxlen=config.MAX_SIZE)
+    data_queue = deque(maxlen=config.MAX_SIZE)  # data fetch mishe mire too in
+    result_queue = deque()  # khorooji ha mire too in bad az process shodan
+    signal_queue = deque(maxlen=config.MAX_SIZE)  # signal generate shode miad inja
 
-    processing_ready_event = Event()
+    processing_ready_event = Event()  # in event miad ke process shorou beshavad ya na
     stop_event = Event()  # <-- Stop event for graceful shutdown
 
     if config.USE_HISTORICAL:
@@ -73,10 +106,6 @@ def main():
         historical_thread.start()
     else:
         historical_thread = None
-
-    # Start trade eligibility checker thread
-    trade_checker_thread = Thread(target=run_trade_checker, args=(api, stop_event))
-    trade_checker_thread.start()
 
     # Start data fetching thread
     data_thread = Thread(target=data_fetching_thread, args=(api, data_queue, counters, stop_event))

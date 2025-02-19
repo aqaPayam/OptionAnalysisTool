@@ -28,11 +28,13 @@ def monitor_net_worth(stop_event: Event) -> None:
     while not stop_event.is_set():
         try:
             # Fetch the current net worth balance
-            net_worth = api.get_net_worth_balance()
+            net_worth, vol = api.get_net_worth_balance()
+            # manfi bashe foroosh mosbat bashe kharid
 
             if net_worth is not None:
                 # Update the NET_WORTH in the configuration
                 config.NET_WORTH = net_worth
+                config.VOLUME = vol
                 print(f"[Net Worth Monitor] NET_WORTH updated to: {net_worth}")
             else:
                 print("[Net Worth Monitor] Warning: NET_WORTH is None.")
@@ -42,7 +44,7 @@ def monitor_net_worth(stop_event: Event) -> None:
 
         # Wait for 5 seconds or until stop_event is set
         # This allows the thread to exit promptly if stop_event is triggered
-        if stop_event.wait(5):
+        if stop_event.wait(1):
             break
 
     print("[Net Worth Monitor] Stopped monitoring net worth balance.")
