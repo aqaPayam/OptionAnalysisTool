@@ -2,6 +2,8 @@
 
 import json
 import time
+
+import pandas as pd
 import requests
 from typing import Optional, List
 from config import get_config
@@ -329,3 +331,65 @@ class TradingAPI:
             print("ERROR: Failed to retrieve portfolio positions.")
 
         return 0, 0.0
+
+    def get_option_details_from_mdpapi(self, option_id: str) -> Optional[dict]:
+        """
+        Fetches details of a specific trading option from mdpapi.pikadbazar.ir.
+
+        Args:
+            option_id (str): The ID of the option.
+
+        Returns:
+            Optional[dict]: The response JSON if successful, else None.
+        """
+        url = f"https://mdpapi.pikadbazar.ir/api/v1/optionDetail/{option_id}/same"
+
+        return self._make_request("GET", url)
+
+    def get_portfolio_options_df(self):
+        """
+        Sends a GET request to the Portfolio endpoint, processes the response,
+        and returns a DataFrame with the following columns:
+            - OPTION_NAME: from "symbol"
+            - OPTION_TICKER: from "isin"
+            - EXPIRATION_DATE: from "physicalSettlementDateJalali" (fallback to cashSettlementDateJalali if needed)
+            - STRIKE_PRICE: from "strikePrice"
+            - CALL_PUT: determined from the first letter of the symbol
+                        (if it starts with 'ض' then it's call, if it starts with 'ط' then it's put)
+
+        Returns:
+            pd.DataFrame: DataFrame with the processed portfolio option data.
+        """
+        url = f"{self.base_url}/positions/options/Portfolio"
+        response = self._make_request('GET', url)
+
+        if not response:
+            print("No response received from portfolio options API.")
+            return None
+
+        processed_data = []
+        for item in response:
+            option_ticker = item.get("isin", "")
+            option_name = item.get("symbol", "")
+            # Use physicalSettlementDateJalali if available; otherwise try cashSettlementDateJalali.
+            expiration_date = item.get("physicalSettlementDateJalali", item.get("cashSettlementDateJalali", ""))
+            strike_price = item.get("strikePrice", 0)
+
+            # Determine CALL_PUT based on the starting letter of the symbol:
+            # If symbol starts with 'ض' then it's a call, if it starts with 'ط' then it's a put.
+            if option_name.startswith("ض"):
+                call_put = "c"
+            elif option_name.startswith("ط"):
+                call_put = "p"
+            else:
+                call_put = ""
+
+            processed_data.append({
+                "OPTION_NAME": option_name,
+                "OPTION_TICKER": option_ticker,
+                "EXPIRATION_DATE": expiration_date,
+                "STRIKE_PRICE": strike_price,
+                "CALL_PUT": call_put
+            })
+
+        return pd.DataFrame(processed_data)
