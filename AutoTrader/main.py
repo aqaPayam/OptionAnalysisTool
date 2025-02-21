@@ -32,6 +32,8 @@ def main():
 
     # Required arguments
     parser.add_argument('--mode', type=str, required=True, help="Mode to run the script in.")
+    parser.add_argument('--underlying_name', type=str, required=True, help="Name of the underlying.")
+    parser.add_argument('--underlying_ticker', type=str, required=True, help="Ticker of the underlying.")
     parser.add_argument('--option_name', type=str, required=True, help="Name of the option.")
     parser.add_argument('--option_ticker', type=str, required=True, help="Ticker of the option.")
     parser.add_argument('--expiration_date', type=str, required=True,
@@ -51,6 +53,8 @@ def main():
 
     # Set values using parsed arguments
     config.set_values(
+        underlying_name=args.undelying_name,
+        underlying_ticker=args.underlying_ticker,
         option_name=args.option_name,
         option_ticker=args.option_ticker,
         expiration_date=args.expiration_date,

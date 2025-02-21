@@ -43,6 +43,8 @@ class BaseConfig:
 
 
 class the_config(BaseConfig):
+    UNDERLYING_NAME = ""
+    UNDERLYING_TICKER = ""
     OPTION_NAME = ""
     OPTION_TICKER = ""
     EXPIRATION_DATE = ""
@@ -51,8 +53,11 @@ class the_config(BaseConfig):
     CAN_TRADE_IN_SAME_DIRECTION = False
 
     @classmethod
-    def set_values(cls, option_name, option_ticker, expiration_date, strike_price, call_put,
+    def set_values(cls, underlying_name, underlying_ticker, option_name, option_ticker, expiration_date, strike_price,
+                   call_put,
                    can_trade_in_same_direction):
+        cls.UNDERLYING_NAME = underlying_name
+        cls.UNDERLYING_TICKER = underlying_ticker
         cls.OPTION_NAME = option_name
         cls.OPTION_TICKER = option_ticker
         cls.EXPIRATION_DATE = expiration_date

@@ -329,25 +329,3 @@ class TradingAPI:
             print("ERROR: Failed to retrieve portfolio positions.")
 
         return 0, 0.0
-
-    def fetch_total_traded_volume(self) -> Optional[int]:
-        """
-        Fetches the total traded volume for the configured option ticker.
-
-        Returns:
-            Optional[int]: Total traded volume if successful, else None.
-        """
-        url = f"{self.mdapi_url}/instruments/full"
-        data = {"isinList": [self.option_ticker]}  # Get ISIN from config
-
-        response = self._make_request("POST", url, data)
-        if response:
-            try:
-                total_volume = response[0]['t']['tnst']
-                print(f"INFO: Total traded volume for {self.option_ticker}: {total_volume}")
-                return total_volume
-            except (KeyError, IndexError) as e:
-                print(f"ERROR: Failed to extract total traded volume for {self.option_ticker}: {e}")
-        else:
-            print(f"ERROR: Failed to fetch data for {self.option_ticker}.")
-        return None
