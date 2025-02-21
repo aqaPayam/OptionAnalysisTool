@@ -41,7 +41,7 @@ def fetch_closing_volume(ins_code):
         data = response.json()
         closing_list = data.get("closingPriceDaily", [])
         if closing_list:
-            first_entry = closing_list[0]
+            first_entry = closing_list[0]  #TODO : MEHDI TODO
             return first_entry.get("qTotTran5J")
         return None
     except Exception as e:
