@@ -102,11 +102,24 @@ def get_remaining_days(expiration_str):
         return None
 
 
+def convert_jalali_to_gregorian(jalali_date_str):
+    """
+    Converts a Jalali date (YYYY/MM/DD) into Gregorian format (YYYY-MM-DD).
+    """
+    try:
+        j_date = jdatetime.datetime.strptime(jalali_date_str, "%Y/%m/%d")
+        g_date = j_date.togregorian()
+        return g_date.strftime("%Y-%m-%d")
+    except Exception as e:
+        print(f"Error converting {jalali_date_str}: {e}")
+        return jalali_date_str
+
+
 if __name__ == "__main__":
     trading_api = TradingAPI()
 
     # -----------------------------
-    # DataFrame 1 & 2: Option Details
+    # DataFrame 1 & 2: Option Details from MDAPI
     # -----------------------------
     option_details = trading_api.get_option_details_from_mdpapi(option_id)
     if option_details:
@@ -123,14 +136,14 @@ if __name__ == "__main__":
         ] if not df_all.empty else pd.DataFrame()
 
     # -----------------------------
-    # DataFrame 3: Portfolio Options
+    # DataFrame 3: Portfolio Options (from TradingAPI)
     # -----------------------------
     df_portfolio = trading_api.get_portfolio_options_df()  # Function from your TradingAPI class
 
     # -----------------------------
     # DataFrame 4: Today Running (Final Data)
     # -----------------------------
-    # For rows from the filtered data, CAN_TRADE_IN_SAME_DIRECTION = True
+    # For rows from filtered data, set CAN_TRADE_IN_SAME_DIRECTION = True
     if not df_filtered.empty:
         df_today_running_filtered = df_filtered[
             ["OPTION_NAME", "OPTION_TICKER", "EXPIRATION_DATE", "STRIKE_PRICE", "CALL_PUT"]].copy()
@@ -152,9 +165,9 @@ if __name__ == "__main__":
             columns=["OPTION_NAME", "OPTION_TICKER", "EXPIRATION_DATE", "STRIKE_PRICE", "CALL_PUT",
                      "CAN_TRADE_IN_SAME_DIRECTION"])
 
-    # Combine the two parts to create the final "today running" DataFrame
+    # Combine filtered and portfolio rows to create the final "today running" DataFrame
     df_today_running = pd.concat([df_today_running_filtered, df_today_running_portfolio], ignore_index=True)
-    # Add UNDERLYING_NAME and UNDERLYING_TICKER as constant columns
+    # Add underlying info as constant columns
     df_today_running["UNDERLYING_NAME"] = UNDERLYING_NAME
     df_today_running["UNDERLYING_TICKER"] = UNDERLYING_TICKER
     # Reorder columns
@@ -163,7 +176,7 @@ if __name__ == "__main__":
          "CALL_PUT", "CAN_TRADE_IN_SAME_DIRECTION"]]
 
     # -----------------------------
-    # Save DataFrames to Excel Files
+    # Save Excel Files to Folder "market database folder"
     # -----------------------------
     output_folder = "market database folder"
     if not os.path.exists(output_folder):
@@ -200,7 +213,44 @@ if __name__ == "__main__":
         print("No today running data available.")
 
     # -----------------------------
-    # Print DataFrames
+    # Create Command Lines and Generate run_all.bat in Root Directory
+    # -----------------------------
+    # Build the command lines using the today running DataFrame.
+    command_lines = []
+    # Start the batch file with "@echo off"
+    command_lines.append("@echo off")
+    for idx, row in df_today_running.iterrows():
+        underlying_name = row["UNDERLYING_NAME"]
+        underlying_ticker = row["UNDERLYING_TICKER"]
+        option_name = row["OPTION_NAME"]
+        option_ticker = row["OPTION_TICKER"]
+        # Convert Jalali expiration date to Gregorian (YYYY-MM-DD)
+        expiration_date_jalali = row["EXPIRATION_DATE"]
+        expiration_date = convert_jalali_to_gregorian(expiration_date_jalali)
+        strike_price = row["STRIKE_PRICE"]
+        call_put_arg = row["CALL_PUT"]  # Use "c" or "p" as-is
+        # Include flag if CAN_TRADE_IN_SAME_DIRECTION is True
+        flag = " --can_trade_in_same_direction" if row["CAN_TRADE_IN_SAME_DIRECTION"] else ""
+
+        # In Windows CMD, use doubled double quotes for argument values inside the main quoted string.
+        cmd = (f'start cmd /k "python main.py --mode run '
+               f'--underlying_name ""{underlying_name}"" '
+               f'--underlying_ticker ""{underlying_ticker}"" '
+               f'--option_name ""{option_name}"" '
+               f'--option_ticker ""{option_ticker}"" '
+               f'--expiration_date ""{expiration_date}"" '
+               f'--strike_price {strike_price} '
+               f'--call_put {call_put_arg}{flag}"')
+        command_lines.append(cmd)
+
+    bat_file = "run_all.bat"  # Save batch file in root directory
+    with open(bat_file, "w", encoding="utf-8") as f:
+        for line in command_lines:
+            f.write(line + "\n")
+    print(f"Batch file saved to {bat_file}")
+
+    # -----------------------------
+    # Print DataFrames (Optional)
     # -----------------------------
     print("All Option Data:")
     print(df_all)

@@ -39,7 +39,7 @@ def main():
     parser.add_argument('--expiration_date', type=str, required=True,
                         help="Expiration date of the option (YYYY-MM-DD).")
     parser.add_argument('--strike_price', type=float, required=True, help="Strike price of the option.")
-    parser.add_argument('--call_put', type=str, choices=['CALL', 'PUT'], required=True,
+    parser.add_argument('--call_put', type=str, choices=['c', 'p'], required=True,
                         help="Option type (CALL or PUT).")
 
     # Optional flag
@@ -53,7 +53,7 @@ def main():
 
     # Set values using parsed arguments
     config.set_values(
-        underlying_name=args.undelying_name,
+        underlying_name=args.underlying_name,
         underlying_ticker=args.underlying_ticker,
         option_name=args.option_name,
         option_ticker=args.option_ticker,
