@@ -11,6 +11,8 @@ from py_vollib.black_scholes.implied_volatility import implied_volatility
 from config import get_config
 from py_vollib.black_scholes.greeks.analytical import delta
 
+import math
+
 
 def calculate_delta(avg_price_underlying, strike_price, time_to_expiration, risk_free_rate, estimated_vol, call_put):
     """
@@ -22,17 +24,29 @@ def calculate_delta(avg_price_underlying, strike_price, time_to_expiration, risk
         time_to_expiration (float): Time to expiration in years.
         risk_free_rate (float): Risk-free interest rate.
         estimated_vol (float): Estimated volatility.
-        call_put (str): Option type ('c' for call, 'p' for put').
+        call_put (str): Option type ('c' for call, 'p' for put).
 
     Returns:
-        float: Delta value.
+        float or None: Delta value or None if any input is None or not a valid number.
     """
+
+    # Check if any input is None
+    if (avg_price_underlying is None or strike_price is None or
+            time_to_expiration is None or risk_free_rate is None or
+            estimated_vol is None or call_put is None):
+        return None
+
+    # Check if any numeric input is NaN
+    numeric_inputs = [avg_price_underlying, strike_price, time_to_expiration, risk_free_rate, estimated_vol]
+    if any(isinstance(x, float) and math.isnan(x) for x in numeric_inputs):
+        return None
+
+    # Prevent potential division by zero errors in the Black-Scholes model
     if time_to_expiration <= 0 or estimated_vol <= 0:
-        return 0  # Prevent division by zero errors
+        return 0
 
-    delta_value = delta(call_put, avg_price_underlying, strike_price, time_to_expiration, risk_free_rate,
-                        estimated_vol)
-
+    # Assume delta is a predefined function for calculating the option's delta using Black-Scholes
+    delta_value = delta(call_put, avg_price_underlying, strike_price, time_to_expiration, risk_free_rate, estimated_vol)
     return delta_value
 
 
@@ -276,6 +290,9 @@ def update_signal(signal, delta, config):
         str: The updated trading signal.
     """
     # If the signal is already 'hold', no update is needed
+    if delta is None:
+        return None
+
     if signal == "hold":
         return signal
 
