@@ -41,7 +41,7 @@ def fetch_closing_volume(ins_code):
         data = response.json()
         closing_list = data.get("closingPriceDaily", [])
         if closing_list:
-            first_entry = closing_list[0]  #TODO : MEHDI TODO
+            first_entry = closing_list[0]
             return first_entry.get("qTotTran5J")
         return None
     except Exception as e:
@@ -227,7 +227,8 @@ if __name__ == "__main__":
         option_ticker = row["OPTION_TICKER"]
         # Convert Jalali expiration date to Gregorian (YYYY-MM-DD)
         expiration_date_jalali = row["EXPIRATION_DATE"]
-        expiration_date = convert_jalali_to_gregorian(expiration_date_jalali)
+        expiration_date = expiration_date_jalali.replace("/", "-")
+
         strike_price = row["STRIKE_PRICE"]
         call_put_arg = row["CALL_PUT"]  # Use "c" or "p" as-is
         # Include flag if CAN_TRADE_IN_SAME_DIRECTION is True
