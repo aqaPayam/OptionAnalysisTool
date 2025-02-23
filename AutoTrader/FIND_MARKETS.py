@@ -219,6 +219,7 @@ if __name__ == "__main__":
     command_lines = []
     # Start the batch file with "@echo off"
     command_lines.append("@echo off")
+    command_lines.append("chcp 65001")
     for idx, row in df_today_running.iterrows():
         underlying_name = row["UNDERLYING_NAME"]
         underlying_ticker = row["UNDERLYING_TICKER"]

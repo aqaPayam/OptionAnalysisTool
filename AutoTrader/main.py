@@ -48,6 +48,16 @@ def main():
 
     args = parser.parse_args()  # Parse arguments
 
+    print(f"Mode: {args.mode}")
+    print(f"Underlying Name: {args.underlying_name}")
+    print(f"Underlying Ticker: {args.underlying_ticker}")
+    print(f"Option Name: {args.option_name}")
+    print(f"Option Ticker: {args.option_ticker}")
+    print(f"Expiration Date: {args.expiration_date}")
+    print(f"Strike Price: {args.strike_price}")
+    print(f"Call or Put: {args.call_put}")
+    print(f"Can Trade in Same Direction: {args.can_trade_in_same_direction}")
+
     # Get config instance
     config = get_config()
 
