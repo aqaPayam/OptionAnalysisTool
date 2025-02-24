@@ -40,6 +40,6 @@ def result_handling_thread(result_queue, data, stop_event):
     finally:
         jalali_date = jdatetime.datetime.now().strftime("%Y-%m-%d")
         excel_filename = os.path.join(folder_name,
-                                      f"market_name_{config.UNDERLYING_NAME}_output_data_{jalali_date}.xlsx")
+                                      f"market_name_{config.OPTION_NAME}_output_data_{jalali_date}.xlsx")
         data.to_excel(excel_filename, index=False)
         print("INFO: Data saved to Excel. result_handling_thread is shutting down gracefully.")
