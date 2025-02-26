@@ -90,7 +90,7 @@ def main():
         "Date", "Time", "avg_price_underlying", "avg_price_option",
         "black_scholes_price", "implied_vol", "estimated_vol",
         "price_difference", "rolling_mean_diff", "rolling_std_diff", "z_score",
-        "signal", "delta", "under_negative_one_count", "over_positive_one_count"
+        "signal", "delta", "net_worth", "can_trade_same_dir", "under_negative_one_count", "over_positive_one_count"
     ]
     data = pd.DataFrame(columns=columns)  # kole data inja bayad bashe ta akhare code amalan
 

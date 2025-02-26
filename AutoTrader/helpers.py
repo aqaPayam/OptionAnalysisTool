@@ -308,4 +308,4 @@ def update_signal(signal, delta, config):
                 print("INFO: Signal changed to 'hold' due to delta threshold constraint.")
                 return "hold"
 
-    return signal
+    return signal, config.CAN_TRADE_IN_SAME_DIRECTION, config.NET_WORTH

@@ -138,7 +138,7 @@ def merge_historical_and_live_data(
         signal, under_count, over_count, rolling_mean_diff, rolling_std_diff, z_score = process_price_difference(
             price_difference, price_diff_window, config.WINDOW_SIZE, config.Z_THRESHOLD, counters
         )
-        signal = update_signal(signal, delta, config)
+        signal, can_trade_same_dir, net_worth = update_signal(signal, delta, config)
 
         # Update counts
         under_negative_one_count += under_count
@@ -154,6 +154,8 @@ def merge_historical_and_live_data(
         row["z_score"] = z_score
         row["signal"] = signal
         row["delta"] = delta  # Added Delta to results
+        row["net_worth"] = net_worth
+        row["can_trade_same_dir"] = can_trade_same_dir
         row["under_negative_one_count"] = under_negative_one_count
         row["over_positive_one_count"] = over_positive_one_count
 
@@ -209,7 +211,7 @@ def merge_historical_and_live_data(
         signal, under_count, over_count, rolling_mean_diff, rolling_std_diff, z_score = process_price_difference(
             price_difference, price_diff_window, config.WINDOW_SIZE, config.Z_THRESHOLD, counters
         )
-        signal = update_signal(signal, delta, config)
+        signal, can_trade_same_dir, net_worth = update_signal(signal, delta, config)
 
         # Update counts
         under_negative_one_count += under_count
@@ -230,6 +232,8 @@ def merge_historical_and_live_data(
             "z_score": z_score,
             "signal": signal,
             "delta": delta,  # Added Delta to results
+            "net_worth": net_worth,
+            "can_trade_same_dir": can_trade_same_dir,
             "under_negative_one_count": under_negative_one_count,
             "over_positive_one_count": over_positive_one_count,
 
