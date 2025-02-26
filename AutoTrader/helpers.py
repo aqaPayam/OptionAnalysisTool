@@ -303,8 +303,9 @@ def update_signal(signal, delta, config):
             return "hold"
 
     else:
-        if np.abs(delta) < config.DELTA_MIN:
-            print("INFO: Signal changed to 'hold' due to delta threshold constraint.")
-            return "hold"
+        if (signal == "buy" and config.NET_WORTH >= 0) or (signal == "sell" and config.NET_WORTH <= 0):
+            if np.abs(delta) < config.DELTA_MIN:
+                print("INFO: Signal changed to 'hold' due to delta threshold constraint.")
+                return "hold"
 
     return signal
