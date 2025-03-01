@@ -15,8 +15,8 @@ class BaseConfig:
                       'Chrome/131.0.0.0 Safari/537.36',
         # Empty User-Agent
         'Accept': 'application/json, text/plain, */*',
-        'Cookie': 'cookiesession1=678B2928EAE15F00DBDF9A511BE7AE3E; otauth-178-OMSdada6f18-1a6e-45ea-8717-b4d12a93404d=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJTZXNzaW9uSWQiOiJkYWRhNmYxOC0xYTZlLTQ1ZWEtODcxNy1iNGQxMmE5MzQwNGQiLCJVc2VySWQiOiIxMDA3OTUiLCJBcHBOYW1lIjoiT01TIiwiQnJva2VyQ29kZSI6IjE3OCIsIm5iZiI6MTc0MDgwOTQ5OCwiZXhwIjoxNzQwODM4Mjk4LCJpc3MiOiJPTVMiLCJhdWQiOiJPTVMifQ.D_Ml3ahgZSHdiMUXK4Ji5Ew_SWIECg0Vwb-QfdAm6lnePVxcXrsib1HLz9uyd4B35Kb9ro2sAdDR-rvUf8sfTQ',
-        'x-sessionId': 'OMSdada6f18-1a6e-45ea-8717-b4d12a93404d',
+        'Cookie': '.',
+        'x-sessionId': '',
         'Content-Type': 'application/json',
     }
 
@@ -66,5 +66,11 @@ class the_config(BaseConfig):
         cls.CAN_TRADE_IN_SAME_DIRECTION = can_trade_in_same_direction
 
 
+_config_instance = None
+
+
 def get_config():
-    return the_config()
+    global _config_instance
+    if _config_instance is None:
+        _config_instance = the_config()
+    return _config_instance
