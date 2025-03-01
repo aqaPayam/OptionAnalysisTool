@@ -291,21 +291,21 @@ def update_signal(signal, delta, config):
     """
     # If the signal is already 'hold', no update is needed
     if delta is None:
-        return None
+        return "hold", config.CAN_TRADE_IN_SAME_DIRECTION, config.NET_WORTH
 
     if signal == "hold":
-        return signal
+        return signal, config.CAN_TRADE_IN_SAME_DIRECTION, config.NET_WORTH
 
     # If trading in the same direction is not allowed, check net worth constraints
     if not config.CAN_TRADE_IN_SAME_DIRECTION:
         if (signal == "buy" and config.NET_WORTH >= 0) or (signal == "sell" and config.NET_WORTH <= 0):
             print("INFO: Signal changed to 'hold' due to CAN_TRADE_IN_SAME_DIRECTION constraint.")
-            return "hold"
+            return "hold", config.CAN_TRADE_IN_SAME_DIRECTION, config.NET_WORTH
 
     else:
         if (signal == "buy" and config.NET_WORTH >= 0) or (signal == "sell" and config.NET_WORTH <= 0):
             if np.abs(delta) < config.DELTA_MIN:
                 print("INFO: Signal changed to 'hold' due to delta threshold constraint.")
-                return "hold"
+                return "hold", config.CAN_TRADE_IN_SAME_DIRECTION, config.NET_WORTH
 
     return signal, config.CAN_TRADE_IN_SAME_DIRECTION, config.NET_WORTH
