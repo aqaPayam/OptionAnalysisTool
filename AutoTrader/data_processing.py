@@ -15,7 +15,6 @@ def processing_thread(data_queue, result_queue, signal_queue, counters, processi
     """
     Thread function for data processing and signal generation.
     """
-    global implied_vol
     config = get_config()
 
     print("INFO: Processing thread waiting for historical data to be ready...")

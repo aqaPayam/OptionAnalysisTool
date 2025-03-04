@@ -106,7 +106,8 @@ def calculate_black_scholes_price(avg_price_underlying, strike_price, risk_free_
         if T > 0 and estimated_vol > 0:
             return black_scholes(call_put, avg_price_underlying, strike_price, T, risk_free_rate, estimated_vol)
     except Exception as e:
-        print(f"ERROR: Error calculating Black-Scholes price: {e}")
+        a = 2
+    #    print(f"ERROR: Error calculating Black-Scholes price: {e}")
     return np.nan
 
 
@@ -163,7 +164,7 @@ def calculate_implied_volatility(avg_price_option, avg_price_underlying, time_to
         )
         return iv
     except Exception as e:
-        print(f"ERROR: Error calculating implied volatility: {e}")
+        # print(f"ERROR: Error calculating implied volatility: {e}")
         counters.try_except_counter += 1
         return np.nan
 

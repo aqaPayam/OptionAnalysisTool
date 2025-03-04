@@ -295,7 +295,7 @@ class TradingAPI:
 
         if response:
             try:
-                print("INFO: Retrieved portfolio positions successfully.")
+                #print("INFO: Retrieved portfolio positions successfully.")
                 for position in response:
                     if position.get('isin') == self.option_ticker:
                         net_worth_balance = int(position.get('netWorthBalance', 0))
@@ -312,12 +312,12 @@ class TradingAPI:
                             volume = buy_volume - sell_volume
 
                         if option_margin_block_amount == 0 and net_worth_balance > 0:
-                            print(f"INFO: netWorthBalance for {self.option_ticker} is {net_worth_balance}")
+                            #print(f"INFO: netWorthBalance for {self.option_ticker} is {net_worth_balance}")
                             return net_worth_balance, volume
 
                         elif option_margin_block_amount != 0 and net_worth_balance < 0:
                             adjusted_net_worth = -option_margin_block_amount
-                            print(f"INFO: Adjusted net worth for {self.option_ticker} is {adjusted_net_worth}")
+                            #print(f"INFO: Adjusted net worth for {self.option_ticker} is {adjusted_net_worth}")
                             return adjusted_net_worth, volume
 
                         else:

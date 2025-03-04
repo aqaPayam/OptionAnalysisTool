@@ -35,9 +35,9 @@ def monitor_net_worth(stop_event: Event) -> None:
                 # Update the NET_WORTH in the configuration
                 config.NET_WORTH = net_worth
                 config.VOLUME = vol
-                print(f"[Net Worth Monitor] NET_WORTH updated to: {net_worth}")
-            else:
-                print("[Net Worth Monitor] Warning: NET_WORTH is None.")
+                # print(f"[Net Worth Monitor] NET_WORTH updated to: {net_worth}")
+            # else:
+            # print("[Net Worth Monitor] Warning: NET_WORTH is None.")
 
         except Exception as e:
             print(f"[Net Worth Monitor] ERROR: Failed to fetch net worth balance: {e}")

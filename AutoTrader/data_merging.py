@@ -95,22 +95,19 @@ def merge_historical_and_live_data(
         current_time = row["Time"]
         avg_price_underlying = row["avg_price_underlying"]
         avg_price_option = row["avg_price_option"]
+        #print(avg_price_underlying, avg_price_option)
 
         # Validate data
         is_valid = validate_time_and_data_preprocess(
             current_time, avg_price_underlying, avg_price_option, counters
         )
         if not is_valid:
-            # Skip invalid historical rows
             continue
 
-        # Calculate time to expiration
         time_to_expiration = calculate_time_to_expiration(current_date_jalali, config.EXPIRATION_DATE)
         if time_to_expiration <= 0:
-            # Skip rows that are past expiration
             continue
 
-        # Implied volatility
         implied_vol = calculate_implied_volatility(
             avg_price_option, avg_price_underlying, time_to_expiration, config.STRIKE_PRICE,
             config.RISK_FREE_RATE, config.CALL_PUT, counters
@@ -161,7 +158,9 @@ def merge_historical_and_live_data(
 
         processed_rows.append(row)
 
+    print("historical data completely computed")
     historical_data = pd.DataFrame(processed_rows, columns=columns)
+    # historical_data.to_excel("output.xlsx", index=False)
 
     # Now process live data until the data_queue is empty
     live_processed_rows = []
@@ -173,7 +172,7 @@ def merge_historical_and_live_data(
             current_time, underlying_data, option_data, counters
         )
         if not is_valid:
-            print("INFO: Skipping due to invalid data or time: data has 0 or invalid conditions.")
+            # print("INFO: Skipping due to invalid data or time: data has 0 or invalid conditions.")
             continue
 
         # Calculate time to expiration
@@ -243,8 +242,8 @@ def merge_historical_and_live_data(
 
     live_data = pd.DataFrame(live_processed_rows, columns=columns)
 
-    # Combine processed historical and live data
-    # If historical_data is empty, it will just return live_data
+    print("live data calculation finished")
+
     combined_data = pd.concat([historical_data, live_data], ignore_index=True)
 
     # Signal that processing is now fully ready since we have a combined dataset
