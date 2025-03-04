@@ -15,8 +15,8 @@ class BaseConfig:
                       'Chrome/131.0.0.0 Safari/537.36',
         # Empty User-Agent
         'Accept': 'application/json, text/plain, */*',
-        'Cookie': 'cookiesession1=678B2928B1B3FC87D21EEC7CB0BB44AB; otauth-178-OMS0df3af68-adc5-4c86-bb3b-542b3e3ccc30=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJTZXNzaW9uSWQiOiIwZGYzYWY2OC1hZGM1LTRjODYtYmIzYi01NDJiM2UzY2NjMzAiLCJVc2VySWQiOiIxMDA3OTUiLCJBcHBOYW1lIjoiT01TIiwiQnJva2VyQ29kZSI6IjE3OCIsIm5iZiI6MTc0MTAzOTE3MSwiZXhwIjoxNzQxMDY3OTcxLCJpc3MiOiJPTVMiLCJhdWQiOiJPTVMifQ.HTZvh2imVSXbNqxTGQc_S4JNt0I1poYlQb8Gq77g6N4XNCJ4jWmBhuvb6-ElXdgPilr6dOVaeizo_e64pY1CHg',
-        'x-sessionId': 'OMS0df3af68-adc5-4c86-bb3b-542b3e3ccc30',
+        'Cookie': '',
+        'x-sessionId': '',
         'Content-Type': 'application/json',
     }
 
@@ -38,7 +38,7 @@ class BaseConfig:
     DELTA_MIN = 0.3
     VOLUME = 0
 
-    HISTORICAL_DATA_START_DATE = (jdatetime.date.today() - jdatetime.timedelta(days=4)).strftime('%Y-%m-%d')
+    HISTORICAL_DATA_START_DATE = (jdatetime.date.today() - jdatetime.timedelta(days=7)).strftime('%Y-%m-%d')
     HISTORICAL_DATA_END_DATE = jdatetime.date.today().strftime('%Y-%m-%d')
 
 
