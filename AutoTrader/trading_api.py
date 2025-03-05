@@ -324,7 +324,7 @@ class TradingAPI:
                             print("ERROR: Conditions not met for calculating net worth.")
                             return 0, volume
 
-                print(f"WARNING: No position found for ISIN {self.option_ticker}.")
+                #print(f"WARNING: No position found for ISIN {self.option_ticker}.")
             except (KeyError, TypeError) as e:
                 print(f"ERROR: Error processing portfolio positions: {e}")
         else:

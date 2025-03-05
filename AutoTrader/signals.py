@@ -102,7 +102,7 @@ def buy():
         print("WARNING: Could not fetch market data for buy price calculation.")
         return
 
-    if config.NET_WORTH < 0 and - config.NET_WORTH // 1000 <= config.ORDER_PRICE * 100:
+    if config.NET_WORTH < 0 and - config.NET_WORTH // 10 <= config.ORDER_PRICE * 100:
         order_quantity = -config.VOLUME
     else:
         order_quantity = max(1, config.ORDER_PRICE // buy_price)
@@ -132,7 +132,7 @@ def sell():
         print("WARNING: Could not fetch market data for sell price calculation.")
         return
 
-    if config.NET_WORTH > 0 and config.NET_WORTH // 1000 <= config.ORDER_PRICE * 100:
+    if config.NET_WORTH > 0 and config.NET_WORTH // 10 <= config.ORDER_PRICE * 100:
         order_quantity = config.VOLUME
     else:
         order_quantity = max(1, config.ORDER_PRICE // sell_price)

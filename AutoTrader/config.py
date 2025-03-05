@@ -24,7 +24,7 @@ class BaseConfig:
     USE_HISTORICAL = True
     VALID_TIME_START = pd.to_datetime("09:15:00").time()
     VALID_TIME_END = pd.to_datetime("12:30:00").time()
-    MAX_RETRIES = 3
+    MAX_RETRIES = 1
     SLEEP_INTERVAL = 1  # seconds
     MAX_SIZE = 10
     SMOOTHING_PARAM = 3600
