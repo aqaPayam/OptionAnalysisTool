@@ -103,7 +103,7 @@ def buy():
         return
 
     if config.NET_WORTH < 0 and - config.NET_WORTH // 10 <= config.ORDER_PRICE * 100:
-        order_quantity = -config.VOLUME
+        order_quantity = max(1, -int(config.VOLUME))
     else:
         order_quantity = max(1, config.ORDER_PRICE // buy_price)
 
@@ -133,7 +133,7 @@ def sell():
         return
 
     if config.NET_WORTH > 0 and config.NET_WORTH // 10 <= config.ORDER_PRICE * 100:
-        order_quantity = config.VOLUME
+        order_quantity = max(1, int(config.VOLUME))
     else:
         order_quantity = max(1, config.ORDER_PRICE // sell_price)
 
