@@ -4,20 +4,12 @@ import pandas as pd
 import requests
 import jdatetime
 from trading_api import TradingAPI
-from config import get_config
 
-# Constants
-UNDERLYING_NAME = "خودرو"
-UNDERLYING_TICKER = "IRO1IKCO0001"
-option_id = "IRO9IKCO8N71"  # Example option ID
 MIN_REMAINING_DAYS = 14  # Minimum required days before expiration
 MIN_VOLUME_LIMIT = 40000  # Minimum volume required
 
 
 def fetch_ins_code(option_ticker):
-    """
-    Fetches the insCode for a given option ticker from the TSETMC API.
-    """
     url = f"http://cdn.tsetmc.com/api/Instrument/GetInstrumentOptionByInstrumentID/{option_ticker}"
     try:
         response = requests.get(url)
@@ -30,10 +22,6 @@ def fetch_ins_code(option_ticker):
 
 
 def fetch_closing_volume(ins_code):
-    """
-    Fetches the closing volume (qTotTran5J) for the given insCode from TSETMC.
-    Uses the first entry from the closingPriceDaily list.
-    """
     url = f"https://cdn.tsetmc.com/api/ClosingPrice/GetClosingPriceDailyList/{ins_code}/0"
     try:
         response = requests.get(url)
@@ -50,15 +38,9 @@ def fetch_closing_volume(ins_code):
 
 
 def process_option_data(response_data):
-    """
-    Processes the API response to extract structured option data,
-    fetches the insCode and closing volume for each option,
-    and returns a DataFrame.
-    """
     # Remove the first object from the response
     response_data = response_data[1:]
     processed_data = []
-
     for item in response_data:
         # Expecting title format: "<option type>-<strike price>-<expiration date>"
         title_parts = item["title"].split("-")
@@ -67,13 +49,11 @@ def process_option_data(response_data):
             option_name = item["symbol"]
             strike_price = int(title_parts[1])
             expiration_date = title_parts[2]
-            # Determine CALL_PUT: 'p' for اختیارف (call), 'c' for اختیارخ (put)
+            # Determine CALL_PUT based on the first part of the title
             call_put = "p" if "اختیارف" in title_parts[0] else "c" if "اختیارخ" in title_parts[0] else None
-
-            # Fetch insCode and closing volume for this option
+            # Fetch insCode and volume
             ins_code = fetch_ins_code(option_ticker)
             volume = fetch_closing_volume(ins_code) if ins_code else None
-
             processed_data.append({
                 "OPTION_TICKER": option_ticker,
                 "OPTION_NAME": option_name,
@@ -87,10 +67,6 @@ def process_option_data(response_data):
 
 
 def get_remaining_days(expiration_str):
-    """
-    Converts a Jalali expiration date (YYYY/MM/DD) to a Gregorian date,
-    and returns the number of days remaining from today.
-    """
     try:
         j_date = jdatetime.datetime.strptime(expiration_str, "%Y/%m/%d")
         g_date = j_date.togregorian()
@@ -103,9 +79,6 @@ def get_remaining_days(expiration_str):
 
 
 def convert_jalali_to_gregorian(jalali_date_str):
-    """
-    Converts a Jalali date (YYYY/MM/DD) into Gregorian format (YYYY-MM-DD).
-    """
     try:
         j_date = jdatetime.datetime.strptime(jalali_date_str, "%Y/%m/%d")
         g_date = j_date.togregorian()
@@ -115,69 +88,109 @@ def convert_jalali_to_gregorian(jalali_date_str):
         return jalali_date_str
 
 
+# Helper function to determine underlying info from OPTION_NAME prefix
+def get_underlying_info(option_name):
+    underlying_mapping = {
+        "خودرو": {"prefixes": ["ضخود", "طخود"], "ticker": "IRO1IKCO0001"},  # update ticker accordingly
+        "اهرم": {"prefixes": ["ضهرم", "طهرم"], "ticker": "IRT1AHRM0001"},  # update ticker accordingly
+        "خساپا": {"prefixes": ["ضسپا", "طسپا"], "ticker": "IRO1SIPA0001"},  # update ticker accordingly
+        "شستا": {"prefixes": ["ضستا", "طستا"], "ticker": "IRO1TAMN0001"}  # update ticker accordingly
+    }
+    for underlying, info in underlying_mapping.items():
+        for prefix in info["prefixes"]:
+            if option_name.startswith(prefix):
+                return underlying, info["ticker"]
+    return None, None
+
+
 if __name__ == "__main__":
     trading_api = TradingAPI()
 
-    # -----------------------------
-    # DataFrame 1 & 2: Option Details from MDAPI
-    # -----------------------------
-    option_details = trading_api.get_option_details_from_mdpapi(option_id)
-    if option_details:
-        df_all = process_option_data(option_details)
-        # Compute remaining days for each option
-        df_all["REMAINING_DAYS"] = df_all["EXPIRATION_DATE"].apply(get_remaining_days)
+    # Dictionary mapping underlying markets to their respective MDAPI option IDs.
+    # Update these IDs with the correct ones.
+    market_option_ids = {
+        "خودرو": "IRO9IKCO8Q21",  # "title": "اختیارخ خودرو-5500-1404/03/07","symbol": "ضخود3099",
+        "اهرم": "IRO9AHRM4111",  # "title": "اختیارخ اهرم-42000-1404/03/28","symbol": "ضهرم3021",
+        "خساپا": "IRO9SIPA2401",  # "title": "اختیارخ خساپا-2200-1404/03/28","symbol": "ضسپا3038",
+        "شستا": "IROFTAMN1921"  # "title": "اختیارف شستا-1700-1404/03/13","symbol": "طستا3032",
+    }
+
+    # Ask the user for each underlying market if they want to fetch its MDAPI data
+    mdapi_dfs = []
+    for market, option_id in market_option_ids.items():
+        user_input = input(f"Do you want to fetch MDAPI data for {market}? (y/n): ")
+        if user_input.strip().lower() in ['y', 'yes']:
+            print(f"Fetching MDAPI data for {market} using option_id {option_id}...")
+            option_details = trading_api.get_option_details_from_mdpapi(option_id)
+            if option_details:
+                df_mdapi = process_option_data(option_details)
+                # Add underlying info for clarity (here we use the market name, and you can derive ticker from the prefix)
+                df_mdapi["UNDERLYING_NAME"] = market
+                # If available, use the first row's option name to derive the ticker; otherwise leave as None.
+                underlying_ticker = df_mdapi["OPTION_NAME"].iloc[0] if not df_mdapi.empty else ""
+                df_mdapi["UNDERLYING_TICKER"] = get_underlying_info(underlying_ticker)[1]
+                df_mdapi["REMAINING_DAYS"] = df_mdapi["EXPIRATION_DATE"].apply(get_remaining_days)
+                mdapi_dfs.append(df_mdapi)
+            else:
+                print(f"No MDAPI data available for {market}.")
+        else:
+            print(f"Skipping MDAPI data for {market}.")
+
+    # Combine all MDAPI data if any was fetched; otherwise, create an empty DataFrame.
+    if mdapi_dfs:
+        df_all = pd.concat(mdapi_dfs, ignore_index=True)
     else:
         df_all = pd.DataFrame()
 
-    # Filter based on VOLUME and REMAINING_DAYS criteria
+    # Filter MDAPI data based on volume and remaining days criteria
     df_filtered = df_all[
         (df_all["VOLUME"] > MIN_VOLUME_LIMIT) &
         (df_all["REMAINING_DAYS"] > MIN_REMAINING_DAYS)
         ] if not df_all.empty else pd.DataFrame()
 
-    # -----------------------------
-    # DataFrame 3: Portfolio Options (from TradingAPI)
-    # -----------------------------
-    df_portfolio = trading_api.get_portfolio_options_df()  # Function from your TradingAPI class
+    # Retrieve Portfolio Options Data (common for all underlying markets)
+    df_portfolio = trading_api.get_portfolio_options_df()
 
-    # -----------------------------
-    # DataFrame 4: Today Running (Final Data)
-    # -----------------------------
-    # For rows from filtered data, set CAN_TRADE_IN_SAME_DIRECTION = True
+    # Process "Today Running" Data:
+    # For MDAPI data that meets criteria, set CAN_TRADE_IN_SAME_DIRECTION = True.
     if not df_filtered.empty:
         df_today_running_filtered = df_filtered[
-            ["OPTION_NAME", "OPTION_TICKER", "EXPIRATION_DATE", "STRIKE_PRICE", "CALL_PUT"]].copy()
+            ["OPTION_NAME", "OPTION_TICKER", "EXPIRATION_DATE", "STRIKE_PRICE", "CALL_PUT", "UNDERLYING_NAME",
+             "UNDERLYING_TICKER"]
+        ].copy()
         df_today_running_filtered["CAN_TRADE_IN_SAME_DIRECTION"] = True
     else:
         df_today_running_filtered = pd.DataFrame(
-            columns=["OPTION_NAME", "OPTION_TICKER", "EXPIRATION_DATE", "STRIKE_PRICE", "CALL_PUT",
-                     "CAN_TRADE_IN_SAME_DIRECTION"])
+            columns=["OPTION_NAME", "OPTION_TICKER", "EXPIRATION_DATE", "STRIKE_PRICE", "CALL_PUT", "UNDERLYING_NAME",
+                     "UNDERLYING_TICKER", "CAN_TRADE_IN_SAME_DIRECTION"])
 
-    # For portfolio data, select rows not already in filtered data and set CAN_TRADE_IN_SAME_DIRECTION = False
+    # For portfolio data, select rows not already in the filtered MDAPI data and set CAN_TRADE_IN_SAME_DIRECTION = False.
     if df_portfolio is not None and not df_portfolio.empty:
         filtered_tickers = set(df_filtered["OPTION_TICKER"]) if not df_filtered.empty else set()
         df_today_running_portfolio = df_portfolio[~df_portfolio["OPTION_TICKER"].isin(filtered_tickers)].copy()
         df_today_running_portfolio = df_today_running_portfolio[
-            ["OPTION_NAME", "OPTION_TICKER", "EXPIRATION_DATE", "STRIKE_PRICE", "CALL_PUT"]]
+            ["OPTION_NAME", "OPTION_TICKER", "EXPIRATION_DATE", "STRIKE_PRICE", "CALL_PUT"]
+        ]
+        # Derive underlying info for portfolio options based on the OPTION_NAME prefix
+        underlying_info = df_today_running_portfolio["OPTION_NAME"].apply(get_underlying_info)
+        df_today_running_portfolio["UNDERLYING_NAME"] = underlying_info.apply(lambda x: x[0])
+        df_today_running_portfolio["UNDERLYING_TICKER"] = underlying_info.apply(lambda x: x[1])
         df_today_running_portfolio["CAN_TRADE_IN_SAME_DIRECTION"] = False
     else:
         df_today_running_portfolio = pd.DataFrame(
-            columns=["OPTION_NAME", "OPTION_TICKER", "EXPIRATION_DATE", "STRIKE_PRICE", "CALL_PUT",
-                     "CAN_TRADE_IN_SAME_DIRECTION"])
+            columns=["OPTION_NAME", "OPTION_TICKER", "EXPIRATION_DATE", "STRIKE_PRICE", "CALL_PUT", "UNDERLYING_NAME",
+                     "UNDERLYING_TICKER", "CAN_TRADE_IN_SAME_DIRECTION"])
 
-    # Combine filtered and portfolio rows to create the final "today running" DataFrame
+    # Combine the filtered MDAPI data and portfolio data
     df_today_running = pd.concat([df_today_running_filtered, df_today_running_portfolio], ignore_index=True)
-    # Add underlying info as constant columns
-    df_today_running["UNDERLYING_NAME"] = UNDERLYING_NAME
-    df_today_running["UNDERLYING_TICKER"] = UNDERLYING_TICKER
+
     # Reorder columns
     df_today_running = df_today_running[
         ["UNDERLYING_NAME", "UNDERLYING_TICKER", "OPTION_NAME", "OPTION_TICKER", "EXPIRATION_DATE", "STRIKE_PRICE",
-         "CALL_PUT", "CAN_TRADE_IN_SAME_DIRECTION"]]
+         "CALL_PUT", "CAN_TRADE_IN_SAME_DIRECTION"]
+    ]
 
-    # -----------------------------
     # Save Excel Files to Folder "market database folder"
-    # -----------------------------
     output_folder = "market database folder"
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
@@ -192,7 +205,7 @@ if __name__ == "__main__":
         df_all.to_excel(df_all_file, index=False)
         print(f"All option data saved to {df_all_file}")
     else:
-        print("No option data available for df_all.")
+        print("No MDAPI option data available.")
 
     if not df_filtered.empty:
         df_filtered.to_excel(df_filtered_file, index=False)
@@ -212,12 +225,8 @@ if __name__ == "__main__":
     else:
         print("No today running data available.")
 
-    # -----------------------------
-    # Create Command Lines and Generate run_all.bat in Root Directory
-    # -----------------------------
-    # Build the command lines using the today running DataFrame.
+    # Create Command Lines and Generate run_all.bat in the Root Directory
     command_lines = []
-    # Start the batch file with "@echo off"
     command_lines.append("@echo off")
     command_lines.append("chcp 65001")
     for idx, row in df_today_running.iterrows():
@@ -225,16 +234,11 @@ if __name__ == "__main__":
         underlying_ticker = row["UNDERLYING_TICKER"]
         option_name = row["OPTION_NAME"]
         option_ticker = row["OPTION_TICKER"]
-        # Convert Jalali expiration date to Gregorian (YYYY-MM-DD)
         expiration_date_jalali = row["EXPIRATION_DATE"]
         expiration_date = expiration_date_jalali.replace("/", "-")
-
         strike_price = row["STRIKE_PRICE"]
-        call_put_arg = row["CALL_PUT"]  # Use "c" or "p" as-is
-        # Include flag if CAN_TRADE_IN_SAME_DIRECTION is True
+        call_put_arg = row["CALL_PUT"]
         flag = " --can_trade_in_same_direction" if row["CAN_TRADE_IN_SAME_DIRECTION"] else ""
-
-        # In Windows CMD, use doubled double quotes for argument values inside the main quoted string.
         cmd = (f'start cmd /k "python main.py --mode run '
                f'--underlying_name ""{underlying_name}"" '
                f'--underlying_ticker ""{underlying_ticker}"" '
@@ -245,16 +249,14 @@ if __name__ == "__main__":
                f'--call_put {call_put_arg}{flag}"')
         command_lines.append(cmd)
 
-    bat_file = "run_all.bat"  # Save batch file in root directory
+    bat_file = "run_all.bat"
     with open(bat_file, "w", encoding="utf-8") as f:
         for line in command_lines:
             f.write(line + "\n")
     print(f"Batch file saved to {bat_file}")
 
-    # -----------------------------
-    # Print DataFrames (Optional)
-    # -----------------------------
-    print("All Option Data:")
+    # Optionally print DataFrames for debugging
+    print("All MDAPI Option Data:")
     print(df_all)
     print("\nFiltered Option Data:")
     print(df_filtered)
