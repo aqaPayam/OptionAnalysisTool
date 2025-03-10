@@ -107,6 +107,8 @@ def buy():
     else:
         order_quantity = max(1, config.ORDER_PRICE // buy_price)
 
+    order_quantity = min(order_quantity, 1000)
+
     # Place or modify buy order
     api.buy(ticker=config.OPTION_TICKER, price=buy_price, quantity=order_quantity)
 
@@ -136,6 +138,8 @@ def sell():
         order_quantity = max(1, int(config.VOLUME))
     else:
         order_quantity = max(1, config.ORDER_PRICE // sell_price)
+
+    order_quantity = min(order_quantity, 1000)
 
     # Place or modify sell order
     api.sell(ticker=config.OPTION_TICKER, price=sell_price, quantity=order_quantity)

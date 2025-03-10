@@ -32,10 +32,10 @@ class BaseConfig:
     Z_THRESHOLD = 1.5
     BUY_PRICE_OFFSET = 0
     SELL_PRICE_OFFSET = 0
-    ORDER_PRICE = 1_000_000 // 100
-    MAX_BID = 100_000_000 * 10
+    ORDER_PRICE = 3_000_000 // 100
+    MAX_BID = 200_000_000 * 10
     NET_WORTH = 0
-    DELTA_MIN = 0.3
+    DELTA_MIN = 0.45
     VOLUME = 0
 
     HISTORICAL_DATA_START_DATE = (jdatetime.date.today() - jdatetime.timedelta(days=4)).strftime('%Y-%m-%d')
