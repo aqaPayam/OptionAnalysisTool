@@ -279,34 +279,34 @@ def validate_time_and_data_preprocess(current_time, counters, avg_price_underlyi
 
 
 def update_signal(signal, delta, config):
-    """
-    Updates the trading signal based on constraints and delta conditions.
+    config.CURRENT_DELTA = delta
+    trade_direction = config.TRADE_DIRECTION
+    avg_delta_border = config.AVG_DELTA_BORDER
+    call_put = config.CALL_PUT
+    can_trade = config.CAN_TRADE_IN_SAME_DIRECTION
+    net_worth = config.NET_WORTH
+    delta_min = config.DELTA_MIN
 
-    Parameters:
-        signal (str): The current trading signal ('buy', 'sell', or 'hold').
-        delta (float): The computed delta value.
-        config: The configuration object.
+    if trade_direction > avg_delta_border:
+        if (call_put == 'c' and signal == "buy") or (call_put == 'p' and signal == "sell"):
+            return "hold", can_trade, net_worth, trade_direction
 
-    Returns:
-        str: The updated trading signal.
-    """
-    # If the signal is already 'hold', no update is needed
+    if trade_direction < -avg_delta_border:
+        if (call_put == 'p' and signal == "buy") or (call_put == 'c' and signal == "sell"):
+            return "hold", can_trade, net_worth, trade_direction
+
     if delta is None:
-        return "hold", config.CAN_TRADE_IN_SAME_DIRECTION, config.NET_WORTH
+        return "hold", can_trade, net_worth, trade_direction
 
     if signal == "hold":
-        return signal, config.CAN_TRADE_IN_SAME_DIRECTION, config.NET_WORTH
+        return signal, can_trade, net_worth, trade_direction
 
-    # If trading in the same direction is not allowed, check net worth constraints
-    if not config.CAN_TRADE_IN_SAME_DIRECTION:
-        if (signal == "buy" and config.NET_WORTH >= 0) or (signal == "sell" and config.NET_WORTH <= 0):
-            # print("INFO: Signal changed to 'hold' due to CAN_TRADE_IN_SAME_DIRECTION constraint.")
-            return "hold", config.CAN_TRADE_IN_SAME_DIRECTION, config.NET_WORTH
-
+    if not can_trade:
+        if (signal == "buy" and net_worth >= 0) or (signal == "sell" and net_worth <= 0):
+            return "hold", can_trade, net_worth, trade_direction
     else:
-        if (signal == "buy" and config.NET_WORTH >= 0) or (signal == "sell" and config.NET_WORTH <= 0):
-            if np.abs(delta) < config.DELTA_MIN:
-                # print("INFO: Signal changed to 'hold' due to delta threshold constraint.")
-                return "hold", config.CAN_TRADE_IN_SAME_DIRECTION, config.NET_WORTH
+        if (signal == "buy" and net_worth >= 0) or (signal == "sell" and net_worth <= 0):
+            if np.abs(delta) < delta_min:
+                return "hold", can_trade, net_worth, trade_direction
 
-    return signal, config.CAN_TRADE_IN_SAME_DIRECTION, config.NET_WORTH
+    return signal, can_trade, net_worth, trade_direction

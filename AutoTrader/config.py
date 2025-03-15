@@ -41,6 +41,10 @@ class BaseConfig:
     HISTORICAL_DATA_START_DATE = (jdatetime.date.today() - jdatetime.timedelta(days=4)).strftime('%Y-%m-%d')
     HISTORICAL_DATA_END_DATE = jdatetime.date.today().strftime('%Y-%m-%d')
 
+    TRADE_DIRECTION = 0  # float number , 0 for error values
+    CURRENT_DELTA = None
+    AVG_DELTA_BORDER = 0.1
+
 
 class the_config(BaseConfig):
     UNDERLYING_NAME = ""

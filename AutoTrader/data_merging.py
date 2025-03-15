@@ -95,7 +95,6 @@ def merge_historical_and_live_data(
         current_time = row["Time"]
         avg_price_underlying = row["avg_price_underlying"]
         avg_price_option = row["avg_price_option"]
-        #print(avg_price_underlying, avg_price_option)
 
         # Validate data
         is_valid = validate_time_and_data_preprocess(
@@ -135,7 +134,7 @@ def merge_historical_and_live_data(
         signal, under_count, over_count, rolling_mean_diff, rolling_std_diff, z_score = process_price_difference(
             price_difference, price_diff_window, config.WINDOW_SIZE, config.Z_THRESHOLD, counters
         )
-        signal, can_trade_same_dir, net_worth = update_signal(signal, delta, config)
+        signal, can_trade_same_dir, net_worth, risk = update_signal(signal, delta, config)
 
         # Update counts
         under_negative_one_count += under_count
@@ -153,6 +152,7 @@ def merge_historical_and_live_data(
         row["delta"] = delta  # Added Delta to results
         row["net_worth"] = net_worth
         row["can_trade_same_dir"] = can_trade_same_dir
+        row["risk"] = risk
         row["under_negative_one_count"] = under_negative_one_count
         row["over_positive_one_count"] = over_positive_one_count
 
@@ -210,7 +210,7 @@ def merge_historical_and_live_data(
         signal, under_count, over_count, rolling_mean_diff, rolling_std_diff, z_score = process_price_difference(
             price_difference, price_diff_window, config.WINDOW_SIZE, config.Z_THRESHOLD, counters
         )
-        signal, can_trade_same_dir, net_worth = update_signal(signal, delta, config)
+        signal, can_trade_same_dir, net_worth, risk = update_signal(signal, delta, config)
 
         # Update counts
         under_negative_one_count += under_count
@@ -233,6 +233,7 @@ def merge_historical_and_live_data(
             "delta": delta,  # Added Delta to results
             "net_worth": net_worth,
             "can_trade_same_dir": can_trade_same_dir,
+            "risk": risk,
             "under_negative_one_count": under_negative_one_count,
             "over_positive_one_count": over_positive_one_count,
 

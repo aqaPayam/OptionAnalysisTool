@@ -1,6 +1,5 @@
 # main.py
 
-import argparse
 import time
 import jdatetime
 from threading import Thread, Event
@@ -19,12 +18,13 @@ from data_merging import merge_historical_and_live_data
 from historical_data import historical_data_thread
 
 from net_worth_monitor import monitor_net_worth
+from risk_management import risk_managing_thread  # Ensure risk_managing_thread is imported
+from config_syncing import config_sync_thread
+import argparse
 
 import warnings
 
 warnings.filterwarnings("ignore", category=FutureWarning)
-
-import argparse
 
 
 def main():
@@ -90,7 +90,8 @@ def main():
         "Date", "Time", "avg_price_underlying", "avg_price_option",
         "black_scholes_price", "implied_vol", "estimated_vol",
         "price_difference", "rolling_mean_diff", "rolling_std_diff", "z_score",
-        "signal", "delta", "net_worth", "can_trade_same_dir", "under_negative_one_count", "over_positive_one_count"
+        "signal", "delta", "net_worth", "can_trade_same_dir", "risk", "under_negative_one_count",
+        "over_positive_one_count"
     ]
     data = pd.DataFrame(columns=columns)  # kole data inja bayad bashe ta akhare code amalan
 
@@ -135,9 +136,6 @@ def main():
     signal_thread = Thread(target=signal_handling_thread, args=(signal_queue, stop_event))
     signal_thread.start()
 
-    # Start result handling thread (initialized later)
-    result_thread = None
-
     # Start the net worth monitoring thread
     net_worth_thread = Thread(
         target=monitor_net_worth,
@@ -146,6 +144,20 @@ def main():
     )
     net_worth_thread.start()
     print("INFO: Started net worth monitoring thread.")
+
+    # Start risk managing thread.
+    risk_thread = Thread(target=risk_managing_thread, args=(api, config, stop_event))
+    risk_thread.start()
+    print("INFO: Started risk managing thread.")
+
+    # Start risk managing thread.
+    config_syncing = Thread(target=config_sync_thread, args=(stop_event,))
+    config_syncing.start()
+    print("INFO: Started config syncing thread.")
+
+    # Start result handling thread (initialized later).
+    result_thread = None
+
     try:
         historical_data_merged = False
         while not stop_event.is_set():
@@ -211,8 +223,13 @@ def main():
         if result_thread and result_thread.is_alive():
             result_thread.join()
 
-        counters.report()
+        if risk_thread and risk_thread.is_alive():
+            risk_thread.join()
 
+        if config_syncing and config_syncing.is_alive():
+            config_syncing.join()
+
+        counters.report()
         print("INFO: Program terminated gracefully.")
 
 

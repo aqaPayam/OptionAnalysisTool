@@ -37,6 +37,7 @@ def result_handling_thread(result_queue, data, stop_event):
                 print(f"INFO: Delta: {result['delta']}")
                 print(f"INFO: Net Worth: {result['net_worth']}")
                 print(f"INFO: Can Trade in Same Direction: {result['can_trade_same_dir']}")
+                print(f"INFO: Risk : {result['risk']}")
                 print(f"INFO: Z-Score < -{config.Z_THRESHOLD} Count: {result['under_negative_one_count']}")
                 print(f"INFO: Z-Score > +{config.Z_THRESHOLD} Count: {result['over_positive_one_count']}")
                 print("\n")

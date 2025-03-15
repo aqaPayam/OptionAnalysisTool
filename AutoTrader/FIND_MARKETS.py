@@ -264,3 +264,37 @@ if __name__ == "__main__":
     print(df_portfolio)
     print("\nToday Running Data:")
     print(df_today_running)
+
+    import json
+    import shutil
+
+    risk_folder = "risk_files"
+    # Create the folder if it doesn't exist; otherwise, remove all files inside it.
+    if not os.path.exists(risk_folder):
+        os.makedirs(risk_folder)
+    else:
+        # Remove all files (and subdirectories, if any) in the folder
+        for filename in os.listdir(risk_folder):
+            file_path = os.path.join(risk_folder, filename)
+            try:
+                if os.path.isfile(file_path) or os.path.islink(file_path):
+                    os.unlink(file_path)  # remove file or link
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)  # remove directory recursively
+            except Exception as e:
+                print(f"Failed to delete {file_path}. Reason: {e}")
+
+    # Combine unique option tickers from MDAPI and portfolio data
+    all_tickers = set()
+    if not df_all.empty:
+        all_tickers.update(df_all["OPTION_TICKER"].tolist())
+    if df_portfolio is not None and not df_portfolio.empty:
+        all_tickers.update(df_portfolio["OPTION_TICKER"].tolist())
+
+    all_tickers_list = list(all_tickers)
+
+    json_path = os.path.join(risk_folder, "all_markets_isin.json")
+    with open(json_path, "w", encoding="utf-8") as f:
+        json.dump(all_tickers_list, f, ensure_ascii=False, indent=4)
+
+    print(f"All markets ISIN JSON file saved to {json_path}")

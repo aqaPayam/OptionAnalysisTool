@@ -393,3 +393,33 @@ class TradingAPI:
             })
 
         return pd.DataFrame(processed_data)
+
+    def portfo_analyse(self):
+        """
+        Sends a GET request to the Portfolio endpoint, processes the response,
+        and returns a DataFrame with the following columns:
+            - ISIN: from "isin"
+            - BUY_VOLUME: from "buyVolume"
+            - SELL_VOLUME: from "sellVolume"
+            - AVERAGE_PRICE: from "averagePrice"
+
+        Returns:
+            pd.DataFrame: DataFrame with the processed portfolio analysis data.
+        """
+        url = f"{self.base_url}/positions/options/Portfolio"
+        response = self._make_request('GET', url)
+
+        if not response:
+            print("No response received from portfolio options API.")
+            return None
+
+        processed_data = []
+        for item in response:
+            processed_data.append({
+                "ISIN": item.get("isin", ""),
+                "BUY_VOLUME": item.get("buyVolume", 0),
+                "SELL_VOLUME": item.get("sellVolume", 0),
+                "AVERAGE_PRICE": item.get("averagePrice", 0)
+            })
+
+        return pd.DataFrame(processed_data)

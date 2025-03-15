@@ -71,7 +71,7 @@ def processing_thread(data_queue, result_queue, signal_queue, counters, processi
                 under_negative_one_count += under_count
                 over_positive_one_count += over_count
 
-                signal, can_trade_same_dir, net_worth = update_signal(signal, delta, config)
+                signal, can_trade_same_dir, net_worth, risk = update_signal(signal, delta, config)
 
                 result = {
                     "Date": current_date_jalali,
@@ -89,6 +89,7 @@ def processing_thread(data_queue, result_queue, signal_queue, counters, processi
                     "delta": delta,  # Added Delta to results
                     "net_worth": net_worth,
                     "can_trade_same_dir": can_trade_same_dir,
+                    "risk": risk,
                     "under_negative_one_count": under_negative_one_count,
                     "over_positive_one_count": over_positive_one_count,
                 }
