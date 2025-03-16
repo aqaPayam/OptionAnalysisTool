@@ -146,7 +146,7 @@ def main():
     print("INFO: Started net worth monitoring thread.")
 
     # Start risk managing thread.
-    risk_thread = Thread(target=risk_managing_thread, args=(api, config, stop_event))
+    risk_thread = Thread(target=risk_managing_thread, args=(api, stop_event))
     risk_thread.start()
     print("INFO: Started risk managing thread.")
 
