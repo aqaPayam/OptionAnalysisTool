@@ -15,8 +15,8 @@ class BaseConfig:
                       'Chrome/131.0.0.0 Safari/537.36',
         # Empty User-Agent
         'Accept': 'application/json, text/plain, */*',
-        'Cookie': '',
-        'x-sessionId': '',
+        'Cookie': 'cookiesession1=678B2928B1B3FC87D21EEC7CB0BB44AB; otauth-178-OMSa1f4f9cb-197c-4a41-b4e7-d4602c4c83a7=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJTZXNzaW9uSWQiOiJhMWY0ZjljYi0xOTdjLTRhNDEtYjRlNy1kNDYwMmM0YzgzYTciLCJVc2VySWQiOiIxMDA3OTUiLCJBcHBOYW1lIjoiT01TIiwiQnJva2VyQ29kZSI6IjE3OCIsIm5iZiI6MTc0MjEwMzQ3OCwiZXhwIjoxNzQyMTMyMjc4LCJpc3MiOiJPTVMiLCJhdWQiOiJPTVMifQ.RRC0TZJK-KJzS7bHf3XlZly7sdxmTEN53BuR7OB_SG7GiCqqwmPk_OYD981EJfydl26w23yhWCANceaROnCLFA',
+        'x-sessionId': 'OMSa1f4f9cb-197c-4a41-b4e7-d4602c4c83a7',
         'Content-Type': 'application/json',
     }
 
@@ -32,8 +32,8 @@ class BaseConfig:
     Z_THRESHOLD = 1.5
     BUY_PRICE_OFFSET = 0
     SELL_PRICE_OFFSET = 0
-    ORDER_PRICE = 3_000_000 // 100
-    MAX_BID = 200_000_000 * 10
+    ORDER_PRICE = 1_000_000 // 100
+    MAX_BID = 25_000_000 * 10
     NET_WORTH = 0
     DELTA_MIN = 0.45
     VOLUME = 0

@@ -9,8 +9,8 @@ def config_sync_thread(stop_event):
     config = get_config()
 
     risk_folder = "risk_files"
-    trade_file = os.path.join(risk_folder, f"{config.ISIN}_TRADE_DIRECTION.json")
-    delta_file = os.path.join(risk_folder, f"{config.ISIN}_delta.json")
+    trade_file = os.path.join(risk_folder, f"{config.OPTION_TICKER}_TRADE_DIRECTION.json")
+    delta_file = os.path.join(risk_folder, f"{config.OPTION_TICKER}_delta.json")
 
     while not stop_event.is_set():
         # Read trade direction from the file and update config.TRADE_DIRECTION.

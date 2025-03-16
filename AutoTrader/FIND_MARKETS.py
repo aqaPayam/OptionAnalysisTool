@@ -286,10 +286,8 @@ if __name__ == "__main__":
 
     # Combine unique option tickers from MDAPI and portfolio data
     all_tickers = set()
-    if not df_all.empty:
-        all_tickers.update(df_all["OPTION_TICKER"].tolist())
-    if df_portfolio is not None and not df_portfolio.empty:
-        all_tickers.update(df_portfolio["OPTION_TICKER"].tolist())
+    if not df_today_running.empty:
+        all_tickers.update(df_today_running["OPTION_TICKER"].tolist())
 
     all_tickers_list = list(all_tickers)
 
