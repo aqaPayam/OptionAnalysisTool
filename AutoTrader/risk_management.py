@@ -62,23 +62,13 @@ def risk_managing_thread(api, stop_event):
                     denominator += volume * avg_price
                 avg_delta = 0.0 if denominator == 0 else numerator / denominator
             group_avg_delta[group_key] = avg_delta
-
         for group_key, isin_list in master_groups.items():
             avg_delta = group_avg_delta.get(group_key, 0.0)
             for isin in isin_list:
                 trade_filename = os.path.join(risk_folder, f"{isin}_TRADE_DIRECTION.json")
                 try:
-                    if os.path.exists(trade_filename):
-                        with open(trade_filename, "r") as f:
-                            trade_data = json.load(f)
-                    else:
-                        trade_data = {}
-                except Exception:
-                    trade_data = {}
-                trade_data["averaged_delta"] = avg_delta
-                try:
                     with open(trade_filename, "w") as f:
-                        json.dump(trade_data, f)
+                        json.dump(avg_delta, f)
                 except Exception:
                     pass
         time.sleep(1)
