@@ -16,7 +16,7 @@ def config_sync_thread(stop_event):
                 with open(trade_file, "r") as f:
                     data = json.load(f)
                     config.TRADE_DIRECTION = data
-                    print(f"Config updated: TRADE_DIRECTION = {config.TRADE_DIRECTION}")
+                    # print(f"Config updated: TRADE_DIRECTION = {config.TRADE_DIRECTION}")
             else:
                 print(f"Trade file {trade_file} not found.")
         except Exception as e:
@@ -25,7 +25,7 @@ def config_sync_thread(stop_event):
         try:
             with open(delta_file, "w") as f:
                 json.dump(config.CURRENT_DELTA, f)
-            print(f"Wrote config.CURRENT_DELTA ({config.CURRENT_DELTA}) to {delta_file}")
+            # print(f"Wrote config.CURRENT_DELTA ({config.CURRENT_DELTA}) to {delta_file}")
         except Exception as e:
             print(f"Error writing {delta_file}: {e}")
 
