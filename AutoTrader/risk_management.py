@@ -20,9 +20,7 @@ def risk_managing_thread(api, stop_event):
         for isin in master_isins:
             master_records[isin] = {
                 "ISIN": isin,
-                "BUY_VOLUME": 0,
-                "SELL_VOLUME": 0,
-                "AVERAGE_PRICE": 0,
+                "NET": 0,
                 "DELTA": None
             }
         try:
@@ -34,9 +32,8 @@ def risk_managing_thread(api, stop_event):
                 isin = row.get("ISIN", "")
                 if isin not in master_records:
                     continue
-                master_records[isin]["BUY_VOLUME"] = row.get("BUY_VOLUME", 0)
-                master_records[isin]["SELL_VOLUME"] = row.get("SELL_VOLUME", 0)
-                master_records[isin]["AVERAGE_PRICE"] = row.get("AVERAGE_PRICE", 0)
+                master_records[isin]["NET"] = row.get("NET", 0)
+
         for isin in master_isins:
             delta_filename = os.path.join(risk_folder, f"{isin}_delta.json")
             try:
@@ -45,6 +42,7 @@ def risk_managing_thread(api, stop_event):
                 master_records[isin]["DELTA"] = delta_value
             except Exception:
                 master_records[isin]["DELTA"] = None
+
         group_avg_delta = {}
         for group_key, isin_list in master_groups.items():
             group_records = [master_records[isin] for isin in isin_list]
@@ -53,15 +51,13 @@ def risk_managing_thread(api, stop_event):
                 avg_delta = 0.0
             else:
                 numerator = 0.0
-                denominator = 0.0
+                denominator = api.calculate_total_balance()
                 for rec in valid_records:
-                    volume = abs(rec["BUY_VOLUME"]) + abs(rec["SELL_VOLUME"])
-                    avg_price = rec["AVERAGE_PRICE"]
-                    delta = rec["DELTA"]
-                    numerator += delta * volume * avg_price
-                    denominator += volume * avg_price
+                    numerator += rec["DELTA"] * np.abs(rec["NET"])
                 avg_delta = 0.0 if denominator == 0 else numerator / denominator
+
             group_avg_delta[group_key] = avg_delta
+
         for group_key, isin_list in master_groups.items():
             avg_delta = group_avg_delta.get(group_key, 0.0)
             for isin in isin_list:

@@ -417,9 +417,53 @@ class TradingAPI:
         for item in response:
             processed_data.append({
                 "ISIN": item.get("isin", ""),
-                "BUY_VOLUME": item.get("buyVolume", 0),
-                "SELL_VOLUME": item.get("sellVolume", 0),
-                "AVERAGE_PRICE": item.get("averagePrice", 0)
+                "NET": item.get("netWorthBalance", 0),
             })
 
         return pd.DataFrame(processed_data)
+
+    def calculate_total_balance(self) -> Optional[float]:
+        """
+        Fetches portfolio options and the last trading book, then sums up all netWorthBalance values
+        from the portfolio response and adds the 'remain' value from the trading book response.
+
+        Returns:
+            Optional[float]: The total balance computed by summing the netWorthBalance from portfolio
+            and the 'remain' value from the trading book. Returns None if an error occurs.
+        """
+        # Fetch portfolio options and sum netWorthBalance values.
+        portfolio_url = "https://api-bbi.ephoenix.ir/api/v2/positions/options/Portfolio"
+        portfolio_response = self._make_request('GET', portfolio_url)
+        total_net_worth = 0.0
+
+        if portfolio_response:
+            try:
+                for position in portfolio_response:
+                    net_balance = position.get("netWorthBalance", 0)
+                    total_net_worth += float(net_balance)
+            except (ValueError, TypeError) as e:
+                print(f"ERROR: Error processing portfolio netWorthBalance: {e}")
+                return None
+        else:
+            print("ERROR: Failed to retrieve portfolio options.")
+            # If the portfolio request fails, assume 0 for net worth.
+
+        # Fetch the trading book data and extract the 'remain' value.
+        tradingbook_url = "https://api-bbi.ephoenix.ir/api/v2/tradingbook/GetLastTradingBook"
+        tradingbook_response = self._make_request('GET', tradingbook_url)
+        remain_value = 0.0
+
+        if tradingbook_response:
+            try:
+                remain_value = float(tradingbook_response.get("remain", 0))
+            except (ValueError, TypeError) as e:
+                print(f"ERROR: Error processing trading book 'remain' value: {e}")
+                return None
+        else:
+            print("ERROR: Failed to retrieve trading book data.")
+            # If the trading book request fails, assume 0 for remain.
+
+        total_balance = total_net_worth + remain_value
+        print(
+            f"INFO: Total net worth from portfolio: {total_net_worth}, remain from trading book: {remain_value}, total: {total_balance}")
+        return total_balance
