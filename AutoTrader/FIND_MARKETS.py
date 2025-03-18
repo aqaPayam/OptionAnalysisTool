@@ -94,7 +94,8 @@ def get_underlying_info(option_name):
         "خودرو": {"prefixes": ["ضخود", "طخود"], "ticker": "IRO1IKCO0001"},  # update ticker accordingly
         "اهرم": {"prefixes": ["ضهرم", "طهرم"], "ticker": "IRT1AHRM0001"},  # update ticker accordingly
         "خساپا": {"prefixes": ["ضسپا", "طسپا"], "ticker": "IRO1SIPA0001"},  # update ticker accordingly
-        "شستا": {"prefixes": ["ضستا", "طستا"], "ticker": "IRO1TAMN0001"}  # update ticker accordingly
+        "شستا": {"prefixes": ["ضستا", "طستا"], "ticker": "IRO1TAMN0001"},  # update ticker accordingly
+        "ذوب": {"prefixes": ["ضذوب", "طذوب"], "ticker": "IRO1ZOBI0001"}  # update ticker accordingly
     }
     for underlying, info in underlying_mapping.items():
         for prefix in info["prefixes"]:
@@ -112,7 +113,8 @@ if __name__ == "__main__":
         "خودرو": "IRO9IKCO8Q21",  # "title": "اختیارخ خودرو-5500-1404/03/07","symbol": "ضخود3099",
         "اهرم": "IRO9AHRM4111",  # "title": "اختیارخ اهرم-42000-1404/03/28","symbol": "ضهرم3021",
         "خساپا": "IRO9SIPA2401",  # "title": "اختیارخ خساپا-2200-1404/03/28","symbol": "ضسپا3038",
-        "شستا": "IROFTAMN1921"  # "title": "اختیارف شستا-1700-1404/03/13","symbol": "طستا3032",
+        "شستا": "IROFTAMN1921",  # "title": "اختیارف شستا-1700-1404/03/13","symbol": "طستا3032",
+        "ذوب": "IROFZOBI7021"  # "title": "اختیارف ذوب-400-1404/04/25","symbol": "طذوب4002",
     }
 
     # Ask the user for each underlying market if they want to fetch its MDAPI data

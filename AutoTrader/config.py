@@ -15,8 +15,8 @@ class BaseConfig:
                       'Chrome/131.0.0.0 Safari/537.36',
         # Empty User-Agent
         'Accept': 'application/json, text/plain, */*',
-        'Cookie': 'cookiesession1=678B2928B1B3FC87D21EEC7CB0BB44AB; otauth-178-OMSe58180cd-e425-4818-bd08-838122a40b8e=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJTZXNzaW9uSWQiOiJlNTgxODBjZC1lNDI1LTQ4MTgtYmQwOC04MzgxMjJhNDBiOGUiLCJVc2VySWQiOiIxMDA3OTUiLCJBcHBOYW1lIjoiT01TIiwiQnJva2VyQ29kZSI6IjE3OCIsIm5iZiI6MTc0MjE5MDcwMiwiZXhwIjoxNzQyMjE5NTAyLCJpc3MiOiJPTVMiLCJhdWQiOiJPTVMifQ.dOnKWosyOcGHuXhBTwa8dg1RIlDam25W3ypwromedR0dpoZMWP6LOHZJ8B73bc93WTJui2QwACWz6JJbbYg3gw',
-        'x-sessionId': 'OMSe58180cd-e425-4818-bd08-838122a40b8e',
+        'Cookie': '',
+        'x-sessionId': '',
         'Content-Type': 'application/json',
     }
 
@@ -43,7 +43,7 @@ class BaseConfig:
 
     TRADE_DIRECTION = 0  # float number , 0 for error values
     CURRENT_DELTA = None
-    AVG_DELTA_BORDER = 0.1
+    AVG_DELTA_BORDER = 0.08
 
 
 class the_config(BaseConfig):
