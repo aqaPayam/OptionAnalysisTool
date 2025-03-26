@@ -53,7 +53,7 @@ def risk_managing_thread(api, stop_event):
                 numerator = 0.0
                 denominator = api.calculate_total_balance()
                 for rec in valid_records:
-                    numerator += rec["DELTA"] * np.abs(rec["NET"])
+                    numerator += rec["DELTA"] * rec["NET"]
                 avg_delta = 0.0 if denominator == 0 else numerator / denominator
 
             group_avg_delta[group_key] = avg_delta
