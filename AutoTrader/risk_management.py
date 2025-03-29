@@ -17,7 +17,7 @@ def risk_managing_thread():
     for isin in master_isins:
         group_key = isin[4:8]
         master_groups.setdefault(group_key, []).append(isin)
-    while not stop_event.is_set():
+    while True:
         master_records = {}
         for isin in master_isins:
             master_records[isin] = {
