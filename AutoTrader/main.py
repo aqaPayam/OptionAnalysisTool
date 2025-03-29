@@ -146,9 +146,9 @@ def main():
     print("INFO: Started net worth monitoring thread.")
 
     # Start risk managing thread.
-    risk_thread = Thread(target=risk_managing_thread, args=(api, stop_event))
-    risk_thread.start()
-    print("INFO: Started risk managing thread.")
+    #risk_thread = Thread(target=risk_managing_thread, args=(api, stop_event))
+    #risk_thread.start()
+    #print("INFO: Started risk managing thread.")
 
     # Start risk managing thread.
     config_syncing = Thread(target=config_sync_thread, args=(stop_event,))
@@ -223,8 +223,8 @@ def main():
         if result_thread and result_thread.is_alive():
             result_thread.join()
 
-        if risk_thread and risk_thread.is_alive():
-            risk_thread.join()
+        #if risk_thread and risk_thread.is_alive():
+        #    risk_thread.join()
 
         if config_syncing and config_syncing.is_alive():
             config_syncing.join()

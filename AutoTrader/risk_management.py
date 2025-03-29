@@ -1,9 +1,11 @@
 import time
 import json
 import os
+from trading_api import TradingAPI
 
 
-def risk_managing_thread(api, stop_event):
+def risk_managing_thread():
+    api = TradingAPI()
     risk_folder = "risk_files"
     master_file = os.path.join(risk_folder, "all_markets_isin.json")
     try:
@@ -68,3 +70,7 @@ def risk_managing_thread(api, stop_event):
                 except Exception:
                     pass
         time.sleep(1)
+
+
+if __name__ == "__main__":
+    risk_managing_thread()

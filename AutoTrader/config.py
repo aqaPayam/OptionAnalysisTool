@@ -15,8 +15,8 @@ class BaseConfig:
                       'Chrome/131.0.0.0 Safari/537.36',
         # Empty User-Agent
         'Accept': 'application/json, text/plain, */*',
-        'Cookie': '',
-        'x-sessionId': '',
+        'Cookie': 'cookiesession1=678B2928EAE15F00DBDF9A511BE7AE3E; otauth-178-OMSf6e42b9a-2835-43b2-8931-38c5c419a861=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJTZXNzaW9uSWQiOiJmNmU0MmI5YS0yODM1LTQzYjItODkzMS0zOGM1YzQxOWE4NjEiLCJVc2VySWQiOiIxMDA3OTUiLCJBcHBOYW1lIjoiT01TIiwiQnJva2VyQ29kZSI6IjE3OCIsIm5iZiI6MTc0MzIyODE0MSwiZXhwIjoxNzQzMjU2OTQxLCJpc3MiOiJPTVMiLCJhdWQiOiJPTVMifQ.IM-Gwr1044hr1m2SPA-btG5ZMaSqE_96vcBBr4NZxnbSWyPcwSmNVaQ84AbV3I8bJzL9Qm9tQNEwXGEiaOrVAw',
+        'x-sessionId': 'OMSf6e42b9a-2835-43b2-8931-38c5c419a861',
         'Content-Type': 'application/json',
     }
 
